@@ -1,0 +1,10 @@
+variabel list = [1, 2, 3]
+tambah(list, 4)
+fungsi kali_dua(x) { kembali x * 2 }
+variabel mapped = peta(list, kali_dua)
+cetak("List asli:", list)
+cetak("Mapped:", mapped)
+
+variabel data = { "nama": "Budi", "umur": 25 }
+cetak("Nama:", data.nama)
+cetak("Umur:", data["umur"])

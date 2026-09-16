@@ -1,0 +1,9 @@
+fungsi faktorial(n) {
+    jika n == 0 {
+        kembali 1
+    }
+    kembali n * faktorial(n - 1)
+}
+
+cetak("Faktorial 5:", faktorial(5))
+cetak("Faktorial 0:", faktorial(0))

@@ -1,0 +1,182 @@
+{
+  "Fungsi": {
+    "prefix": "fg",
+    "body": [
+      "fungsi ${1:nama}(${2:param}) {",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Deklarasi fungsi"
+  },
+  "Fungsi utama": {
+    "prefix": "fgutama",
+    "body": [
+      "fungsi utama() {",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Fungsi utama (entry point)"
+  },
+  "Jika": {
+    "prefix": "jk",
+    "body": [
+      "jika ${1:kondisi} {",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Pernyataan jika"
+  },
+  "Jika-Lainnya": {
+    "prefix": "jkl",
+    "body": [
+      "jika ${1:kondisi} {",
+      "\t${2}",
+      "} lainnya {",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Pernyataan jika-lainnya"
+  },
+  "Jika-LainnyaJika-Lainnya": {
+    "prefix": "jklj",
+    "body": [
+      "jika ${1:kondisi} {",
+      "\t${2}",
+      "} lainnya_jika ${3:kondisi2} {",
+      "\t${4}",
+      "} lainnya {",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Pernyataan jika-lainnya_jika-lainnya"
+  },
+  "Selama": {
+    "prefix": "st",
+    "body": [
+      "selama ${1:kondisi} {",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Perulangan selama (while)"
+  },
+  "Untuk dari-sampai": {
+    "prefix": "utk",
+    "body": [
+      "untuk ${1:i} dari ${2:0} sampai ${3:10} {",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Perulangan untuk dengan range"
+  },
+  "Untuk dalam": {
+    "prefix": "utkd",
+    "body": [
+      "untuk ${1:item} dalam ${2:daftar} {",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Perulangan untuk dalam (for-each)"
+  },
+  "Coba-Tangkap": {
+    "prefix": "cb",
+    "body": [
+      "coba {",
+      "\t${1}",
+      "} tangkap (${2:e}) {",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Blok coba-tangkap (try-catch)"
+  },
+  "Coba-Tangkap-Akhirnya": {
+    "prefix": "cba",
+    "body": [
+      "coba {",
+      "\t${1}",
+      "} tangkap (${2:e}) {",
+      "\t${3}",
+      "} akhirnya {",
+      "\t${0}",
+      "}"
+    ],
+    "description": "Blok coba-tangkap-akhirnya"
+  },
+  "Cocok": {
+    "prefix": "ck",
+    "body": [
+      "cocok ${1:nilai} {",
+      "\tkasus ${2:pola} {",
+      "\t\t${3}",
+      "\t}",
+      "\tbawaan {",
+      "\t\t${0}",
+      "\t}",
+      "}"
+    ],
+    "description": "Pernyataan cocok (match)"
+  },
+  "Variabel": {
+    "prefix": "vr",
+    "body": "variabel ${1:nama} = ${0}",
+    "description": "Deklarasi variabel"
+  },
+  "Tetap": {
+    "prefix": "tp",
+    "body": "tetap ${1:NAMA} = ${0}",
+    "description": "Deklarasi konstanta tetap"
+  },
+  "Impor": {
+    "prefix": "imp",
+    "body": "impor \"${1:modul}\"",
+    "description": "Impor modul"
+  },
+  "Impor sebagai": {
+    "prefix": "impas",
+    "body": "impor \"${1:modul}\" sebagai ${2:alias}",
+    "description": "Impor modul dengan alias"
+  },
+  "Cetak": {
+    "prefix": "ct",
+    "body": "cetak(${0})",
+    "description": "Cetak ke konsol"
+  },
+  "Kembali": {
+    "prefix": "km",
+    "body": "kembali ${0}",
+    "description": "Pernyataan kembali (return)"
+  },
+  "Lempar": {
+    "prefix": "lm",
+    "body": "lempar(\"${0:pesan error}\")",
+    "description": "Lempar error"
+  },
+  "Pastikan": {
+    "prefix": "ps",
+    "body": "pastikan(${1:kondisi}, \"${0:pesan}\")",
+    "description": "Pernyataan pastikan (assert)"
+  },
+  "Daftar kosong": {
+    "prefix": "dft",
+    "body": "variabel ${1:nama} = []",
+    "description": "Daftar kosong"
+  },
+  "Kamus kosong": {
+    "prefix": "kms",
+    "body": "variabel ${1:nama} = {}",
+    "description": "Kamus kosong"
+  },
+  "Komentar": {
+    "prefix": "kom",
+    "body": "# ${0}",
+    "description": "Komentar baris"
+  },
+  "Komentar blok": {
+    "prefix": "komb",
+    "body": [
+      "#[[",
+      "${0}",
+      "]]"
+    ],
+    "description": "Komentar blok"
+  }
+}

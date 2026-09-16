@@ -1,0 +1,30 @@
+[package]
+name = "evernight_installer"
+version = "0.1.0"
+edition = "2021"
+description = "Installer GUI EvernightLanguage (egui)"
+
+# PENTING: crate ini SENGAJA berada di luar workspace root.
+# Alasan: `.cargo/config.toml` proyek memaksa `+crt-static` + `rust-lld`
+# (untuk biner CLI statis), dan kombinasi itu rapuh pada `winit`/`eframe`.
+# Dengan berdiri sendiri, installer punya profil build-nya sendiri, dan biner
+# compiler/VM/CLI tetap zero-dependency.
+[workspace]
+
+[[bin]]
+name = "evernight-installer"
+path = "src/main.rs"
+
+[dependencies]
+eframe = { version = "0.36", default-features = false, features = [
+    "default_fonts",
+    "glow",
+] }
+egui = "0.36"
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+[profile.release]
+opt-level = "z"
+lto = true
+codegen-units = 1
+strip = true

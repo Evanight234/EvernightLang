@@ -1,0 +1,12 @@
+# Program Faktorial EvernightLanguage
+fungsi faktorial(n) {
+    jika n <= 1 {
+        kembali 1
+    } lainnya {
+        kembali n * faktorial(n - 1)
+    }
+}
+
+variabel angka = 5
+variabel hasil = faktorial(angka)
+cetak("Faktorial:", hasil)

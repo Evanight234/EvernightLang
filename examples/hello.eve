@@ -1,0 +1,3 @@
+# Program Pertama EvernightLanguage
+variabel pesan = "Halo Dunia dari EvernightLanguage!"
+cetak(pesan)

@@ -1,0 +1,31 @@
+# Contoh modul sistem EvernightLanguage
+impor sistem
+
+cetak("Waktu sekarang (ms): ", waktu_sekarang())
+cetak("Epoch (UTC ISO): ", tanggal_sekarang(0))
+cetak("Format tanggal: ", format_tanggal(0, "YYYY-MM-DD HH:mm:ss"))
+cetak("Format tanggal lain: ", format_tanggal(98645000, "DD/MM/YYYY HH:mm"))
+cetak("Selisih 1.5s ke 3.5s: ", selisih_waktu(1500, 3500))
+
+cetak("Env ada: ", env("PATH", "(tidak ada PATH)"))
+cetak("Env hilang (bawaan): ", env("EVN_CONTOH_HILANG", "nilai.sementara"))
+
+atur_env("EVN_CONTOH", "menyala")
+cetak("Setelah atur_env: ", env("EVN_CONTOH", "kosong"))
+
+cetak("File ada (file ini): ", ada_file("examples/sistem.eve"))
+
+variabel jalur = "examples/contoh_berkas.txt"
+tulis_file(jalur, "Halo dari EvernightLanguage!\nBaris kedua.")
+cetak("Isi berkas: ")
+cetak(baca_file(jalur))
+cetak("File ada setelah tulis: ", ada_file(jalur))
+
+coba {
+    cetak(baca_file("examples/berkas_tidak_ada.eve"))
+} tangkap (pesan) {
+    cetak("Tangkap [FILE]: ", pesan)
+}
+
+tunda(0.1)
+cetak("Selesai setelah jeda 0.1 detik.")

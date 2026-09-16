@@ -1,0 +1,15 @@
+# .vscodeignore — daftar berkas yang TIDAK disertakan ke dalam paket .vsix
+.vscode/**
+.vscode-test/**
+src/**
+test/**
+node_modules/**
+**/*.map
+**/*.ts
+!**/*.d.ts
+tsconfig.json
+package-lock.json
+.gitignore
+.vscodeignore
+**/.DS_Store
+**/Thumbs.db

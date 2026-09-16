@@ -1,0 +1,39 @@
+==========================================================
+   EVERNIGHTLANGUAGE 0.1.0 - BACA AKU DULU
+==========================================================
+
+Terima kasih telah memasang EvernightLanguage!
+
+CARA MEMASANG (3 LANGKAH):
+
+   1. Klik dua kali berkas:  install.cmd
+
+   2. Pemasang akan menawarkan memasang ekstensi editor
+      (warna sintaksis & autocomplete) bila editor seperti
+      Antigravity IDE / VS Code terdeteksi.
+      Jawab  y  untuk memasang, atau  t  untuk melewatinya.
+
+   3. Setelah selesai, TUTUP terminal lama dan BUKA terminal baru.
+      Lalu ketik:  evernight --versi
+      Bila muncul "EvernightLanguage v0.1.0" -> berhasil!
+
+Mencoba program:
+
+    evernight run ..\..\examples\hello.eve
+
+Atau buka mode interaktif (REPL):
+
+    evernight
+
+----------------------------------------------------------
+PANDUAN LENGKAP: buka folder  docs\PANDUAN.txt
+
+Mencopot? Klik dua kali:  uninstall.cmd
+(pencopot juga menawarkan mencopot ekstensi editor)
+----------------------------------------------------------
+
+Tidak butuh hak administrator.
+Tidak butuh memasang Rust/Cargo.
+
+MIT License - Copyright (c) 2026 Satriyo
+==========================================================

@@ -1,0 +1,7 @@
+# Contoh impor lintas berkas
+# Jalankan: evernight --run examples/import/main.eve
+impor "helper" sebagai mtk
+
+cetak("Tambah: ", mtk.tambah(2, 3))      # 5
+cetak("Kali: ", mtk.kali(4, 5))          # 20
+cetak("Kuadrat: ", mtk.kuadrat(3))       # 9

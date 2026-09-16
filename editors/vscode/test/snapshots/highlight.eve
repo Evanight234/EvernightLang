@@ -1,0 +1,51 @@
+﻿# Komentar baris
+#[[ Komentar
+     blok ]]
+
+variabel x = 42
+tetap PI = 3.14
+variabel pesan = "Halo Dunia"
+variabel flag = benar
+variabel kosong_val = kosong
+
+fungsi tambah(a, b) {
+    kembali a + b
+}
+
+jika x > 10 {
+    cetak("besar")
+} lainnya_jika x == 10 {
+    cetak("sepuluh")
+} lainnya {
+    cetak("kecil")
+}
+
+selama x > 0 {
+    x -= 1
+    jika x == 5 { berhenti }
+}
+
+untuk i dari 0 sampai 5 {
+    cetak(i)
+}
+
+untuk item dalam [1, 2, 3] {
+    lanjut
+}
+
+cocok x {
+    kasus 1 { cetak("satu") }
+    kasus _ { cetak("lain") }
+    bawaan  { cetak("bawaan") }
+}
+
+coba {
+    lempar("galat")
+} tangkap (e) {
+    cetak(e)
+}
+
+pastikan(x >= 0, "harus positif")
+
+impor "matematika" sebagai mat
+hapus x

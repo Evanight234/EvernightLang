@@ -1,0 +1,91 @@
+name: Rilis
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  rilis:
+    name: Bangun & Terbitkan Biner
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pasang toolchain Rust (GNU untuk biner statis)
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-gnu
+          components: rustfmt, clippy
+
+      - name: Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-rilis-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: ${{ runner.os }}-rilis-
+
+      - name: Jalankan test sebelum rilis
+        run: cargo test --workspace
+
+      - name: Bangun biner rilis (statis)
+        run: cargo build --release --target x86_64-pc-windows-gnu -p evernight_cli
+
+      - name: Susun paket distribusi
+        shell: pwsh
+        run: |
+          $versi = "${{ github.ref_name }}".TrimStart("v")
+          if ([string]::IsNullOrWhiteSpace($versi)) { $versi = "0.1.0" }
+          $exe = "target\x86_64-pc-windows-gnu\release\evernight.exe"
+          if (-not (Test-Path $exe)) { throw "Biner tidak ditemukan: $exe" }
+
+          $keluar = "dist"
+          $nama = "evernight-$versi-windows-x64"
+          $isi = Join-Path $keluar $nama
+          New-Item -ItemType Directory -Force -Path (Join-Path $isi "bin") | Out-Null
+          Copy-Item $exe (Join-Path $isi "bin\evernight.exe")
+
+          foreach ($d in @("assets", "docs")) {
+            if (Test-Path "paket\evernight-0.1.0-windows-x64\$d") {
+              Copy-Item "paket\evernight-0.1.0-windows-x64\$d" $isi -Recurse
+            }
+          }
+          Get-ChildItem -Path "paket\evernight-0.1.0-windows-x64" -Filter "*.ps1" -ErrorAction SilentlyContinue |
+            Copy-Item -Destination $isi
+          Get-ChildItem -Path "paket\evernight-0.1.0-windows-x64" -Filter "*.cmd" -ErrorAction SilentlyContinue |
+            Copy-Item -Destination $isi
+          if (Test-Path "LICENSE") { Copy-Item "LICENSE" $isi }
+
+          $zip = Join-Path $keluar "$nama.zip"
+          Compress-Archive -Path $isi -DestinationPath $zip -CompressionLevel Optimal
+
+          # Checksum SHA256
+          $hash = (Get-FileHash $zip -Algorithm SHA256).Hash.ToLower()
+          "$hash  $nama.zip" | Set-Content -Path (Join-Path $keluar "SHA256SUMS.txt") -Encoding ASCII
+
+          Write-Host "Dibuat: $zip"
+          Write-Host "SHA256: $hash"
+          (Get-Item $zip).Length
+
+      - name: Unggah artefak
+        uses: actions/upload-artifact@v4
+        with:
+          name: evernight-windows-x64
+          path: dist/*
+
+      - name: Buat Release GitHub
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/*.zip
+            dist/SHA256SUMS.txt
+          generate_release_notes: true
+          draft: true

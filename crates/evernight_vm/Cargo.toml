@@ -1,0 +1,11 @@
+[package]
+name = "evernight_vm"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+evernight_core = { path = "../evernight_core" }
+
+[[bench]]
+name = "benchmark"
+harness = false

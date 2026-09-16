@@ -1,0 +1,170 @@
+{
+  "$schema": "vscode://schemas/color-theme",
+  "name": "Evernight Nusantara Terang",
+  "type": "light",
+  "colors": {
+    "editor.background":                  "#f5f0e8",
+    "editor.foreground":                  "#2a2a2a",
+    "editor.lineHighlightBackground":     "#ede8dc",
+    "editor.selectionBackground":         "#0f9d8f30",
+    "editor.inactiveSelectionBackground": "#0f9d8f18",
+    "editor.wordHighlightBackground":     "#0f9d8f20",
+    "editorLineNumber.foreground":        "#b0a890",
+    "editorLineNumber.activeForeground":  "#6a7a8a",
+    "editorCursor.foreground":            "#d9730a",
+    "editorWhitespace.foreground":        "#ddd8cc",
+    "editorIndentGuide.background":       "#ddd8cc",
+    "editorIndentGuide.activeBackground": "#c8c0b0",
+    "editorBracketMatch.background":      "#0f9d8f20",
+    "editorBracketMatch.border":          "#0f9d8f",
+    "editorError.foreground":             "#c0392b",
+    "editorWarning.foreground":           "#d9730a",
+    "editorInfo.foreground":              "#0f9d8f",
+    "editorGutter.background":            "#f5f0e8",
+    "activityBar.background":             "#e8e3d8",
+    "activityBar.foreground":             "#0b7a70",
+    "activityBarBadge.background":        "#0b7a70",
+    "activityBarBadge.foreground":        "#f5f0e8",
+    "sideBar.background":                 "#ede8dc",
+    "sideBar.foreground":                 "#4a4a4a",
+    "sideBarTitle.foreground":            "#0b7a70",
+    "sideBarSectionHeader.background":    "#e8e3d8",
+    "sideBarSectionHeader.foreground":    "#5a6a7a",
+    "list.activeSelectionBackground":     "#0f9d8f25",
+    "list.activeSelectionForeground":     "#2a2a2a",
+    "list.hoverBackground":               "#ede8dc",
+    "list.focusBackground":               "#0f9d8f18",
+    "statusBar.background":               "#0b7a70",
+    "statusBar.foreground":               "#f5f0e8",
+    "statusBar.noFolderBackground":       "#0b7a70",
+    "statusBar.debuggingBackground":      "#c0392b",
+    "titleBar.activeBackground":          "#e8e3d8",
+    "titleBar.activeForeground":          "#0b7a70",
+    "titleBar.inactiveBackground":        "#e8e3d8",
+    "tab.activeBackground":               "#f5f0e8",
+    "tab.activeForeground":               "#2a2a2a",
+    "tab.inactiveBackground":             "#ede8dc",
+    "tab.inactiveForeground":             "#8a8a8a",
+    "tab.activeBorderTop":                "#0b7a70",
+    "tab.border":                         "#e0dbd0",
+    "editorGroupHeader.tabsBackground":   "#ede8dc",
+    "panel.background":                   "#e8e3d8",
+    "panel.border":                       "#ddd8cc",
+    "panelTitle.activeForeground":        "#0b7a70",
+    "panelTitle.activeBorder":            "#0b7a70",
+    "terminal.background":                "#f5f0e8",
+    "terminal.foreground":                "#2a2a2a",
+    "terminal.ansiRed":                   "#c0392b",
+    "terminal.ansiGreen":                 "#0b7a70",
+    "terminal.ansiYellow":                "#d9730a",
+    "terminal.ansiBlue":                  "#2a6db5",
+    "terminal.ansiMagenta":               "#8e44ad",
+    "terminal.ansiCyan":                  "#0b7a70",
+    "terminal.ansiBrightRed":             "#e74c3c",
+    "terminal.ansiBrightGreen":           "#0f9d8f",
+    "terminal.ansiBrightYellow":          "#e67e22",
+    "terminal.ansiBlack":                 "#2a2a2a",
+    "terminal.ansiWhite":                 "#f5f0e8",
+    "scrollbarSlider.background":         "#c8c0b060",
+    "scrollbarSlider.hoverBackground":    "#0f9d8f40",
+    "scrollbarSlider.activeBackground":   "#0f9d8f60",
+    "input.background":                   "#f5f0e8",
+    "input.foreground":                   "#2a2a2a",
+    "input.border":                       "#c8c0b0",
+    "inputOption.activeBorder":           "#0b7a70",
+    "focusBorder":                        "#0b7a70",
+    "button.background":                  "#0b7a70",
+    "button.foreground":                  "#f5f0e8",
+    "button.hoverBackground":             "#0f9d8f",
+    "badge.background":                   "#0b7a70",
+    "badge.foreground":                   "#f5f0e8",
+    "progressBar.background":             "#0b7a70"
+  },
+  "tokenColors": [
+    {
+      "name": "Komentar",
+      "scope": ["comment.line.eve", "comment.block.eve"],
+      "settings": { "foreground": "#a09070", "fontStyle": "italic" }
+    },
+    {
+      "name": "String",
+      "scope": ["string.quoted.double.eve", "string.quoted.single.eve"],
+      "settings": { "foreground": "#2e7d52" }
+    },
+    {
+      "name": "Escape karakter",
+      "scope": "constant.character.escape.eve",
+      "settings": { "foreground": "#0b7a70" }
+    },
+    {
+      "name": "Angka",
+      "scope": ["constant.numeric.eve", "constant.numeric.integer.eve", "constant.numeric.float.eve", "constant.numeric.hex.eve"],
+      "settings": { "foreground": "#d9730a" }
+    },
+    {
+      "name": "Boolean & Null",
+      "scope": ["constant.language.boolean.eve", "constant.language.null.eve", "constant.language.wildcard.eve"],
+      "settings": { "foreground": "#8e44ad", "fontStyle": "bold" }
+    },
+    {
+      "name": "Keyword Kontrol",
+      "scope": "keyword.control.eve",
+      "settings": { "foreground": "#0b7a70", "fontStyle": "bold" }
+    },
+    {
+      "name": "Keyword Deklarasi",
+      "scope": ["keyword.declaration.eve", "keyword.declaration.function.eve"],
+      "settings": { "foreground": "#2a6db5", "fontStyle": "bold" }
+    },
+    {
+      "name": "Keyword Operator Kata",
+      "scope": "keyword.operator.word.eve",
+      "settings": { "foreground": "#0b7a70" }
+    },
+    {
+      "name": "Nama Fungsi (deklarasi)",
+      "scope": "entity.name.function.eve",
+      "settings": { "foreground": "#b5640a", "fontStyle": "bold" }
+    },
+    {
+      "name": "Pemanggilan Fungsi",
+      "scope": "entity.name.function.call.eve",
+      "settings": { "foreground": "#b5640a" }
+    },
+    {
+      "name": "Operator Perbandingan",
+      "scope": "keyword.operator.comparison.eve",
+      "settings": { "foreground": "#2a6db5" }
+    },
+    {
+      "name": "Operator Penugasan",
+      "scope": "keyword.operator.assignment.eve",
+      "settings": { "foreground": "#2a2a2a" }
+    },
+    {
+      "name": "Operator Aritmatika",
+      "scope": "keyword.operator.arithmetic.eve",
+      "settings": { "foreground": "#2a6db5" }
+    },
+    {
+      "name": "Operator Logika",
+      "scope": "keyword.operator.logical.eve",
+      "settings": { "foreground": "#0b7a70" }
+    },
+    {
+      "name": "Operator Range",
+      "scope": "keyword.operator.range.eve",
+      "settings": { "foreground": "#2a6db5" }
+    },
+    {
+      "name": "Tanda Baca Blok",
+      "scope": "punctuation.definition.block.eve",
+      "settings": { "foreground": "#5a6a7a" }
+    },
+    {
+      "name": "Tanda Baca Lainnya",
+      "scope": ["punctuation.definition.parameters.eve", "punctuation.definition.array.eve", "punctuation.separator.eve", "punctuation.accessor.eve", "punctuation.separator.key-value.eve"],
+      "settings": { "foreground": "#9a9080" }
+    }
+  ]
+}

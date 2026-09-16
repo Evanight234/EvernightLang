@@ -1,0 +1,11 @@
+variabel sum = 0
+untuk i dari 1 sampai 5 {
+    sum += i
+}
+cetak("Total 1..5:", sum)
+
+variabel count = 3
+selama count > 0 {
+    cetak("Hitung mundur:", count)
+    count -= 1
+}

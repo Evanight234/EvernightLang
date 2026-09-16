@@ -1,0 +1,169 @@
+========================================================================
+                  EVERNIGHTLANGUAGE
+        Bahasa Pemrograman dengan Sintaksis Bahasa Indonesia
+                         Versi 0.1.0
+========================================================================
+
+EvernightLanguage adalah bahasa pemrograman yang menggunakan kata kunci
+Bahasa Indonesia. Contoh sederhana:
+
+    fungsi utama() {
+        cetak("Halo Dunia dari EvernightLanguage!")
+    }
+
+------------------------------------------------------------------------
+1. CARA MEMASANG
+------------------------------------------------------------------------
+
+Pemasangan ini TIDAK memerlukan hak administrator dan TIDAK memerlukan
+Rust/Cargo. Semua komponen sudah dibundel.
+
+    Langkah:
+    1. Klik dua kali berkas  install.cmd
+       (atau buka PowerShell di folder ini, lalu jalankan:
+        powershell -ExecutionPolicy Bypass -File install.ps1)
+
+    2. Tunggu sampai muncul pesan "Pemasangan SELESAI."
+
+    3. TUTUP terminal yang lama, lalu BUKA terminal baru.
+       (Ini penting agar perubahan PATH terbaca.)
+
+    4. Uji dengan mengetik:
+
+           evernight --versi
+
+       Bila muncul "EvernightLanguage v0.1.0", pemasangan berhasil.
+
+Ingin mencoba tanpa mengubah sistem? Jalankan mode uji:
+
+    powershell -ExecutionPolicy Bypass -File install.ps1 -Uji
+
+------------------------------------------------------------------------
+2. CARA MENJALANKAN PROGRAM
+------------------------------------------------------------------------
+
+    evernight run program.eve        Jalankan berkas (cara eksplisit)
+    evernight program.eve            Jalankan berkas (langsung)
+    evernight                        Buka mode REPL interaktif
+    evernight program.eve -- arg1    Kirim argumen ke program
+
+Opsi lain:
+
+    --cek / --check    Periksa sintaksis tanpa menjalankan
+    --tokens           Tampilkan daftar token
+    --ast              Tampilkan pohon sintaksis
+    --bytecode         Tampilkan instruksi bytecode
+    --versi            Tampilkan versi
+    --bantuan          Tampilkan panduan bantuan
+
+Menjalankan berkas .eve dengan KLIK DUA KALI di Explorer juga bisa
+(melalui asosiasi "Evernight files").
+
+------------------------------------------------------------------------
+3. EKSTENSI EDITOR (WARNA SINTAKSIS)
+------------------------------------------------------------------------
+
+Saat menjalankan install.cmd, pemasang akan OTOMATIS MENDETEKSI editor
+keluarga VS Code yang terpasang di komputer Anda, lalu MENAWARKAN untuk
+memasang ekstensi EvernightLanguage.
+
+    Pertanyaan yang muncul:
+        "Pasang ekstensi EvernightLanguage ke editor di atas? (y/t)"
+
+    Jawab  y  untuk memasang, atau  t  untuk melewatinya.
+
+Ekstensi ini memberi Anda:
+    - Syntax highlighting (warna) untuk berkas .eve
+    - Tema "Evernight Nusantara" (gelap & terang)
+    - Snippet kode (fungsi, jika, selama, untuk, coba, cocok, ...)
+    - Autocomplete kata kunci & fungsi bawaan
+    - Ikon khusus untuk berkas .eve
+
+Editor yang didukung deteksi otomatis:
+    - Antigravity IDE
+    - Visual Studio Code
+    - VS Code Insiders
+    - Cursor
+    - Windsurf
+    - VSCodium
+
+Ingin melewati langkah ekstensi? Jalankan:
+    powershell -ExecutionPolicy Bypass -File install.ps1 -TanpaEkstensi
+
+Ingin memasang TANPA ditanya (untuk instalasi otomatis/senyap)?
+    powershell -ExecutionPolicy Bypass -File install.ps1 -TanpaKonfirmasi
+
+------------------------------------------------------------------------
+3b. MEMASANG EKSTENSI SECARA MANUAL (bila diperlukan)
+------------------------------------------------------------------------
+
+Bila editor Anda tidak terdeteksi, atau Anda memilih melewatinya saat
+instalasi, ekstensi tetap tersedia di folder:
+
+    extensions\evernight-language-0.1.0.vsix
+
+Cara memasang manual:
+
+  A. Antigravity IDE
+     Jalankan di terminal:
+       "%LOCALAPPDATA%\Programs\Antigravity IDE\bin\antigravity-ide.cmd" --install-extension "extensions\evernight-language-0.1.0.vsix"
+
+  B. Visual Studio Code
+       code --install-extension "extensions\evernight-language-0.1.0.vsix"
+
+  C. Cursor
+       cursor --install-extension "extensions\evernight-language-0.1.0.vsix"
+
+  D. Lewat menu editor (semua editor keluarga VS Code)
+     1. Buka editor, tekan Ctrl+Shift+P
+     2. Ketik: Extensions: Install from VSIX...
+     3. Pilih berkas .vsix di folder extensions\
+
+Setelah terpasang, aktifkan temanya (opsional):
+    Ctrl+Shift+P -> Preferences: Color Theme -> "Evernight Nusantara Gelap"
+
+------------------------------------------------------------------------
+4. CARA MENCO POT
+------------------------------------------------------------------------
+
+    Klik dua kali  uninstall.cmd
+
+Ini akan menghapus:
+    - Program dari %LocalAppData%\Programs\Evernight
+    - Entri PATH pengguna
+    - Asosiasi berkas .eve
+
+Pencopot juga akan MENAWARKAN untuk mencopot ekstensi editor:
+
+    "Copot juga ekstensi EvernightLanguage dari editor? (y/t)"
+
+Jawab  y  untuk mencopot, atau  t  untuk membiarkannya terpasang.
+
+Ingin selalu membiarkan ekstensi (tanpa ditanya)?
+    powershell -ExecutionPolicy Bypass -File uninstall.ps1 -SimpanEkstensi
+
+Ingin mencopot TANPA ditanya (untuk otomatisasi)?
+    powershell -ExecutionPolicy Bypass -File uninstall.ps1 -TanpaKonfirmasi
+
+------------------------------------------------------------------------
+5. LOKASI BERKAS
+------------------------------------------------------------------------
+
+Program terpasang di:
+
+    %LocalAppData%\Programs\Evernight\
+        bin\evernight.exe        Program utama
+        assets\                  Ikon dan logo
+        extensions\              Ekstensi editor
+        docs\                    Dokumentasi
+
+------------------------------------------------------------------------
+6. BANTUAN
+------------------------------------------------------------------------
+
+Ketik  evernight --bantuan  untuk panduan perintah.
+Jalankan  evernight  tanpa argumen untuk masuk mode REPL interaktif.
+
+========================================================================
+            MIT License - Copyright (c) 2026 Satriyo
+========================================================================

@@ -1,0 +1,151 @@
+﻿# Snapshot Test: Highlighting EvernightLanguage
+# File: highlight.eve
+# Grammar: source.eve (editors/vscode/syntaxes/evernight.tmLanguage.json)
+# Diperbarui: 2026-09-12
+#
+# Format:
+#   > <teks token>   <- baris sumber (diawali >)
+#   ^ <scope>        <- scope yang diharapkan untuk token di posisi itu
+#
+# Cara verifikasi manual:
+#   1. Buka highlight.eve di VS Code dengan ekstensi EvernightLanguage aktif
+#   2. Tekan F1 -> "Developer: Inspect Editor Tokens and Scopes"
+#   3. Klik tiap token, cocokkan scope dengan yang tertulis di sini
+
+# ── Komentar ─────────────────────────────────────────────────────────────────
+
+> # Komentar baris
+  ^ comment.line.eve
+
+> #[[ Komentar
+  ^ comment.block.eve  (begin: punctuation.definition.comment.eve)
+
+> ]]
+  ^ comment.block.eve  (end: punctuation.definition.comment.eve)
+
+# ── Deklarasi variabel ────────────────────────────────────────────────────────
+
+> variabel x = 42
+  ^^^^^^^^ keyword.declaration.eve
+             ^ (identifier — tidak ada scope khusus)
+                 ^^ constant.numeric.integer.eve
+
+> tetap PI = 3.14
+  ^^^^^ keyword.declaration.eve
+              ^^^^ constant.numeric.float.eve
+
+> variabel pesan = "Halo Dunia"
+  ^^^^^^^^ keyword.declaration.eve
+                   ^^^^^^^^^^^^ string.quoted.double.eve
+
+> variabel flag = benar
+  ^^^^^^^^ keyword.declaration.eve
+                  ^^^^^ constant.language.boolean.eve
+
+> variabel kosong_val = kosong
+  ^^^^^^^^ keyword.declaration.eve
+                         ^^^^^^ constant.language.null.eve
+
+# ── Deklarasi fungsi ──────────────────────────────────────────────────────────
+
+> fungsi tambah(a, b) {
+  ^^^^^^ keyword.declaration.function.eve
+         ^^^^^^ entity.name.function.eve
+
+# ── Keyword kontrol ───────────────────────────────────────────────────────────
+
+> kembali a + b
+  ^^^^^^^ keyword.control.eve
+
+> jika x > 10 {
+  ^^^^ keyword.control.eve
+           ^ keyword.operator.comparison.eve
+             ^^ constant.numeric.integer.eve
+
+> lainnya_jika x == 10 {
+  ^^^^^^^^^^^^ keyword.control.eve
+                 ^^ keyword.operator.comparison.eve
+
+> lainnya {
+  ^^^^^^^ keyword.control.eve
+
+> selama x > 0 {
+  ^^^^^^ keyword.control.eve
+
+> berhenti
+  ^^^^^^^^ keyword.control.eve
+
+> untuk i dari 0 sampai 5 {
+  ^^^^^ keyword.control.eve
+          ^^^^ keyword.control.eve
+                 ^ constant.numeric.integer.eve
+                   ^^^^^^ keyword.control.eve
+                          ^ constant.numeric.integer.eve
+
+> untuk item dalam [1, 2, 3] {
+  ^^^^^ keyword.control.eve
+             ^^^^^ keyword.control.eve
+
+> lanjut
+  ^^^^^^ keyword.control.eve
+
+# ── Pattern matching ─────────────────────────────────────────────────────────
+
+> cocok x {
+  ^^^^^ keyword.control.eve
+
+> kasus 1 { cetak("satu") }
+  ^^^^^ keyword.control.eve
+        ^ constant.numeric.integer.eve
+          ^ punctuation.definition.block.eve
+
+> kasus _ { cetak("lain") }
+  ^^^^^ keyword.control.eve
+        ^ constant.language.wildcard.eve
+
+> bawaan  { cetak("bawaan") }
+  ^^^^^^ keyword.control.eve
+
+# ── Error handling ────────────────────────────────────────────────────────────
+
+> coba {
+  ^^^^ keyword.control.eve
+
+> lempar("galat")
+  ^^^^^^ keyword.control.eve
+         ^^^^^^^ string.quoted.double.eve
+
+> tangkap (e) {
+  ^^^^^^^ keyword.control.eve
+
+> pastikan(x >= 0, "harus positif")
+  ^^^^^^^^ (pemanggilan fungsi) entity.name.function.call.eve
+             ^^ keyword.operator.comparison.eve
+
+# ── Impor & hapus ────────────────────────────────────────────────────────────
+
+> impor "matematika" sebagai mat
+  ^^^^^ keyword.control.eve
+        ^^^^^^^^^^^^ string.quoted.double.eve
+                     ^^^^^^^ keyword.control.eve
+
+> hapus x
+  ^^^^^ keyword.control.eve
+
+# ── Pemanggilan fungsi ────────────────────────────────────────────────────────
+
+> cetak("besar")
+  ^^^^^ entity.name.function.call.eve
+        ^^^^^^^ string.quoted.double.eve
+
+# ── Operator ─────────────────────────────────────────────────────────────────
+
+> x -= 1
+    ^^ keyword.operator.assignment.eve
+       ^ constant.numeric.integer.eve
+
+> x == 5
+    ^^ keyword.operator.comparison.eve
+
+> a + b
+    ^ keyword.operator.arithmetic.eve

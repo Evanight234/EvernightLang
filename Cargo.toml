@@ -1,0 +1,9 @@
+[workspace]
+members = [
+    "crates/evernight_core",
+    "crates/evernight_vm",
+    "crates/evernight_cli",
+    "crates/evernight_fmt",
+    "crates/evernight_lint",
+]
+resolver = "2"

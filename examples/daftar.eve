@@ -1,0 +1,30 @@
+# Contoh modul daftar EvernightLanguage
+impor daftar
+
+variabel nilai = [5, 3, 8, 1, 3]
+tambah(nilai, 9)
+cetak("Setelah tambah: ", nilai)  # [5, 3, 8, 1, 3, 9]
+sisip(nilai, 1, -2)
+cetak("Setelah sisip: ", nilai)  # [5, -2, 3, 8, 1, 3, 9]
+hapus(nilai, 3)
+cetak("Setelah hapus nilai 3: ", nilai)  # [5, -2, 8, 1, 9]
+hapus nilai[0]
+cetak("Setelah hapus indeks 0: ", nilai)  # [-2, 8, 1, 9]
+
+cetak("Urutkan: ", urutkan(nilai))  # [-2, 1, 8, 9]
+cetak("Balik: ", balik(nilai))  # [9, 1, 8, -2]
+cetak("Unik dari [1,1,2,2,3]: ", unik([1, 1, 2, 2, 3]))
+cetak("Jumlah: ", jumlah(nilai))  # 16
+cetak("Rata-rata: ", rata_rata(nilai))  # 4
+cetak("Cari 8: ", cari(nilai, 8))  # 2
+cetak("Ada -2: ", ada(nilai, -2))  # benar
+cetak("Iris 1..3: ", iris(nilai, 1, 3))  # [1, 8]
+cetak("Gabung dua larik: ", gabung_larik(nilai, [0, 100]))
+
+variabel lipat_total = lipat(nilai, 0, fungsi(bagikan, x) {
+    kembali bagikan + x
+})
+cetak("Lipat total: ", lipat_total)  # 16
+cetak("Peta (kali 2): ", peta(nilai, fungsi(x) { kembali x * 2 }))
+cetak("Saring (lebih dari 1): ", saring(nilai, fungsi(x) { kembali x > 1 }))
+setiap(nilai, fungsi(x) { cetak("Setiap: ", x) })

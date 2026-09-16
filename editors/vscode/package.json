@@ -1,0 +1,94 @@
+{
+  "name": "evernight-language",
+  "displayName": "EvernightLanguage",
+  "description": "Bahasa pemrograman Indonesia: syntax highlighting, tema Nusantara, snippet, dan autocomplete.",
+  "version": "0.1.0",
+  "publisher": "Satriyo",
+  "author": {
+    "name": "Satriyo"
+  },
+  "license": "MIT",
+  "icon": "icons/evernight-icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Satriyo/EvernightLanguage.git"
+  },
+  "homepage": "https://github.com/Satriyo/EvernightLanguage",
+  "bugs": {
+    "url": "https://github.com/Satriyo/EvernightLanguage/issues"
+  },
+  "keywords": [
+    "evernight",
+    "evernightlanguage",
+    "bahasa indonesia",
+    "indonesian",
+    "programming language",
+    "eve"
+  ],
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Themes",
+    "Snippets"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "evernight",
+        "aliases": [
+          "Evernight",
+          "evernight"
+        ],
+        "extensions": [
+          ".eve"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "evernight",
+        "scopeName": "source.eve",
+        "path": "./syntaxes/evernight.tmLanguage.json"
+      }
+    ],
+    "themes": [
+      {
+        "label": "Evernight Nusantara Gelap",
+        "uiTheme": "vs-dark",
+        "path": "./themes/nusantara-dark.json"
+      },
+      {
+        "label": "Evernight Nusantara Terang",
+        "uiTheme": "vs",
+        "path": "./themes/nusantara-light.json"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "evernight",
+        "path": "./snippets/eve.json"
+      }
+    ],
+    "iconThemes": [
+      {
+        "id": "evernight-icons",
+        "label": "Evernight File Icons",
+        "path": "./icons/evernight-icon-theme.json"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "typecheck": "tsc -p ./ --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.5"
+  }
+}

@@ -1,0 +1,15 @@
+variabel opsi = 2
+cocok opsi {
+    kasus 1 { cetak("Opsi Satu") }
+    kasus 2 { cetak("Opsi Dua") }
+    bawaan { cetak("Lainnya") }
+}
+
+variabel skor = 85
+jika skor >= 90 {
+    cetak("Nilai: A")
+} lainnya_jika skor >= 80 {
+    cetak("Nilai: B")
+} lainnya {
+    cetak("Nilai: C")
+}

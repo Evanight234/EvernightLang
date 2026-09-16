@@ -1,0 +1,14 @@
+[package]
+name = "evernight_cli"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "evernight"
+path = "src/main.rs"
+
+[dependencies]
+evernight_core = { path = "../evernight_core" }
+evernight_vm = { path = "../evernight_vm" }
+evernight_fmt = { path = "../evernight_fmt" }
+evernight_lint = { path = "../evernight_lint" }

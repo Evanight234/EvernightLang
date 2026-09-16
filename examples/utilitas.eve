@@ -1,0 +1,30 @@
+# Contoh modul utilitas EvernightLanguage
+impor utilitas
+
+variabel angka_nilai = 42
+variabel teks_nilai = "Halo"
+variabel daftar_nilai = [1, 2, 3]
+variabel kamus_nilai = { "nama": "Budi" }
+
+cetak("adalah_angka(42): ", adalah_angka(angka_nilai))
+cetak("adalah_teks: ", adalah_teks(teks_nilai))
+cetak("adalah_daftar: ", adalah_daftar(daftar_nilai))
+cetak("adalah_kamus: ", adalah_kamus(kamus_nilai))
+
+cetak("ke_boolean(0): ", ke_boolean(0))
+cetak("ke_boolean(\"x\"): ", ke_boolean("x"))
+cetak("e_boolean([]): ", e_boolean([]))
+
+cetak("ke_larik(\"abc\"): ", ke_larik("abc"))
+cetak("teks ke angka: ", angka("3.14"))
+cetak("bolean ke angka: ", angka(benar))
+cetak("angka ke teks: ", teks(99))
+cetak("kosong ke teks: ", teks(kosong))
+
+cetak("kamus dari pasangan: ", kamus([["nama", "Budi"], ["umur", 25]]))
+
+variabel asli = { "nama": "Budi", "alamat": { "kota": "Jakarta" } }
+variabel klon = salin(asli)
+setel(klon, "hobi", "ngoding")
+cetak("Salinan tidak mengubah asli (hobi hanya di klon): ", dapatkan(asli, "hobi", "tidak ada"))
+cetak("Klon: ", klon)

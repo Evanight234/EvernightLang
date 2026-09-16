@@ -1,0 +1,71 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: [main, master]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  uji:
+    name: Format · Clippy · Test
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pasang toolchain Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+
+      - name: Cache Cargo
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.toml') }}
+          restore-keys: ${{ runner.os }}-cargo-
+
+      - name: Periksa format
+        run: cargo fmt --all --check
+
+      - name: Clippy (peringatan = galat)
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Jalankan seluruh test
+        run: cargo test --workspace
+
+      - name: Periksa contoh .eve tetap valid
+        shell: pwsh
+        run: |
+          $exe = "target\debug\evernight.exe"
+          $gagal = 0
+          Get-ChildItem examples\*.eve | ForEach-Object {
+            & $exe $_.FullName --cek | Out-Null
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host "GAGAL: $($_.Name)"
+              $gagal++
+            }
+          }
+          if ($gagal -gt 0) { throw "$gagal contoh gagal" }
+          Write-Host "Semua contoh valid."
+
+      - name: Periksa format contoh .eve sudah rapi
+        shell: pwsh
+        run: |
+          $exe = "target\debug\evernight.exe"
+          $gagal = 0
+          Get-ChildItem examples\*.eve | ForEach-Object {
+            & $exe format $_.FullName --cek | Out-Null
+            if ($LASTEXITCODE -ne 0) {
+              Write-Host "BELUM RAPI: $($_.Name)"
+              $gagal++
+            }
+          }
+          if ($gagal -gt 0) { throw "$gagal berkas contoh belum rapi (jalankan: cargo run -- format)" }
+          Write-Host "Semua contoh rapi."

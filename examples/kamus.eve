@@ -1,0 +1,32 @@
+# Contoh modul kamus EvernightLanguage
+impor kamus
+
+variabel pengguna = {
+    "nama": "Budi",
+    "umur": 25,
+    "kota": "Jakarta"
+}
+
+variabel nama = dapatkan(pengguna, "nama")
+cetak("Nama: ", nama)
+cetak("Umur: ", dapatkan(pengguna, "umur"))
+cetak("Alamat (bawaan): ", dapatkan(pengguna, "alamat", "tidak tersedia"))
+
+cetak("Kunci: ", kunci(pengguna))
+cetak("Nilai: ", nilai(pengguna))
+cetak("Pasangan: ", pasangan(pengguna))
+cetak("Ada kunci 'kota': ", ada_kunci(pengguna, "kota"))
+
+setel(pengguna, "pekerjaan", "Programmer")
+hapus_kunci(pengguna, "umur")
+cetak("Setelah setel & hapus_kunci: ", pengguna)
+
+variabel gabungan = gabung_objek(
+{ "a": 1, "b": 2 },
+{ "b": 99, "c": 3 }
+)
+cetak("Gabung objek (b menang): ", gabungan)
+
+hapus pengguna["kota"]
+cetak("Setelah 'hapus' kunci: ", pengguna)
+cetak("Kota sekarang: ", dapatkan(pengguna, "kota", "kosong"))

@@ -1,0 +1,7 @@
+impor konsol
+
+variabel nama = baca("Siapa namamu? ")
+variabel umur = baca_angka("Umurmu berapa? ")
+cetak("Halo ", nama, ", tahun depan umurmu ", umur + 1)
+bersihkan()
+cetak("Layar dibersihkan - selesai!")

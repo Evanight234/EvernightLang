@@ -1,0 +1,15 @@
+impor string
+
+variabel teks = "  Evernight Language  "
+cetak("besar: ", besar(teks))
+cetak("kecil: ", kecil(teks))
+cetak("bersih: ", bersih(teks))
+cetak("potong: ", potong("Nusantara", 0, 4))
+
+variabel bagian = pecah("a,b,c", ",")
+cetak("pecah: ", gabung(bagian, "-"))
+
+cetak("ganti: ", ganti("Anjing lucu", "Anjing", "Kucing"))
+cetak("mengandung: ", mengandung("Evernight", "night"))
+cetak("ulang: ", ulang_teks("ha", 3))
+cetak("format: ", format("Halo {0}, umur {1}", "Budi", 20))

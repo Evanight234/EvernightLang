@@ -1,0 +1,12 @@
+# Modul yang bisa diimpor berkas lain
+fungsi tambah(a, b) {
+    kembali a + b
+}
+
+fungsi kali(a, b) {
+    kembali a * b
+}
+
+fungsi kuadrat(x) {
+    kembali kali(x, x)
+}

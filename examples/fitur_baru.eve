@@ -1,0 +1,45 @@
+fungsi coba_kirim(data) {
+    coba {
+        jika data == -1 {
+            lempar("data rusak!")
+        }
+        kembali data * 2
+    } tangkap (pesan) {
+        kembali "Error: " + pesan
+    }
+}
+
+fungsi klasifikasi(n) {
+    cocok n {
+        kasus 0 {
+            kembali "nol"
+        }
+        kasus _ {
+            kembali "bukan nol"
+        }
+    }
+}
+
+fungsi utama() {
+    total = 0
+    untuk i dari 1 sampai 5 {
+        total += i
+    }
+    cetak("Total: ", total)
+
+    daftar = [1, 2, 3]
+    daftar[1] = 99
+    cetak("Panjang daftar: ", daftar.panjang, " elemen kedua: ", daftar[1])
+
+    info = { "nama": "Evernight", "tahun": 2026 }
+    cetak(info["nama"], " lahir ", info["tahun"])
+
+    cetak(klasifikasi(0))
+    cetak(coba_kirim(10))
+    cetak(coba_kirim(-1))
+
+    pastikan (total == 15, "total harus 15")
+    cetak("Semua berhasil!")
+}
+
+utama()

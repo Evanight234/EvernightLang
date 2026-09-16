@@ -1,0 +1,7 @@
+coba {
+    lempar("Terjadi galat buatan!")
+} tangkap (err) {
+    cetak("Ditangkap:", err)
+} akhirnya {
+    cetak("Selesai blok akhirnya.")
+}

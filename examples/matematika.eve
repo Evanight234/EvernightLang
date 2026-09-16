@@ -1,0 +1,15 @@
+impor matematika
+
+cetak("akar(144) = ", akar(144))
+cetak("pangkat(2, 10) = ", pangkat(2, 10))
+cetak("bulat_bawah(7.9) = ", bulat_bawah(7.9))
+cetak("bulat_atas(7.1) = ", bulat_atas(7.1))
+cetak("pembulatan(4.5) = ", pembulatan(4.5))
+cetak("mutlak(-42) = ", mutlak(-42))
+cetak("min(3, 9) = ", min(3, 9))
+cetak("max(3, 9) = ", max(3, 9))
+cetak("faktorial(6) = ", faktorial(6))
+cetak("log(e) = ", log(e))
+cetak("2 * pi = ", 2 * pi)
+cetak("sin(pi / 2) = ", sin(pi / 2))
+cetak("acak_antara(1, 10) = ", acak_antara(1, 10))

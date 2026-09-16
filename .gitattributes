@@ -1,0 +1,17 @@
+# Normalisasi akhir baris: simpan LF di repo, checkout sesuai OS.
+* text=auto eol=lf
+
+# Berkas biner — jangan diubah.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.ico binary
+*.ttf binary
+*.vsix binary
+*.exe binary
+*.zip binary
+
+# Skrip Windows tetap CRLF agar nyaman dijalankan.
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+*.bat text eol=crlf

@@ -1,0 +1,36 @@
+# === Rust ===
+/target/
+**/target/
+Cargo.lock.bak
+*.pdb
+
+# === Ekstensi editor ===
+editors/vscode/node_modules/
+editors/vscode/out/
+editors/vscode/*.vsix
+
+# === Installer ===
+installer/target/
+installer/dist/
+# Payload = hasil build (evernight.exe, .vsix, PANDUAN). build-installer.ps1
+# mengisinya ulang dari sumber, jadi tidak perlu disimpan di repo.
+installer/aset/payload/
+# Perantara & hasil uji (dihasilkan ulang oleh alat/cutout_maskot.py dan
+# flag `--mulai N`); hanya `maskot.png` yang dipakai build installer.
+installer/aset/maskot-penuh.png
+installer/aset/pratinjau-installer.png
+installer/aset/tinjau/
+
+# === Artefak distribusi (hasil build, bukan sumber) ===
+# Catatan: paket/**/extensions/*.vsix SENGAJA dilacak — ia bagian dari paket
+# distribusi sumber (bukan hasil build), dan dipakai installer 6F.
+paket/*.zip
+paket/**/bin/evernight.exe
+dist/
+
+# === Editor / OS ===
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+desktop.ini

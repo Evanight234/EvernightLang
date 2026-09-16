@@ -1,0 +1,9 @@
+# Konfigurasi build target GNU (dipakai biner rilis statis).
+#
+# Sengaja TARGET-SPESIFIK, bukan `[build]`, supaya tidak ikut terpasang pada
+# target lain (mis. MSVC yang dipakai runner CI) — `+crt-static` + `rust-lld`
+# hanya relevan untuk menghasilkan biner statis tanpa DLL MinGW.
+
+[target.x86_64-pc-windows-gnu]
+rustflags = ["-C", "target-feature=+crt-static", "-C", "linker=rust-lld"]
+linker = "rust-lld"

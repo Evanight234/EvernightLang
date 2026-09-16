@@ -1,0 +1,11 @@
+{
+  "iconDefinitions": {
+    "_eve": {
+      "iconPath": "../assets/logo/icon_16.png"
+    }
+  },
+  "fileExtensions": {
+    "eve": "_eve"
+  },
+  "file": "_eve"
+}
