@@ -1,9 +1,9 @@
-﻿//! State aplikasi installer: routing halaman, panel maskot, dan status pemasangan.
+//! State aplikasi installer: routing halaman, panel maskot, dan status pemasangan.
 
 use std::sync::mpsc::{channel, Receiver};
 use std::time::Instant;
 
-use crate::anim::{AnimasiHover, AnimasiHalaman, AnimasiProgress, AnimasiRiak};
+use crate::anim::{AnimasiHalaman, AnimasiHover, AnimasiProgress, AnimasiRiak};
 use crate::pasang::{self, Pesan, Rencana};
 use crate::tema;
 use crate::ui::halaman::{self, Aksi, Halaman, KonteksHalaman};
@@ -37,8 +37,10 @@ pub struct Apl {
 
 impl Apl {
     pub fn baru(mode: Mode) -> Self {
-        let mut rencana = Rencana::default();
-        rencana.tujuan = Rencana::tujuan_default(false);
+        let rencana = Rencana {
+            tujuan: Rencana::tujuan_default(false),
+            ..Default::default()
+        };
 
         // Mode pencopotan langsung menuju halaman konfirmasi, karena tidak
         // ada pilihan tujuan/tugas yang perlu ditanyakan.
@@ -73,10 +75,8 @@ impl Apl {
     fn bilah_judul(&mut self, ui: &mut egui::Ui, ctx: &egui::Context) {
         let tinggi = tema::TINGGI_JUDUL;
         let lebar = ui.available_width();
-        let (rect, respons) = ui.allocate_exact_size(
-            egui::vec2(lebar, tinggi),
-            egui::Sense::click_and_drag(),
-        );
+        let (rect, respons) =
+            ui.allocate_exact_size(egui::vec2(lebar, tinggi), egui::Sense::click_and_drag());
 
         ui.painter()
             .rect_filled(rect, egui::CornerRadius::ZERO, tema::WELL);
@@ -115,10 +115,8 @@ impl Apl {
 
         // Tombol kontrol jendela.
         let ukuran = egui::vec2(38.0, tinggi);
-        let tombol_close = egui::Rect::from_min_size(
-            egui::pos2(rect.right() - ukuran.x, rect.top()),
-            ukuran,
-        );
+        let tombol_close =
+            egui::Rect::from_min_size(egui::pos2(rect.right() - ukuran.x, rect.top()), ukuran);
         let tombol_min = egui::Rect::from_min_size(
             egui::pos2(tombol_close.left() - ukuran.x, rect.top()),
             ukuran,
@@ -391,14 +389,14 @@ impl eframe::App for Apl {
                         ((rect_panel.right() - x0) / lebar_gambar).clamp(0.0, 1.0),
                         1.0,
                     );
-                    ui.painter().with_clip_rect(rect_panel).add(
-                        egui::Shape::image(
+                    ui.painter()
+                        .with_clip_rect(rect_panel)
+                        .add(egui::Shape::image(
                             tekstur.id(),
                             rect_panel,
                             egui::Rect::from_min_max(uv0, uv1),
                             egui::Color32::WHITE,
-                        ),
-                    );
+                        ));
                     let _ = tujuan;
                 }
 
@@ -421,11 +419,8 @@ impl eframe::App for Apl {
                     // Tahapan
                     ui.horizontal_wrapped(|ui| {
                         for (i, label) in halaman::LANGKAH.iter().enumerate() {
-                            let status = halaman::status_langkah(
-                                self.halaman,
-                                i,
-                                self.pekerja.is_some(),
-                            );
+                            let status =
+                                halaman::status_langkah(self.halaman, i, self.pekerja.is_some());
                             penanda_langkah(ui, i + 1, label, status, waktu);
                             ui.add_space(6.0);
                         }
@@ -438,6 +433,11 @@ impl eframe::App for Apl {
                     // Isi halaman (dengan transisi fade + geser)
                     let (alpha, geser) = self.transisi.nilai();
                     egui::ScrollArea::vertical().show(ui, |ui| {
+                        // Batasi lebar kolom agar baris teks tidak terlalu
+                        // panjang bila jendela diperbesar pengguna.
+                        if ui.available_width() > tema::LEBAR_MAKS_KONTEN {
+                            ui.set_max_width(tema::LEBAR_MAKS_KONTEN);
+                        }
                         ui.add_space(geser);
                         let halaman_ini = self.halaman;
                         let mut konteks = KonteksHalaman {
@@ -492,8 +492,10 @@ impl eframe::App for Apl {
 
 /// Panel status untuk mode diam (tanpa UI).
 pub fn jalankan_diam(mode: Mode) -> i32 {
-    let mut rencana = Rencana::default();
-    rencana.tujuan = Rencana::tujuan_default(false);
+    let rencana = Rencana {
+        tujuan: Rencana::tujuan_default(false),
+        ..Default::default()
+    };
 
     let hasil = if mode == Mode::Copot {
         let mut lapor = |_p: Pesan| {};

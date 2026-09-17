@@ -1,4 +1,4 @@
-﻿//! Logika pemasangan installer (Fase 6F).
+//! Logika pemasangan installer (Fase 6F).
 //!
 //! Ini adalah pindahan dari `paket/evernight-0.1.0-windows-x64/install.ps1`
 //! yang sudah terbukti bekerja (PATH, asosiasi `.eve`, deteksi editor,
@@ -15,7 +15,8 @@ pub const NAMA_PRODUK: &str = "EvernightLanguage";
 pub const VERSI: &str = "0.1.0";
 pub const PROGID: &str = "EvernightFile";
 pub const LABEL_TIPE: &str = "Evernight files";
-pub const KUNCI_UNINSTALL: &str = r"HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\EvernightLanguage";
+pub const KUNCI_UNINSTALL: &str =
+    r"HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\EvernightLanguage";
 
 /// Berkas yang dibawa installer (di-embed saat kompilasi).
 pub struct Payload {
@@ -92,9 +93,18 @@ pub struct Editor {
 /// folder itu bisa ada tanpa aplikasi terpasang.
 pub fn deteksi_editor() -> Vec<Editor> {
     const KANDIDAT: &[(&str, &str)] = &[
-        ("Antigravity IDE", r"Programs\Antigravity IDE\bin\antigravity-ide.cmd"),
-        ("Visual Studio Code", r"Programs\Microsoft VS Code\bin\code.cmd"),
-        ("VS Code Insiders", r"Programs\Microsoft VS Code Insiders\bin\code-insiders.cmd"),
+        (
+            "Antigravity IDE",
+            r"Programs\Antigravity IDE\bin\antigravity-ide.cmd",
+        ),
+        (
+            "Visual Studio Code",
+            r"Programs\Microsoft VS Code\bin\code.cmd",
+        ),
+        (
+            "VS Code Insiders",
+            r"Programs\Microsoft VS Code Insiders\bin\code-insiders.cmd",
+        ),
         ("Cursor", r"Programs\cursor\resources\app\bin\cursor.cmd"),
         ("Windsurf", r"Programs\Windsurf\bin\windsurf.cmd"),
         ("VSCodium", r"Programs\VSCodium\bin\codium.cmd"),
@@ -119,7 +129,11 @@ pub fn deteksi_editor() -> Vec<Editor> {
 // ---------------------------------------------------------------------------
 
 /// Jalankan seluruh rangkaian pemasangan. Melaporkan kemajuan lewat `lapor`.
-pub fn jalankan(rencana: &Rencana, payload: &Payload, lapor: &mut dyn FnMut(Pesan)) -> Result<(), String> {
+pub fn jalankan(
+    rencana: &Rencana,
+    payload: &Payload,
+    lapor: &mut dyn FnMut(Pesan),
+) -> Result<(), String> {
     let total = 7.0f32;
     let mut n = 0.0f32;
     // Helper: majukan langkah lalu lapor. Ditulis sebagai fungsi bebas agar
@@ -135,8 +149,10 @@ pub fn jalankan(rencana: &Rencana, payload: &Payload, lapor: &mut dyn FnMut(Pesa
     // 1. Siapkan folder tujuan
     maju(&mut n, total, lapor, "Menyiapkan folder tujuan...");
     fs::create_dir_all(rencana.bin()).map_err(|e| format!("Gagal membuat folder bin: {}", e))?;
-    fs::create_dir_all(rencana.tujuan.join("assets")).map_err(|e| format!("Gagal membuat assets: {}", e))?;
-    fs::create_dir_all(rencana.tujuan.join("docs")).map_err(|e| format!("Gagal membuat docs: {}", e))?;
+    fs::create_dir_all(rencana.tujuan.join("assets"))
+        .map_err(|e| format!("Gagal membuat assets: {}", e))?;
+    fs::create_dir_all(rencana.tujuan.join("docs"))
+        .map_err(|e| format!("Gagal membuat docs: {}", e))?;
     fs::create_dir_all(rencana.tujuan.join("extensions"))
         .map_err(|e| format!("Gagal membuat extensions: {}", e))?;
 
@@ -146,12 +162,21 @@ pub fn jalankan(rencana: &Rencana, payload: &Payload, lapor: &mut dyn FnMut(Pesa
         .map_err(|e| format!("Gagal menulis evernight.exe: {}", e))?;
 
     maju(&mut n, total, lapor, "Menyalin aset & dokumentasi...");
-    fs::write(rencana.tujuan.join("assets").join("icon.ico"), payload.icon_ico)
-        .map_err(|e| format!("Gagal menulis icon.ico: {}", e))?;
-    fs::write(rencana.tujuan.join("assets").join("logo.png"), payload.logo_png)
-        .map_err(|e| format!("Gagal menulis logo.png: {}", e))?;
-    fs::write(rencana.tujuan.join("docs").join("PANDUAN.txt"), payload.panduan)
-        .map_err(|e| format!("Gagal menulis PANDUAN.txt: {}", e))?;
+    fs::write(
+        rencana.tujuan.join("assets").join("icon.ico"),
+        payload.icon_ico,
+    )
+    .map_err(|e| format!("Gagal menulis icon.ico: {}", e))?;
+    fs::write(
+        rencana.tujuan.join("assets").join("logo.png"),
+        payload.logo_png,
+    )
+    .map_err(|e| format!("Gagal menulis logo.png: {}", e))?;
+    fs::write(
+        rencana.tujuan.join("docs").join("PANDUAN.txt"),
+        payload.panduan,
+    )
+    .map_err(|e| format!("Gagal menulis PANDUAN.txt: {}", e))?;
     fs::write(rencana.tujuan.join("LICENSE"), payload.lisensi)
         .map_err(|e| format!("Gagal menulis LICENSE: {}", e))?;
 
@@ -315,10 +340,9 @@ pub fn hapus_asosiasi_eve() -> Result<(), String> {
 /// Beberapa CLI menulis peringatan ke stderr walau berhasil, jadi keberhasilan
 /// ditentukan dari keluaran + kode keluar, bukan dari ada/tidaknya stderr.
 pub fn pasang_ekstensi(editor: &Editor, vsix: &Path) -> Result<(), String> {
-    let keluaran = Command::new(&editor.cli)
-        .arg("--install-extension")
-        .arg(vsix)
-        .arg("--force")
+    let mut cmd = Command::new(&editor.cli);
+    cmd.arg("--install-extension").arg(vsix).arg("--force");
+    let keluaran = tanpa_jendela(&mut cmd)
         .output()
         .map_err(|e| format!("Gagal menjalankan {}: {}", editor.nama, e))?;
 
@@ -339,9 +363,10 @@ pub fn pasang_ekstensi(editor: &Editor, vsix: &Path) -> Result<(), String> {
 
 /// Copot ekstensi dari satu editor.
 pub fn copot_ekstensi(editor: &Editor) -> Result<(), String> {
-    let keluaran = Command::new(&editor.cli)
-        .arg("--uninstall-extension")
-        .arg("satriyo.evernight-language")
+    let mut cmd = Command::new(&editor.cli);
+    cmd.arg("--uninstall-extension")
+        .arg("satriyo.evernight-language");
+    let keluaran = tanpa_jendela(&mut cmd)
         .output()
         .map_err(|e| format!("Gagal menjalankan {}: {}", editor.nama, e))?;
     let gabung = format!(
@@ -454,14 +479,14 @@ fn daftar_uninstall(rencana: &Rencana) -> Result<(), String> {
         Some("QuietUninstallString"),
         &format!("\"{}\" --uninstall --diam", exe),
     )?;
-    reg_add(&kunci, Some("InstallLocation"), &rencana.tujuan.to_string_lossy())?;
-    reg_add(&kunci, Some("NoModify"), "1")?;
-    reg_add(&kunci, Some("NoRepair"), "1")?;
     reg_add(
         &kunci,
-        Some("EstimatedSize"),
-        &ukuran.to_string(),
+        Some("InstallLocation"),
+        &rencana.tujuan.to_string_lossy(),
     )?;
+    reg_add(&kunci, Some("NoModify"), "1")?;
+    reg_add(&kunci, Some("NoRepair"), "1")?;
+    reg_add(&kunci, Some("EstimatedSize"), &ukuran.to_string())?;
     Ok(())
 }
 
@@ -626,9 +651,7 @@ pub fn baca_tujuan_terpasang() -> Option<PathBuf> {
 /// Baca lokasi pemasangan dari registri uninstall.
 fn baca_install_location() -> Option<PathBuf> {
     let keluaran = reg_query(KUNCI_UNINSTALL, "InstallLocation").ok()?;
-    let baris = keluaran
-        .lines()
-        .find(|l| l.contains("InstallLocation"))?;
+    let baris = keluaran.lines().find(|l| l.contains("InstallLocation"))?;
     let nilai = baris.split("REG_SZ").nth(1)?.trim().to_string();
     if nilai.is_empty() {
         None
@@ -654,10 +677,38 @@ fn jadwalkan_hapus(dir: &Path) -> Result<(), String> {
 // Utilitas Windows
 // ---------------------------------------------------------------------------
 
+/// Bendera `CreateProcess` agar program yang dipanggil TIDAK memunculkan
+/// jendela console (CMD) sama sekali.
+///
+/// Tanpa ini, installer GUI akan berkedip hitam setiap kali memanggil
+/// `reg.exe`, `powershell.exe`, atau `net.exe`.
+#[cfg(windows)]
+const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+
+/// Siapkan `Command` agar tidak memunculkan jendela console.
+///
+/// Di non-Windows, ini tidak melakukan apa-apa.
+fn tanpa_jendela(cmd: &mut Command) -> &mut Command {
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        cmd.creation_flags(CREATE_NO_WINDOW);
+    }
+    cmd
+}
+
 /// Jalankan PowerShell tanpa jendela, kembalikan stdout+stderr.
 fn powershell(skrip: &str) -> Result<String, String> {
-    let keluaran = Command::new("powershell")
-        .args(["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-Command", skrip])
+    let mut cmd = Command::new("powershell");
+    cmd.args([
+        "-NoProfile",
+        "-NonInteractive",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        skrip,
+    ]);
+    let keluaran = tanpa_jendela(&mut cmd)
         .output()
         .map_err(|e| format!("PowerShell tidak dapat dijalankan: {}", e))?;
     let mut gabung = String::from_utf8_lossy(&keluaran.stdout).to_string();
@@ -679,7 +730,7 @@ fn reg_add(kunci: &str, nama: Option<&str>, nilai: &str) -> Result<(), String> {
     }
     cmd.args(["/t", "REG_SZ", "/d", nilai, "/f"]);
 
-    let keluaran = cmd
+    let keluaran = tanpa_jendela(&mut cmd)
         .output()
         .map_err(|e| format!("reg add gagal dijalankan: {}", e))?;
     if keluaran.status.success() {
@@ -695,8 +746,9 @@ fn reg_add(kunci: &str, nama: Option<&str>, nilai: &str) -> Result<(), String> {
 
 /// `reg query` -- baca nilai registri.
 fn reg_query(kunci: &str, nama: &str) -> Result<String, String> {
-    let keluaran = Command::new("reg")
-        .args(["query", kunci, "/v", nama])
+    let mut cmd = Command::new("reg");
+    cmd.args(["query", kunci, "/v", nama]);
+    let keluaran = tanpa_jendela(&mut cmd)
         .output()
         .map_err(|e| format!("reg query gagal dijalankan: {}", e))?;
     Ok(String::from_utf8_lossy(&keluaran.stdout).to_string())
@@ -704,18 +756,17 @@ fn reg_query(kunci: &str, nama: &str) -> Result<String, String> {
 
 /// `reg delete` -- hapus kunci/nilai.
 fn reg_delete(kunci: &str) -> Result<(), String> {
-    let keluaran = Command::new("reg")
-        .args(["delete", kunci, "/f"])
-        .output()
-        .map_err(|e| format!("reg delete gagal dijalankan: {}", e))?;
-    let _ = keluaran;
+    let mut cmd = Command::new("reg");
+    cmd.args(["delete", kunci, "/f"]);
+    let _ = tanpa_jendela(&mut cmd).output();
     Ok(())
 }
 
 /// Apakah proses berjalan dengan hak administrator.
 pub fn adalah_admin() -> bool {
-    Command::new("net")
-        .arg("session")
+    let mut cmd = Command::new("net");
+    cmd.arg("session");
+    tanpa_jendela(&mut cmd)
         .output()
         .map(|o| o.status.success())
         .unwrap_or(false)

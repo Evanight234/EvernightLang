@@ -204,6 +204,10 @@ PERINGATAN: Baris 8 - Variabel 'x' tidak didefinisikan
   - [x] Panel maskot **28% lebar penuh atas-bawah**; cutout otomatis dari JPEG referensi user
   - [x] Palet dari gambar referensi user (plum/rose); font Plus Jakarta Sans & JetBrains Mono (OFL, dibundel)
   - [x] Bilah judul kustom (ikon + judul + minimize/close, jendela dapat diseret)
+  - [x] **Window 1000 × 640** (minimum 880 × 580) — diperlebar dari 760 × 520 agar tidak ada UI terpotong
+  - [x] **Satu box per halaman**; isi box HANYA judul + keterangan (teks). Semua kendali interaktif (radio, checkbox, input, progress, log) DI LUAR box
+  - [x] **Pemilih folder** dengan tombol **Telusuri...** → dialog folder native Windows (`rfd` 0.17)
+  - [x] **Tanpa jendela CMD** — `windows_subsystem = "windows"` saat rilis + `CREATE_NO_WINDOW` pada semua program luar (`reg`, `powershell`, `net`, CLI editor)
   - [x] 6 halaman wizard: Selamat datang → Lisensi → Lokasi tujuan → Siap pasang → Memasang → Selesai
   - [x] **Animasi**: hover tombol 150 ms, tekan 80 ms (mengecil), riak klik 400 ms, progress mengalir, denyut langkah aktif 1,6 s, transisi halaman fade+geser 250 ms
   - [x] Logika pemasangan: salin berkas, PATH, asosiasi `.eve`, deteksi 6 editor + pasang `.vsix`, pintasan Start Menu, registri *Apps & Features*
@@ -254,30 +258,52 @@ PERINGATAN: Baris 8 - Variabel 'x' tidak didefinisikan
 ### 4. Tata letak jendela
 
 ```
-Jendela: 760 × 520 px (rasio ≈1.46)
+Jendela: 1000 × 640 px (minimum 880 × 580)
 
-┌──────────────────────────────────────────────────────────────┐
-│ [ikon]  EvernightLanguage Setup        ─  ▢  ✕   (titlebar)   │
-├──────────────┬───────────────────────────────────────────────┤
-│              │  TAHAPAN PEMASANGAN                           │
-│   MASKOT     │  ① Selamat datang  ② Lisensi  ③ Lokasi         │
-│   panel      │  ④ Siap pasang  ⑤ Memasang  ⑥ Selesai         │
-│   28% lebar  │  ──────────────────────────────────────────   │
-│   PENUH      │  ┌─────────────────────────────────────────┐  │
-│   atas–bawah │  │ (kartu konten halaman aktif)            │  │
-│              │  │                                         │  │
-│  bottom-     │  └─────────────────────────────────────────┘  │
-│  aligned     │  EvernightLanguage © 2026  [Kembali][Lanjut] │
-└──────────────┴───────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────┐
+│ [ikon]  EvernightLanguage Setup            ─   ✕   (bilah judul)  │
+├─────────────────┬────────────────────────────────────────────────┤
+│                 │  TAHAPAN PEMASANGAN                            │
+│   MASKOT        │  ① Selamat datang ② Lisensi ③ Lokasi Tujuan    │
+│   panel         │  ④ Siap pasang ⑤ Memasang ⑥ Selesai            │
+│   28% lebar     │  ───────────────────────────────────────────   │
+│   PENUH         │  ┌──────────────────────────────────────────┐  │
+│   atas–bawah    │  │ Box: HANYA judul + keterangan (teks)     │  │
+│                 │  └──────────────────────────────────────────┘  │
+│  badge versi    │  Kendali interaktif DI LUAR box:               │
+│  di bawah       │  ( ) radio  ☑ checkbox  [path] [Telusuri...]   │
+│                 │  ▓▓▓▓▓▓▓░░░░ progress (halaman Memasang)       │
+│                 │  EvernightLanguage © 2026    [Kembali][Lanjut] │
+└─────────────────┴────────────────────────────────────────────────┘
 ```
 
-**Panel maskot (keputusan user):** lebar **28% dari jendela** (≈213 px), **penuh dari atas ke bawah** (520 px) — seperti "balok berdiri".
+**Ukuran window** (keputusan user 2026-09-16): **1000 × 640**, minimum **880 × 580**.
+Diperlebar dari 760 × 520 karena beberapa UI terpotong. Panel maskot 28%
+(≈280 px) menyisakan ≈720 px untuk konten (+32% dari sebelumnya).
+Lebar kolom konten dibatasi `LEBAR_MAKS_KONTEN = 760` agar baris teks tetap
+nyaman dibaca bila jendela diperbesar pengguna.
+
+**Aturan penataan (keputusan user 2026-09-16):**
+- **Di dalam box**: HANYA judul + keterangan berupa teks.
+- **Di luar box**: semua kendali interaktif — radio cakupan, checkbox tugas,
+  input folder + tombol **Telusuri...**, progress bar, dan log.
+
+**Panel maskot (keputusan user):** lebar **28% dari jendela** (≈280 px), **penuh dari atas ke bawah** (640 px) — seperti "balok berdiri".
 
 Perhitungan crop dari sumber 736×973 (rasio 0.76):
-- Target panel rasio 213/520 = 0.41
-- Skala berdasarkan tinggi: 736 × (520/973) ≈ 393 px lebar → crop tengah ≈90 px tiap sisi
+- Target panel rasio 280/640 = 0.44
+- Skala berdasarkan tinggi → crop tengah
 - Hasil: karakter mengisi penuh tinggi panel (gaya banner), sisi lengan sedikit terpotong
 - Area atas (di atas kepala) = warna datar → tempat badge versi
+
+**Pemilih folder:** kotak teks (dapat diketik) + tombol **Telusuri...** yang
+membuka dialog folder native Windows lewat crate **`rfd`** 0.17
+(`default-features = false` agar tidak menarik backend GTK/X11).
+
+**Tanpa jendela CMD:** biner installer memakai
+`#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]`, dan semua
+pemanggilan program luar (`reg`, `powershell`, `net`, CLI editor) memakai
+`CREATE_NO_WINDOW` — sehingga tidak ada CMD yang muncul atau berkedip.
 
 **Cutout maskot:** flood-fill dari tepi, latar `#37313D` (sudut-sudut gambar seragam ✅), toleransi warna + anti-alias tepi → `installer/aset/maskot.png` transparan.
 
@@ -465,6 +491,7 @@ EvernightLang/
 
 ## Log Keputusan Desain
 
+- 2026-09-16: **Revisi desain installer (6F) — keputusan user.** Empat perbaikan: (1) **Window diperlebar** 760×520 → **1000×640** (min 880×580) karena beberapa UI terpotong; (2) **CMD dihilangkan** — `windows_subsystem = "windows"` (kondisional `not(debug_assertions)`) + `CREATE_NO_WINDOW` pada semua `Command` agar `reg`/`powershell`/`net`/CLI editor tidak memunculkan atau mengedipkan jendela console; (3) **pemilih folder native** lewat crate **`rfd` 0.17** (`default-features = false`) dengan tombol **Telusuri...** di halaman Lokasi Tujuan; (4) **satu box per halaman**, isi box hanya judul + keterangan (teks), sedangkan semua kendali interaktif (radio cakupan, checkbox tugas, input folder, progress bar, log) diletakkan **di luar** box. Verifikasi: PE Subsystem = **2 (GUI)**, dialog folder teruji terbuka ("Pilih folder tujuan pemasangan"), siklus install (PATH 31→32, `.eve`, Apps & Features) dan uninstall (folder terhapus penuh, PATH→31) tetap bersih, 17 test installer hijau, ukuran 8.37 MB.
 - 2026-09-16: **Fase 6 SELESAI (6A–6F).** Tooling 6D (debug/profiler/formatter/linter/pkg), CI + rilis 6E, dan installer GUI 6F semuanya tuntas. **LSP dipindah ke Fase 7** (tidak menghambat rilis; ekstensi sudah punya static completion). Installer memakai **egui**, bukan Inno Setup. Dua bug penting ditemukan & diperbaiki: **BOM UTF-8** membuat berkas dari editor Windows gagal di-tokenisasi; **UninstallString** sempat menunjuk `evernight.exe --uninstall` (flag yang tidak dikenal compiler) → diganti `uninstall.exe`. Skrip `build-installer.ps1` diberi **penjaga biner basi** setelah installer sempat membawa compiler lama tanpa subcommand baru.
 - 2026-09-14: **Fase 6D-1 & 6D-2 selesai — Mode Debug & Profiler.** `--debug` = trace instruksi bytecode ke stderr (observasi murni, tanpa ubah bytecode/kompiler). `--waktu` = profil (waktu ms, total instruksi, frekuensi opcode terurut). Keduanya lewat flag runtime di `Vm` (`debug_trace`, `profile_mode`) + `OpCode::name()`. Counter pakai array `[usize; 256]` — zero-dep. Flag `--debug`/`--waktu` selalu menjalankan program (bukan mode inspeksi-only). Urutan 6D ditetapkan: debug → profiler → formatter → lint → LSP → pkg (LSP termasuk, keputusan user). Package manager versi minimal + dibundel di installer 6F.
 - 2026-09-14: **Fase 6C selesai — integrasi otomatis ekstensi editor.** `install.ps1` mendeteksi editor keluarga VS Code via CLI (PATH + lokasi standar), lalu **menawarkan** pemasangan ekstensi (`y/t`); opsi `-TanpaEkstensi` (lewati) dan `-TanpaKonfirmasi` (senyap, dipakai 6F). `uninstall.ps1` menawarkan pencopotan (`y/t`) dengan `-SimpanEkstensi`/`-TanpaKonfirmasi`. Deteksi **tidak** memakai keberadaan folder data (`.cursor`/`.windsurf` bisa ada tanpa aplikasi terpasang). **Bug diperbaiki**: peringatan CLI di stderr (mis. `antigravityAnalytics`) sempat dianggap galat fatal karena `$ErrorActionPreference="Stop"` — kini dilonggarkan di sekitar pemanggilan CLI. Logika `Cari-Editor` akan dipakai ulang di installer GUI 6F.

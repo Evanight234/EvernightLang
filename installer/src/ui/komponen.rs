@@ -50,8 +50,7 @@ pub fn tombol(
 ) -> bool {
     let tinggi = 32.0;
     let lebar = t.lebar_min.max(ukuran_teks(ui, t.teks) + 34.0);
-    let (rect, respons) =
-        ui.allocate_exact_size(egui::vec2(lebar, tinggi), egui::Sense::click());
+    let (rect, respons) = ui.allocate_exact_size(egui::vec2(lebar, tinggi), egui::Sense::click());
 
     let bisa = t.aktif;
     let dt = ui.input(|i| i.stable_dt);
@@ -69,7 +68,12 @@ pub fn tombol(
     let (dasar, hover_warna, garis, warna_teks) = if !bisa {
         (tema::WELL, tema::WELL, tema::REDUP, tema::REDUP)
     } else if t.utama {
-        (tema::AKSEN, tema::AKSEN_HOVER, tema::AKSEN, tema::ATAS_AKSEN)
+        (
+            tema::AKSEN,
+            tema::AKSEN_HOVER,
+            tema::AKSEN,
+            tema::ATAS_AKSEN,
+        )
     } else {
         (tema::KARTU, tema::KARTU_HOVER, tema::BORDER, tema::SEKUNDER)
     };
@@ -186,12 +190,7 @@ pub fn penanda_langkah(
             let r = egui::Rect::from_center_size(rect.center(), rect.size() * d);
             (
                 r,
-                egui::Color32::from_rgba_unmultiplied(
-                    isi.r(),
-                    isi.g(),
-                    isi.b(),
-                    (d * 255.0) as u8,
-                ),
+                egui::Color32::from_rgba_unmultiplied(isi.r(), isi.g(), isi.b(), (d * 255.0) as u8),
             )
         } else {
             (rect, isi)
@@ -224,7 +223,11 @@ pub fn penanda_langkah(
             StatusLangkah::Selesai => tema::SEKUNDER,
             StatusLangkah::Menunggu => tema::REDUP,
         };
-        ui.label(egui::RichText::new(label).font(tema::font_kecil()).color(warna_label));
+        ui.label(
+            egui::RichText::new(label)
+                .font(tema::font_kecil())
+                .color(warna_label),
+        );
     });
 }
 

@@ -8,7 +8,7 @@
 
 ## 1. Konteks Aktif (UPDATE TIAP PROMPT)
 
-- **Topik sedang dibahas**: **Fase 6 SELESAI SELURUHNYA (6A–6F)** — tooling (debug/profiler/formatter/linter/pkg), CI + rilis, dan **installer GUI egui** (`EvernightLanguage-0.1.0-Setup.exe` 8.35 MB) terverifikasi siklus penuh. Fase berikutnya: **Fase 7 (Stabilisasi & Rilis 1.0)**, termasuk LSP dan poles desain installer (7E).
+- **Topik sedang dibahas**: **Revisi desain installer (6F) SELESAI** — window 1000x640, satu box per halaman (isi box hanya judul+keterangan), pemilih folder native (`rfd`) dengan tombol Telusuri, dan CMD dihilangkan (`windows_subsystem` + `CREATE_NO_WINDOW`). Fase berikutnya: **Fase 7 (Stabilisasi & Rilis 1.0)**, termasuk LSP dan poles desain installer (7E).
 - **Keputusan terbaru (2026-09-16)**: **Installer memakai egui/eframe (Rust), BUKAN Inno Setup** — Inno Setup berbasis Delphi VCL, tidak bisa animasi halus. Crate `installer/` berada **di luar workspace** agar `+crt-static` tidak bentrok dengan `winit`/`eframe`. **LSP dipindah ke Fase 7**. Palet installer dari gambar referensi user (plum/rose): latar `#37313D`, well `#2F2430`, kartu `#443C4A`, teks `#F8DCE8`, aksen `#D3A0B9`. Font Plus Jakarta Sans + JetBrains Mono (OFL). Panel maskot **28% lebar penuh atas-bawah**. `installer/src/tema.rs` = satu-satunya berkas visual yang perlu disentuh user.
 - **Sedang dikerjakan**: Menunggu arahan untuk **Fase 7** (LSP, stabilisasi bytecode, atau poles installer 7E).
 - **Langkah berikutnya**: (1) Fase 7: LSP dasar `evernight-lsp`; (2) audit keamanan & stabilisasi bytecode; (3) **7E** poles desain installer + uji komputer bersih; (4) Fase 8 dokumentasi publik & website.
@@ -16,6 +16,7 @@
 - **Jangan lupa**: Zero dependencies untuk `evernight_core`/`_vm`/`_cli` (installer adalah **pengecualian sadar**). Semua error message wajib berformat Bahasa Indonesia (`BAHAYA [KODE]` / `PERINGATAN [KODE]`).
 - **Catatan toolchain**: default = `stable-x86_64-pc-windows-gnu` (MSVC **tidak punya linker** di mesin ini). Konfigurasi build statik kini **target-spesifik** di `.cargo/config.toml` (`[target.x86_64-pc-windows-gnu]`, bukan `[build]`) agar aman di CI.
 - **Catatan build installer**: butuh `dlltool.exe` — tersedia di `C:\msys64\ucrt64\bin`, dan `build-installer.ps1` menambahkannya ke PATH otomatis. Antivirus (McAfee) sempat memblokir build script crate baru (os error 225); build dari folder proyek (bukan temp) menghindari ini.
+- **Catatan installer 6F**: `installer/src/tema.rs` memuat semua warna/font/ukuran window/animasi. Uji tiap halaman tanpa mengklik: `evernight-installer --mulai N` (N = 0..5). Pratinjau di `installer/aset/tinjau/`.
 - **Utang teknis**: code signing installer (SmartScreen), master SVG logo, uji installer di komputer bersih.
 - **Struktur editors/vscode saat ini**: `syntaxes/evernight.tmLanguage.json`, `themes/nusantara-dark.json`, `themes/nusantara-light.json`, `snippets/eve.json`, `icons/evernight-icon-theme.json`, `src/extension.ts` (autocomplete ~60 item), `out/extension.js` (build tsc bersih).
 

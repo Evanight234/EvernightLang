@@ -97,7 +97,7 @@
 - [x] **6C — Integrasi Otomatis Ekstensi saat Install** (deteksi 6 editor keluarga VS Code, konfirmasi interaktif y/t, `--install-extension --force`, opsi `-TanpaEkstensi`/`-TanpaKonfirmasi`, uninstall menawarkan pencopotan dengan `-SimpanEkstensi`, dokumentasi paket diperbarui)
 - [x] **6D — Tooling Tambahan** — 6D-1 debug ✅, 6D-2 profiler ✅, 6D-3 formatter ✅, 6D-4 linter ✅, 6D-6 `ever pkg` ✅ (LSP dipindah ke Fase 7)
 - [x] **6E — CI & Rilis Biner** (`.github/workflows/ci.yml` + `rilis.yml`, `git init`, `.gitignore`/`.gitattributes`, `SHA256SUMS.txt`, contoh `.eve` dirapikan agar lolos CI)
-- [x] **6F — Installer GUI Windows (egui/Rust)** — crate terpisah `installer/`, panel maskot 28%, palet dari referensi user, font dibundel, bilah judul kustom, 6 halaman wizard, animasi micro-interaction, per-user/per-machine, `uninstall.exe` bersih, `EvernightLanguage-0.1.0-Setup.exe` 8.35 MB + SHA256, pratinjau 6 halaman
+- [x] **6F — Installer GUI Windows (egui/Rust)** — crate terpisah `installer/`, panel maskot 28%, palet dari referensi user, font dibundel, bilah judul kustom, **window 1000x640**, **satu box per halaman** (isi box hanya judul+keterangan), **pemilih folder native (`rfd`) dengan tombol Telusuri**, **tanpa jendela CMD** (`windows_subsystem` + `CREATE_NO_WINDOW`), 6 halaman wizard, animasi micro-interaction, per-user/per-machine, `uninstall.exe` bersih, `EvernightLanguage-0.1.0-Setup.exe` 8.37 MB + SHA256
 
 ### Fase 7: Stabilisasi & Rilis 1.0 (DEV)
 - [ ] Audit keamanan dasar (akses file, batasan sandbox)
@@ -124,6 +124,13 @@
 - [ ] Jadwal pemeliharaan pasca-1.0
 
 ## Log Aktivitas
+
+- **2026-09-16**: **Revisi desain installer (6F) — 4 perbaikan sesuai permintaan user.**
+  - **Window diperlebar** 760x520 -> **1000x640** (minimum 880x580). Panel maskot 28% (~280 px) menyisakan ~720 px konten (+32%). Lebar kolom konten dibatasi `LEBAR_MAKS_KONTEN = 760` agar baris teks tetap nyaman dibaca. Konstanta ukuran kini terpusat di `tema.rs`.
+  - **CMD dihilangkan**: akar masalah ditemukan dengan memeriksa header PE — biner ber-`Subsystem = 3` (CONSOLE). Diperbaiki dengan `#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]` sehingga rilis memakai GUI (subsystem 2) sementara build debug tetap bisa menampilkan `eprintln!`. Ditambah `CREATE_NO_WINDOW` (0x08000000) lewat helper `tanpa_jendela()` pada semua `Command`: `reg`, `powershell`, `net`, dan CLI editor.
+  - **Pemilih folder native**: dependensi **`rfd` 0.17** (`default-features = false`) + tombol **Telusuri...** di halaman Lokasi Tujuan, membuka dialog folder Windows asli. Kotak teks tetap dapat diketik; ada teks bantuan (folder belum dipilih / sudah ada / akan dibuat).
+  - **Satu box per halaman**: halaman **Lokasi Tujuan** (dari 2 kartu -> 1) dan **Siap Pasang** (dari 2 kartu -> 1). Isi box HANYA judul + keterangan (teks). Semua kendali interaktif — radio cakupan, checkbox tugas, input folder + Telusuri, progress bar, dan log — diletakkan **di luar** box. Halaman Memasang: progress/animasi di luar, box berisi catatan/log teks.
+  - **Verifikasi**: PE Subsystem = **2 (GUI)** pada installer dan Setup.exe; sweep klik mengonfirmasi dialog rfd terbuka dengan judul "Pilih folder tujuan pemasangan"; hanya jendela `EvernightLanguage Setup` yang muncul (tanpa CMD); siklus install (PATH 31->32, `.eve`, Apps & Features, biner `format`/`lint` jalan) dan uninstall (folder terhapus penuh, PATH->31, registry bersih) tetap benar; **17 test installer hijau**; 6 pratinjau (1000x640) dibuat ulang dan terverifikasi 1 box per halaman.
 
 - **2026-09-16**: **FASE 6 SELESAI SELURUHNYA (6D-3, 6D-4, 6D-6, 6E, 6F).**
   - **6D-3 Formatter** — crate baru `evernight_fmt`. Pendekatan **berbasis token**, bukan AST: lexer membuang komentar, jadi formatter berbasis AST akan menghapusnya. Formatter memproses baris demi baris, mempertahankan komentar, dan **idempoten**. CLI: `evernight format <berkas>`, `--cek` (dry-run, exit 1 bila belum rapi — untuk CI), `--keluar <path>`. 14 test unit; 11 contoh `.eve` terverifikasi tetap valid & tetap menghasilkan output sama (selisih output hanya dari `HashMap` yang tidak deterministik & contoh butuh input, bukan akibat formatter).

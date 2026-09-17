@@ -9,6 +9,12 @@
 //!   evernight-installer --diam           Pemasangan tanpa UI (otomatisasi)
 //!   evernight-installer --uninstall      Pencopotan (wizard)
 //!   evernight-installer --uninstall --diam  Pencopotan tanpa UI
+//!   evernight-installer --mulai N        Buka wizard di halaman N (0..5)
+
+// Tanpa ini, Windows menampilkan jendela console (CMD) hitam di belakang GUI.
+// Saat build debug atribut ini TIDAK dipasang, supaya `eprintln!` masih
+// terlihat di terminal (berguna untuk mode `--diam`).
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 mod anim;
 mod app;
@@ -78,8 +84,8 @@ fn main() -> eframe::Result<()> {
 
     let opsi = eframe::NativeOptions {
         viewport: egui::ViewportBuilder::default()
-            .with_inner_size([760.0, 520.0])
-            .with_min_inner_size([680.0, 460.0])
+            .with_inner_size([tema::LEBAR_WINDOW, tema::TINGGI_WINDOW])
+            .with_min_inner_size([tema::LEBAR_MIN_WINDOW, tema::TINGGI_MIN_WINDOW])
             .with_title(judul)
             .with_icon(ikon_jendela())
             // Bilah judul kustom digambar sendiri agar tampil seperti desain

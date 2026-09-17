@@ -114,23 +114,23 @@ EvernightLang/
 │   └── evernight-0.1.0-windows-x64.zip
 │
 ├── installer/                    # Installer GUI Rust/egui (Fase 6F/7E)
-│   ├── Cargo.toml                # eframe + egui + image (crate DI LUAR workspace)
+│   ├── Cargo.toml                # eframe + egui + image + rfd (crate DI LUAR workspace)
 │   ├── src/
 │   │   ├── main.rs               # entry; flag --uninstall, --diam, --mulai N
 │   │   ├── app.rs                # state wizard, routing halaman, bilah judul
-│   │   ├── tema.rs               # ⭐ semua warna/font/animasi (file milik user)
+│   │   ├── tema.rs               # ⭐ semua warna/font/ukuran window/animasi
 │   │   ├── anim.rs               # easing, hover, riak, progress, transisi
 │   │   ├── pasang.rs             # logika: PATH, registry, ekstensi, uninstaller
 │   │   └── ui/
 │   │       ├── mod.rs
 │   │       ├── komponen.rs       # tombol, progress, penanda langkah, kartu
-│   │       └── halaman.rs        # 6 halaman wizard
+│   │       └── halaman.rs        # 6 halaman wizard + pemilih folder (rfd)
 │   ├── aset/
 │   │   ├── maskot.png            # cutout transparan (panel 28%)
 │   │   ├── fonts/                # Jakarta Sans + JetBrains Mono (OFL)
 │   │   ├── logo/                 # icon.ico, logo.png
 │   │   ├── payload/              # evernight.exe, .vsix, PANDUAN.txt, LICENSE
-│   │   └── tinjau/               # pratinjau 6 halaman (hasil uji)
+│   │   └── tinjau/               # pratinjau 6 halaman (hasil uji, 1000x640)
 │   ├── alat/cutout_maskot.py     # generator cutout maskot
 │   └── build-installer.ps1       # build → payload → Setup.exe + SHA256
 │

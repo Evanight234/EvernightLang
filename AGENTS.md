@@ -81,7 +81,7 @@ Bahasa pemrograman baru dengan karakteristik:
 - [x] Paket ekstensi `.vsix` (6A) — publisher **Satriyo**, lisensi **MIT**, terpasang & terverifikasi di **Antigravity IDE**
 - [x] Distribusi compiler mandiri (6B) — biner statis 1.74 MB, paket `paket/evernight-0.1.0-windows-x64/` + ZIP, `install.ps1`/`uninstall.ps1`, PATH otomatis, asosiasi `.eve` terverifikasi
 - [x] Integrasi otomatis ekstensi (6C) — deteksi 6 editor keluarga VS Code, konfirmasi interaktif, `-TanpaEkstensi`/`-TanpaKonfirmasi`, uninstall menawarkan pencopotan
-- [x] **Installer GUI (6F)** — `EvernightLanguage-0.1.0-Setup.exe` (egui/Rust, **bukan** Inno Setup), pilihan per-user (tanpa UAC) / per-machine (UAC), wizard Bahasa Indonesia 6 halaman, panel maskot 28%, animasi mikro, `uninstall.exe` bersih
+- [x] **Installer GUI (6F)** — `EvernightLanguage-0.1.0-Setup.exe` (egui/Rust, **bukan** Inno Setup), window **1000x640**, **satu box per halaman** (isi box hanya judul+keterangan), **pemilih folder native (rfd) + tombol Telusuri**, **tanpa CMD** (`windows_subsystem` + `CREATE_NO_WINDOW`), pilihan per-user/per-machine (UAC), wizard 6 halaman, panel maskot 28%, animasi mikro, `uninstall.exe` bersih
 - [x] Mode debug (6D-1) — `--debug` trace instruksi bytecode ke stderr
 - [x] Profiler mini (6D-2) — `--waktu` frekuensi opcode + waktu eksekusi
 - [x] Formatter (6D-3) — `evernight format` + `--cek` (komentar dipertahankan; idempoten)

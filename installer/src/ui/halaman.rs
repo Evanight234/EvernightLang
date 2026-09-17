@@ -1,4 +1,4 @@
-﻿//! Enam halaman wizard installer.
+//! Enam halaman wizard installer.
 
 use crate::anim::{AnimasiHover, AnimasiProgress, AnimasiRiak};
 use crate::pasang::Rencana;
@@ -151,9 +151,11 @@ pub fn gambar(
             });
             ui.add_space(10.0);
             ui.label(
-                egui::RichText::new("Wizard ini akan memandu pemasangan. Tekan Lanjut untuk mulai.")
-                    .font(tema::font_kecil())
-                    .color(tema::REDUP),
+                egui::RichText::new(
+                    "Wizard ini akan memandu pemasangan. Tekan Lanjut untuk mulai.",
+                )
+                .font(tema::font_kecil())
+                .color(tema::REDUP),
             );
         }
 
@@ -187,148 +189,177 @@ pub fn gambar(
             sub(ui, "Tentukan tempat pemasangan dan cakupannya.");
             ui.add_space(12.0);
 
+            // BOX: hanya judul + keterangan (teks saja).
             komponen::kartu(ui, |ui| {
                 ui.label(
-                    egui::RichText::new("Cakupan pemasangan")
+                    egui::RichText::new("Tempat EvernightLanguage dipasang")
                         .font(tema::font_sub())
                         .color(tema::TEKS),
                 );
                 ui.add_space(6.0);
-                let mut per_mesin = konteks.rencana.per_mesin;
-                let sebelum = per_mesin;
-                ui.radio_value(
-                    &mut per_mesin,
-                    false,
-                    "Hanya saya (per-user, tanpa UAC)",
+                ui.label(
+                    egui::RichText::new(
+                        "Installer menyalin compiler, aset, dan dokumentasi ke folder \
+                         yang Anda pilih. Ukuran total sekitar 15 MB.",
+                    )
+                    .font(tema::font_isi())
+                    .color(tema::SEKUNDER),
                 );
-                ui.radio_value(
-                    &mut per_mesin,
-                    true,
-                    "Semua pengguna (per-machine, perlu izin admin)",
+                ui.add_space(4.0);
+                ui.label(
+                    egui::RichText::new(
+                        "Mode \u{201C}Hanya saya\u{201D} tidak memerlukan izin administrator.",
+                    )
+                    .font(tema::font_kecil())
+                    .color(tema::REDUP),
                 );
-                if per_mesin != sebelum {
-                    konteks.rencana.per_mesin = per_mesin;
-                    konteks.rencana.tujuan = Rencana::tujuan_default(per_mesin);
-                }
             });
 
-            ui.add_space(10.0);
-            komponen::kartu(ui, |ui| {
+            // Semua yang interaktif DI LUAR box.
+            ui.add_space(14.0);
+
+            pilihan_milik_anda(ui, "Cakupan pemasangan");
+            let mut per_mesin = konteks.rencana.per_mesin;
+            let sebelum = per_mesin;
+            ui.radio_value(&mut per_mesin, false, "Hanya saya (per-user, tanpa UAC)");
+            ui.radio_value(
+                &mut per_mesin,
+                true,
+                "Semua pengguna (per-machine, perlu izin admin)",
+            );
+            if per_mesin != sebelum {
+                konteks.rencana.per_mesin = per_mesin;
+                konteks.rencana.tujuan = Rencana::tujuan_default(per_mesin);
+            }
+
+            ui.add_space(14.0);
+            pilihan_milik_anda(ui, "Folder tujuan");
+            pemilih_folder(ui, konteks);
+
+            if konteks.rencana.per_mesin {
+                ui.add_space(10.0);
                 ui.label(
-                    egui::RichText::new("Folder")
-                        .font(tema::font_sub())
-                        .color(tema::TEKS),
-                );
-                ui.add_space(6.0);
-                let mut teks = konteks.rencana.tujuan.to_string_lossy().to_string();
-                if ui
-                    .add(
-                        egui::TextEdit::singleline(&mut teks)
-                            .font(tema::font_mono())
-                            .desired_width(f32::INFINITY),
+                    egui::RichText::new(
+                        "Catatan: mode \u{201C}Semua pengguna\u{201D} akan meminta izin \
+                         administrator saat pemasangan dimulai.",
                     )
-                    .changed()
-                {
-                    konteks.rencana.tujuan = std::path::PathBuf::from(teks);
-                }
-                if konteks.rencana.per_mesin {
-                    ui.add_space(6.0);
-                    ui.label(
-                        egui::RichText::new("Catatan: mode 'Semua pengguna' memerlukan hak administrator.")
-                            .font(tema::font_kecil())
-                            .color(tema::BAHAYA),
-                    );
-                }
-            });
+                    .font(tema::font_kecil())
+                    .color(tema::BAHAYA),
+                );
+            }
         }
 
         Halaman::SiapPasang => {
             if konteks.mencopot {
                 judul(ui, "Copot EvernightLanguage");
-                sub(ui, "Installer akan mencabut seluruh komponen yang terpasang.");
+                sub(
+                    ui,
+                    "Installer akan mencabut seluruh komponen yang terpasang.",
+                );
                 ui.add_space(12.0);
                 komponen::kartu(ui, |ui| {
                     ui.label(
-                        egui::RichText::new("Yang akan dicabut:")
+                        egui::RichText::new("Yang akan dicabut")
                             .font(tema::font_sub())
                             .color(tema::TEKS),
                     );
                     ui.add_space(6.0);
-                    for item in [
-                        "Berkas program (compiler, aset, dokumentasi)",
-                        "Entri PATH",
-                        "Asosiasi berkas .eve",
-                        "Ekstensi editor",
-                        "Pintasan Start Menu",
-                        "Entri di Apps & Features",
-                    ] {
-                        ui.label(
-                            egui::RichText::new(format!("  - {}", item))
-                                .font(tema::font_isi())
-                                .color(tema::SEKUNDER),
-                        );
-                    }
+                    ui.label(
+                        egui::RichText::new(
+                            "Berkas program, entri PATH, asosiasi berkas .eve, ekstensi \
+                             editor, pintasan Start Menu, dan entri di Apps & Features.",
+                        )
+                        .font(tema::font_isi())
+                        .color(tema::SEKUNDER),
+                    );
                 });
             } else {
                 judul(ui, "Siap Pasang");
                 sub(ui, "Periksa pilihan Anda, lalu tekan Pasang.");
                 ui.add_space(12.0);
 
-                komponen::kartu(ui, |ui| {
-                    baris_info(ui, "Komponen", "Compiler evernight + dokumentasi");
-                    baris_info(ui, "Tujuan", &konteks.rencana.tujuan.to_string_lossy());
-                    baris_info(
-                        ui,
-                        "Cakupan",
-                        if konteks.rencana.per_mesin {
-                            "Semua pengguna"
-                        } else {
-                            "Hanya saya"
-                        },
-                    );
-                });
-
-                ui.add_space(10.0);
+                // BOX: hanya judul + keterangan (teks saja).
                 komponen::kartu(ui, |ui| {
                     ui.label(
-                        egui::RichText::new("Tugas tambahan")
+                        egui::RichText::new("Yang akan dilakukan installer")
                             .font(tema::font_sub())
                             .color(tema::TEKS),
                     );
                     ui.add_space(6.0);
-                    ui.checkbox(&mut konteks.rencana.tambah_path, "Tambahkan evernight ke PATH");
-                    ui.checkbox(
-                        &mut konteks.rencana.asosiasi_eve,
-                        "Asosiasikan berkas .eve (\"Evernight files\")",
+                    ui.label(
+                        egui::RichText::new(
+                            "Compiler evernight beserta aset dan dokumentasi akan disalin \
+                             ke folder tujuan. Centang tugas tambahan yang Anda inginkan \
+                             di bawah ini.",
+                        )
+                        .font(tema::font_isi())
+                        .color(tema::SEKUNDER),
                     );
-                    ui.checkbox(
-                        &mut konteks.rencana.pasang_ekstensi,
-                        "Pasang ekstensi editor (pewarnaan sintaksis)",
-                    );
-                    ui.checkbox(&mut konteks.rencana.buat_pintasan, "Buat pintasan Start Menu");
                 });
+
+                // Semua yang interaktif DI LUAR box.
+                ui.add_space(14.0);
+
+                pilihan_milik_anda(ui, "Tugas tambahan");
+                ui.checkbox(
+                    &mut konteks.rencana.tambah_path,
+                    "Tambahkan evernight ke PATH",
+                );
+                ui.checkbox(
+                    &mut konteks.rencana.asosiasi_eve,
+                    "Asosiasikan berkas .eve (\"Evernight files\")",
+                );
+                ui.checkbox(
+                    &mut konteks.rencana.pasang_ekstensi,
+                    "Pasang ekstensi editor (pewarnaan sintaksis)",
+                );
+                ui.checkbox(
+                    &mut konteks.rencana.buat_pintasan,
+                    "Buat pintasan Start Menu",
+                );
+
+                ui.add_space(14.0);
+                pilihan_milik_anda(ui, "Ringkasan");
+                baris_info(ui, "Tujuan", &konteks.rencana.tujuan.to_string_lossy());
+                baris_info(
+                    ui,
+                    "Cakupan",
+                    if konteks.rencana.per_mesin {
+                        "Semua pengguna (perlu izin admin)"
+                    } else {
+                        "Hanya saya (tanpa izin admin)"
+                    },
+                );
             }
         }
 
         Halaman::Memasang => {
-            judul(ui, if konteks.mencopot { "Mencopot" } else { "Memasang" });
+            judul(
+                ui,
+                if konteks.mencopot {
+                    "Mencopot"
+                } else {
+                    "Memasang"
+                },
+            );
             sub(ui, konteks.status_teks);
-            ui.add_space(16.0);
 
+            // Animasi pemasangan DI LUAR box (progress + persentase).
+            ui.add_space(18.0);
             let lebar = ui.available_width() - 4.0;
-            komponen::progress(ui, konteks.progres, lebar, 14.0);
-            ui.add_space(6.0);
+            komponen::progress(ui, konteks.progres, lebar, 16.0);
+            ui.add_space(8.0);
             ui.horizontal(|ui| {
                 ui.label(
                     egui::RichText::new(format!("{:.0}%", konteks.progres.nilai * 100.0))
-                        .font(tema::font_kecil())
-                        .color(tema::SEKUNDER),
+                        .font(tema::font_sub())
+                        .color(tema::TEKS),
                 );
                 // Tampilkan target bila isian masih menyusul (animasi mengalir).
                 if konteks.progres.bergerak() {
                     ui.label(
                         egui::RichText::new(format!(
-                            "(menuju {:.0}%)",
+                            "menuju {:.0}%",
                             konteks.progres.target() * 100.0
                         ))
                         .font(tema::font_kecil())
@@ -337,15 +368,30 @@ pub fn gambar(
                 }
             });
 
-            ui.add_space(12.0);
+            // BOX: hanya keterangan; isinya log teks kemajuan.
+            ui.add_space(16.0);
             komponen::kartu(ui, |ui| {
+                ui.label(
+                    egui::RichText::new("Catatan pemasangan")
+                        .font(tema::font_sub())
+                        .color(tema::TEKS),
+                );
+                ui.add_space(6.0);
+                ui.label(
+                    egui::RichText::new("Setiap langkah pemasangan dicatat di bawah ini.")
+                        .font(tema::font_kecil())
+                        .color(tema::REDUP),
+                );
+                ui.add_space(8.0);
                 egui::ScrollArea::vertical()
-                    .max_height(120.0)
+                    .max_height(150.0)
                     .stick_to_bottom(true)
                     .show(ui, |ui| {
                         for l in konteks.log {
                             ui.label(
-                                egui::RichText::new(l).font(tema::font_mono()).color(tema::SEKUNDER),
+                                egui::RichText::new(l)
+                                    .font(tema::font_mono())
+                                    .color(tema::SEKUNDER),
                             );
                         }
                     });
@@ -451,29 +497,28 @@ pub fn gambar(
                 ) {
                     aksi = Aksi::Keluar;
                 }
-            } else if halaman != Halaman::Memasang {
-                if komponen::tombol(
+            } else if halaman != Halaman::Memasang
+                && komponen::tombol(
                     ui,
                     Tombol::utama("Lanjut").lebar(100.0),
                     &mut hover[3],
                     &mut riak[3],
-                ) && bisa_lanjut
-                {
-                    aksi = Aksi::Lanjut;
-                }
+                )
+                && bisa_lanjut
+            {
+                aksi = Aksi::Lanjut;
             }
 
-            if halaman != Halaman::Memasang && halaman != Halaman::Selesai {
-                if komponen::tombol(
+            if halaman != Halaman::Memasang
+                && halaman != Halaman::Selesai
+                && komponen::tombol(
                     ui,
-                    Tombol::kedua("Kembali")
-                        .lebar(100.0)
-                        .aktif(bisa_mundur),
+                    Tombol::kedua("Kembali").lebar(100.0).aktif(bisa_mundur),
                     &mut hover[4],
                     &mut riak[4],
-                ) {
-                    aksi = Aksi::Mundur;
-                }
+                )
+            {
+                aksi = Aksi::Mundur;
             }
         });
     });
@@ -502,7 +547,7 @@ fn sub(ui: &mut egui::Ui, teks: &str) {
 fn baris_info(ui: &mut egui::Ui, label: &str, nilai: &str) {
     ui.horizontal(|ui| {
         ui.label(
-            egui::RichText::new(format!("{:<14}", label))
+            egui::RichText::new(format!("{:<10}", label))
                 .font(tema::font_kecil())
                 .color(tema::REDUP),
         );
@@ -512,6 +557,163 @@ fn baris_info(ui: &mut egui::Ui, label: &str, nilai: &str) {
                 .color(tema::TEKS),
         );
     });
+}
+
+/// Label kecil di ATAS kendali interaktif (di luar box).
+fn pilihan_milik_anda(ui: &mut egui::Ui, teks: &str) {
+    ui.label(
+        egui::RichText::new(teks)
+            .font(tema::font_kecil())
+            .color(tema::SEKUNDER),
+    );
+    ui.add_space(4.0);
+}
+
+/// Pilih folder lewat dialog native Windows.
+///
+/// Dipisah dari `pemilih_folder` supaya dapat diuji/diganti tanpa UI, dan
+/// supaya kegagalan dialog (mis. dibatalkan) tidak mengubah pilihan.
+fn pilih_folder_native(awal: &std::path::Path) -> Option<std::path::PathBuf> {
+    rfd::FileDialog::new()
+        .set_title("Pilih folder tujuan pemasangan")
+        .set_directory(awal)
+        .pick_folder()
+}
+
+/// Pemilih folder tujuan: kotak teks (dapat diketik) + tombol "Telusuri..."
+/// yang membuka dialog folder native Windows.
+fn pemilih_folder(ui: &mut egui::Ui, konteks: &mut KonteksHalaman<'_>) {
+    ui.horizontal(|ui| {
+        let lebar_tombol = 110.0;
+        let lebar_teks = (ui.available_width() - lebar_tombol - 8.0).max(200.0);
+
+        let mut teks = konteks.rencana.tujuan.to_string_lossy().to_string();
+        let respons = ui.add_sized(
+            egui::vec2(lebar_teks, 30.0),
+            egui::TextEdit::singleline(&mut teks)
+                .font(tema::font_mono())
+                .hint_text("Pilih folder tujuan..."),
+        );
+        if respons.changed() {
+            konteks.rencana.tujuan = std::path::PathBuf::from(teks);
+        }
+
+        let tombol = ui.add_sized(
+            egui::vec2(lebar_tombol, 30.0),
+            egui::Button::new(egui::RichText::new("Telusuri...").font(tema::font_isi())),
+        );
+        if tombol.clicked() {
+            let awal = if konteks.rencana.tujuan.exists() {
+                konteks.rencana.tujuan.clone()
+            } else {
+                std::env::var("USERPROFILE")
+                    .map(std::path::PathBuf::from)
+                    .unwrap_or_else(|_| std::path::PathBuf::from("C:\\"))
+            };
+            if let Some(dipilih) = pilih_folder_native(&awal) {
+                konteks.rencana.tujuan = dipilih;
+            }
+        }
+    });
+
+    // Keterangan bantuan di bawah kolom.
+    ui.add_space(6.0);
+    let path = &konteks.rencana.tujuan;
+    let (teks_bantu, warna) = if path.as_os_str().is_empty() {
+        ("Folder tujuan belum dipilih.".to_string(), tema::BAHAYA)
+    } else if path.exists() {
+        (
+            "Folder sudah ada \u{2014} installer akan menimpa berkas di dalamnya.".to_string(),
+            tema::SEKUNDER,
+        )
+    } else {
+        (
+            "Folder akan dibuat otomatis saat pemasangan.".to_string(),
+            tema::SEKUNDER,
+        )
+    };
+    ui.label(
+        egui::RichText::new(teks_bantu)
+            .font(tema::font_kecil())
+            .color(warna),
+    );
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn urutan_halaman_maju_dan_mundur() {
+        assert_eq!(Halaman::SelamatDatang.berikutnya(), Some(Halaman::Lisensi));
+        assert_eq!(Halaman::SiapPasang.berikutnya(), Some(Halaman::Memasang));
+        assert_eq!(Halaman::Lisensi.sebelumnya(), Some(Halaman::SelamatDatang));
+        assert_eq!(Halaman::SelamatDatang.sebelumnya(), None);
+        assert_eq!(Halaman::Selesai.berikutnya(), None);
+    }
+
+    #[test]
+    fn dari_indeks_bolak_balik() {
+        for i in 0..6 {
+            assert_eq!(Halaman::dari_indeks(i).indeks(), i);
+        }
+        // Di luar rentang -> kembali ke halaman pertama.
+        assert_eq!(Halaman::dari_indeks(99), Halaman::SelamatDatang);
+    }
+
+    #[test]
+    fn status_langkah_menandai_selesai_dan_aktif() {
+        // Di halaman Tujuan (indeks 2): 0 & 1 selesai, 2 aktif, sisanya menunggu.
+        assert!(matches!(
+            status_langkah(Halaman::Tujuan, 0, false),
+            StatusLangkah::Selesai
+        ));
+        assert!(matches!(
+            status_langkah(Halaman::Tujuan, 2, false),
+            StatusLangkah::Aktif
+        ));
+        assert!(matches!(
+            status_langkah(Halaman::Tujuan, 5, false),
+            StatusLangkah::Menunggu
+        ));
+    }
+
+    #[test]
+    fn status_saat_memasang() {
+        // Saat memasang: 4 langkah pertama selesai, langkah ke-5 aktif.
+        assert!(matches!(
+            status_langkah(Halaman::Memasang, 3, true),
+            StatusLangkah::Selesai
+        ));
+        assert!(matches!(
+            status_langkah(Halaman::Memasang, 4, true),
+            StatusLangkah::Aktif
+        ));
+        assert!(matches!(
+            status_langkah(Halaman::Memasang, 5, true),
+            StatusLangkah::Menunggu
+        ));
+    }
+
+    #[test]
+    fn status_pada_halaman_selesai_semuanya_selesai() {
+        for i in 0..6 {
+            assert!(matches!(
+                status_langkah(Halaman::Selesai, i, false),
+                StatusLangkah::Selesai
+            ));
+        }
+    }
+
+    #[test]
+    fn dialog_folder_menerima_path_awal_yang_tidak_ada() {
+        // `pilih_folder_native` tidak boleh panik walau folder awal tidak ada.
+        // Tidak dipanggil di test (butuh UI), tapi kita pastikan path awalnya
+        // dapat dibentuk dengan aman dari apa pun.
+        let awal = std::path::PathBuf::from(r"Z:\tidak-ada-folder-ini");
+        assert!(!awal.exists());
+        assert_eq!(awal.to_string_lossy(), r"Z:\tidak-ada-folder-ini");
+    }
 }
 
 const TEKS_LISENSI: &str = "MIT License

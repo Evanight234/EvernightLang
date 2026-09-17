@@ -136,7 +136,7 @@ impl AnimasiHalaman {
 pub fn denyut(waktu: f64) -> f32 {
     let periode = tema::PERIODE_DENYUT as f64;
     let fasa = (waktu % periode) / periode; // 0..1
-    // Sinus penuh: 1 -> 0.85 -> 1
+                                            // Sinus penuh: 1 -> 0.85 -> 1
     let s = (fasa * std::f64::consts::TAU).sin() as f32;
     0.925 + 0.075 * s
 }
@@ -160,9 +160,11 @@ impl AnimasiProgress {
     pub fn perbarui(&mut self, dt: f32) {
         let laju = (dt / 0.35).clamp(0.0, 1.0);
         if self.nilai < self.target {
-            self.nilai = (self.nilai + laju * (self.target - self.nilai).max(0.02)).min(self.target);
+            self.nilai =
+                (self.nilai + laju * (self.target - self.nilai).max(0.02)).min(self.target);
         } else if self.nilai > self.target {
-            self.nilai = (self.nilai - laju * (self.nilai - self.target).max(0.02)).max(self.target);
+            self.nilai =
+                (self.nilai - laju * (self.nilai - self.target).max(0.02)).max(self.target);
         }
     }
 

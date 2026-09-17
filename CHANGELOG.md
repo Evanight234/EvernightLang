@@ -17,6 +17,13 @@
 
 ## [Belum Dirilis]
 
+### Diubah
+- **Revisi desain installer (Fase 6F)**: window diperlebar dari 760x520 menjadi **1000x640** (minimum 880x580) agar tidak ada UI yang terpotong. Setiap halaman kini memakai **satu box** yang isinya hanya judul + keterangan; semua kendali interaktif (radio, checkbox, input, progress, log) diletakkan di luar box. Halaman **Lokasi Tujuan** dan **Siap Pasang** masing-masing disederhanakan dari dua kartu menjadi satu.
+- **Installer memakai dialog folder native** lewat crate `rfd` 0.17 (`default-features = false`): tombol **Telusuri...** membuka File Explorer untuk memilih folder tujuan.
+
+### Diperbaiki
+- **Jendela CMD pada installer**: biner dibangun sebagai aplikasi console (PE `Subsystem = 3`), sehingga Windows menampilkan jendela CMD hitam. Kini memakai `#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]` (subsystem 2 saat rilis; build debug tetap menampilkan `eprintln!`). Semua pemanggilan program luar (`reg`, `powershell`, `net`, CLI editor) ditambah `CREATE_NO_WINDOW` agar tidak muncul maupun berkedip saat pemasangan.
+
 ### Ditambahkan
 - **Formatter (`evernight format`, Fase 6D-3)**: crate `evernight_fmt` berbasis token (komentar dipertahankan, idempoten). Opsi `--cek` (dry-run, exit 1 bila belum rapi — untuk CI) dan `--keluar <path>`.
 - **Linter (`evernight lint`, Fase 6D-4)**: crate `evernight_lint` berbasis AST. Aturan baru: `WKHURUF` (bukan snake_case), `WKIMPOR` (impor tak terpakai), `WKPANJANG` (fungsi > 50 baris), `WKPARAM` (> 4 parameter), `WKSARANG` (blok kosong), `WKMATI` (kode tak terjangkau), `WKMAGIS` (angka magic). Digabung dengan warning compiler.

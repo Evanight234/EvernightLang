@@ -45,6 +45,16 @@ pub const RASIO_PANEL_MASKOT: f32 = 0.28;
 /// Tinggi bilah judul.
 pub const TINGGI_JUDUL: f32 = 40.0;
 
+/// Ukuran jendela wizard. Diperlebar dari 760x520 agar tidak ada UI yang
+/// terpotong: panel maskot 28% (280 px) menyisakan ~720 px untuk konten.
+pub const LEBAR_WINDOW: f32 = 1000.0;
+pub const TINGGI_WINDOW: f32 = 640.0;
+pub const LEBAR_MIN_WINDOW: f32 = 880.0;
+pub const TINGGI_MIN_WINDOW: f32 = 580.0;
+
+/// Lebar maksimum kolom konten, supaya teks tetap nyaman dibaca di layar lebar.
+pub const LEBAR_MAKS_KONTEN: f32 = 760.0;
+
 // ---------------------------------------------------------------------------
 // 2. BENTUK
 // ---------------------------------------------------------------------------

@@ -22,6 +22,10 @@ eframe = { version = "0.36", default-features = false, features = [
 ] }
 egui = "0.36"
 image = { version = "0.25", default-features = false, features = ["png"] }
+# Dialog folder native Windows (tombol "Telusuri..." di halaman Lokasi Tujuan).
+# `default-features = false` agar tidak menarik backend GTK/X11 yang tidak
+# diperlukan di Windows.
+rfd = { version = "0.17", default-features = false }
 
 [profile.release]
 opt-level = "z"
