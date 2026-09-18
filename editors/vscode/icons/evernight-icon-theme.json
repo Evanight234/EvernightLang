@@ -1,11 +1,10 @@
 {
   "iconDefinitions": {
     "_eve": {
-      "iconPath": "../assets/logo/icon_16.png"
+      "iconPath": "./evernight-file.png"
     }
   },
   "fileExtensions": {
     "eve": "_eve"
-  },
-  "file": "_eve"
+  }
 }

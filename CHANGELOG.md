@@ -24,6 +24,11 @@
 ### Diperbaiki
 - **Jendela CMD pada installer**: biner dibangun sebagai aplikasi console (PE `Subsystem = 3`), sehingga Windows menampilkan jendela CMD hitam. Kini memakai `#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]` (subsystem 2 saat rilis; build debug tetap menampilkan `eprintln!`). Semua pemanggilan program luar (`reg`, `powershell`, `net`, CLI editor) ditambah `CREATE_NO_WINDOW` agar tidak muncul maupun berkedip saat pemasangan.
 
+### Diperbaiki
+- **Ikon `.eve` tidak muncul di code editor**: berkas `icons/evernight-icon-theme.json` menunjuk `../assets/logo/icon_16.png` — relatif di dalam `.vsix` berarti `extension/assets/logo/icon_16.png`, berkas yang TIDAK ikut terpaket (vsix sebelumnya hanya berisi `icons/evernight-icon.png` + theme JSON). Akibatnya editor keluarga VS Code gagal memuat ikon dan diam-diam memakai ikon default. Icon kini dibundel sebagai `icons/evernight-file.png` (16x16) dan dirujuk lokal `./evernight-file.png`.
+- File default pada icon theme (`"file": "_eve"`) dihapus agar berkas non-`.eve` tidak semua memakai ikon huruf E; hanya `.eve` yang dikustomisasi.
+- Menambahkan `editors/vscode/build-vsix.ps1` (pembangun `.vsix` tanpa vsce/npx; vsce tidak tersedia karena cache npm korup `ECOMPROMISED`, `npx @vscode/vsce` gagal). Skrip mem-patch zip vsix yang ada dan memverifikasi entri ikon.
+
 ### Ditambahkan
 - **Formatter (`evernight format`, Fase 6D-3)**: crate `evernight_fmt` berbasis token (komentar dipertahankan, idempoten). Opsi `--cek` (dry-run, exit 1 bila belum rapi — untuk CI) dan `--keluar <path>`.
 - **Linter (`evernight lint`, Fase 6D-4)**: crate `evernight_lint` berbasis AST. Aturan baru: `WKHURUF` (bukan snake_case), `WKIMPOR` (impor tak terpakai), `WKPANJANG` (fungsi > 50 baris), `WKPARAM` (> 4 parameter), `WKSARANG` (blok kosong), `WKMATI` (kode tak terjangkau), `WKMAGIS` (angka magic). Digabung dengan warning compiler.

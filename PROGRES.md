@@ -125,6 +125,13 @@
 
 ## Log Aktivitas
 
+- **2026-09-18**: **Revisi ikon file `.eve` (Fix penting).**
+  - Akar masalah: `editors/vscode/icons/evernight-icon-theme.json` menunjuk `../assets/logo/icon_16.png`, yang relatif terhadap isi `.vsix` = `extension/assets/logo/icon_16.png` — berkas TIDAK ikut terpaket, jadi editor keluarga VS Code gagal memuat ikon dan memakai default.
+  - Perbaikan: `icon_16.png` disalin menjadi `editors/vscode/icons/evernight-file.png` (16x16, dibundel), theme JSON menunjuk `./evernight-file.png`. Default `"file"` di hapus agar non-`.eve` tidak ikut jadi ikon E.
+  - Alat: `editors/vscode/build-vsix.ps1` baru (patch zip vsix + verifikasi entri). vsce global tidak ada; `npx @vscode/vsce` gagal (npm cache ECOMPROMISED).
+  - Pemasangan: vsix dipasang langsung ke `C:/Users/LENOVO/.antigravity/extensions/satriyo.evernight-language-0.1.0` + didaftarkan di `extensions.json` (valid, 15 entri). `workbench.iconTheme` di ubah `vscode-icons` -> `evernight-icons` (keputusan user). Semua antigravity process masih berjalan — perlu restart penuh user.
+  - Distribusi disinkron: vsix baru (20.797 byte) di `paket/.../extensions/` + `installer/aset/payload/`; `Setup.exe` dibangun ulang (8.37 MB, SHA `bd370021...`).
+
 - **2026-09-16**: **Revisi desain installer (6F) — 4 perbaikan sesuai permintaan user.**
   - **Window diperlebar** 760x520 -> **1000x640** (minimum 880x580). Panel maskot 28% (~280 px) menyisakan ~720 px konten (+32%). Lebar kolom konten dibatasi `LEBAR_MAKS_KONTEN = 760` agar baris teks tetap nyaman dibaca. Konstanta ukuran kini terpusat di `tema.rs`.
   - **CMD dihilangkan**: akar masalah ditemukan dengan memeriksa header PE — biner ber-`Subsystem = 3` (CONSOLE). Diperbaiki dengan `#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]` sehingga rilis memakai GUI (subsystem 2) sementara build debug tetap bisa menampilkan `eprintln!`. Ditambah `CREATE_NO_WINDOW` (0x08000000) lewat helper `tanpa_jendela()` pada semua `Command`: `reg`, `powershell`, `net`, dan CLI editor.
