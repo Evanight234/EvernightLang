@@ -4,6 +4,6 @@ members = [
     "crates/evernight_vm",
     "crates/evernight_cli",
     "crates/evernight_fmt",
-    "crates/evernight_lint",
+    "crates/evernight_lint", "crates/evernight_lsp",
 ]
 resolver = "2"

@@ -457,7 +457,7 @@ Catatan pelaksanaan (Fase 6):
 - [x] Stabilisasi versi bytecode (kompatibilitas antar-rilis)
 - [x] Pengujian ketahanan edge-case + regresi performa
 - [x] Definisi kriteria "selesai" rilis 1.0
-- [ ] **Language Server dasar** (dipindah dari 6D, keputusan 2026-09-14) — hover, diagnostic, goto-definition, completion; biner `evernight-lsp` via JSON-RPC stdio
+- [x] **Language Server dasar** (dipindah dari 6D, keputusan 2026-09-14) — hover, diagnostic, goto-definition, completion; biner `evernight-lsp` via JSON-RPC stdio
 
 ### Sub-Fase Pelaksanaan Fase 7 (urutan eksekusi)
 

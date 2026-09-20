@@ -98,7 +98,8 @@ Bahasa pemrograman baru dengan karakteristik:
 - [ ] Audit keamanan dasar (akses file, sandbox)
 - [ ] Stabilisasi versi bytecode (kompatibilitas antar-rilis) + kriteria "selesai" rilis 1.0
 - [x] **7E — Desain visual final installer** (grafis wizard bermerek Nusantara, UX hak akses, uji di komputer bersih) — **FINAL** (desain 6F final, tidak ada perubahan visual)
-- [ ] **7F — Paket Rilis Per-Versi** — skrip `paket-rilis.ps1`, paket `evernight-<versi>-windows-x64/` isi lengkap (exe, kill, update, vsix, docs, LICENSE) + ZIP + SHA256, sumber updater 6I
+- [x] **7F — Paket Rilis Per-Versi** — skrip `paket-rilis.ps1`, paket `evernight-<versi>-windows-x64/` isi lengkap (exe, kill, update, vsix, docs, LICENSE) + ZIP + SHA256, sumber updater 6I
+- [x] **Language Server dasar** (`evernight-lsp`) — biner JSON-RPC stdio, hover/diagnostic/goto-definition/completion, zero async deps
 
 ### Fase 8: Dokumentasi Publik, Website & Komunitas
 - [ ] README utama publik, panduan sintaks, tutorial, referensi stdlib, 10+ contoh program

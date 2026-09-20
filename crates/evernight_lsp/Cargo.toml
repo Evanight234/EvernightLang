@@ -1,0 +1,12 @@
+[package]
+name = "evernight-lsp"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "evernight-lsp"
+path = "src/main.rs"
+
+[dependencies]
+evernight_core = { path = "../evernight_core" }
+serde_json = "1"

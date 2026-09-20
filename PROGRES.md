@@ -112,7 +112,8 @@
 
 #### Sub-Fase Pelaksanaan Fase 7
 - [x] **7E — Desain Visual Final Installer + Uji Pengguna Akhir** (grafis wizard bermerek Nusantara, warna & font kustom, UX hak akses/UAC Bahasa Indonesia, tombol "Jalankan REPL"/"Buka Panduan", uji di komputer/VM bersih) — **FINAL** (desain 6F final, tidak ada perubahan visual)
-- [ ] **7F — Paket Rilis Per-Versi** (skrip `paket-rilis.ps1`, paket `evernight-<versi>-windows-x64/` isi lengkap: exe, kill, update, vsix, docs, LICENSE + ZIP + SHA256, sumber updater 6I)
+- [x] **7F — Paket Rilis Per-Versi** (skrip `paket-rilis.ps1`, paket `evernight-<versi>-windows-x64/` isi lengkap: exe, kill, update, vsix, docs, LICENSE + ZIP + SHA256, sumber updater 6I)
+- [x] **Language Server dasar** (`evernight-lsp` biner JSON-RPC stdio, zero-dep: evernight_core + serde_json, hover/diagnostic/goto-definition/completion/documentSymbol, kompatibel GNU toolchain)
 
 ### Fase 8: Dokumentasi Publik, Website & Komunitas (NON-DEV)
 - [ ] README utama publik (logo, quickstart, status fase, fitur)
