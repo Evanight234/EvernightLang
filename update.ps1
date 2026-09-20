@@ -86,9 +86,17 @@ if ($vRemote -le $vLokal) {
     exit 0
 }
 
-# --- Ada update: unduh file-file dari folder version ---
+# --- Ada update: tampilkan dulu isi perubahannya ---
 Write-Host ""
 Write-Host "  Versi baru tersedia: $remote (terpasang: $lokal)"
+Write-Host ""
+try {
+    $catatan = Unduh-Teks "$DASAR/catatan-$remote.txt"
+    if (-not [string]::IsNullOrWhiteSpace($catatan)) {
+        Write-Host $catatan
+        Write-Host ""
+    }
+} catch { }
 Write-Host "  Mengunduh pembaruan..."
 
 $temp = Join-Path ([System.IO.Path]::GetTempPath()) "evernight-update-$remote"
