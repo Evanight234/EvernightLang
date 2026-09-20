@@ -93,6 +93,35 @@ function Cari-CliEditor($entri) {
     return $null
 }
 
+# Aktifkan tema ikon "evernight-icons" agar berkas .eve langsung tampil ikonnya
+# di explorer editor tanpa langkah manual. Folder data sesuai nama editor.
+$FolderSettings = @{
+    "Antigravity IDE" = "Antigravity"
+    "Visual Studio Code" = "Code"
+    "VS Code Insiders" = "Code - Insiders"
+    "Cursor" = "Cursor"
+    "Windsurf" = "Windsurf"
+    "VSCodium" = "VSCodium"
+}
+function Aktifkan-Ikon($namaEditor) {
+    $sub = $FolderSettings[$namaEditor]
+    if (-not $sub) { return }
+    $settings = Join-Path $env:APPDATA "$sub\User\settings.json"
+    if (-not (Test-Path (Split-Path $settings -Parent))) { New-Item -ItemType Directory -Force -Path (Split-Path $settings -Parent) | Out-Null }
+    $isi = if (Test-Path $settings) { Get-Content $settings -Raw } else { "" }
+    $kunci = '"workbench.iconTheme"'
+    $nilai = '"evernight-icons"'
+    if ($isi -match '"workbench\.iconTheme"\s*:\s*"(?:[^"])*"') {
+        $isi = [regex]::Replace($isi, '"workbench\.iconTheme"\s*:\s*"(?:[^"])*"', "$kunci` : $nilai")
+    } elseif ([string]::IsNullOrWhiteSpace($isi) -or $isi.Trim() -eq "{}") {
+        $isi = "{`n  $kunci` : $nilai`n}`n"
+    } elseif ($isi -match '^\s*\{') {
+        $isi = $isi -replace '^\s*\{', "{`n    $kunci` : $nilai,"
+    }
+    Set-Content -Path $settings -Value $isi -Encoding UTF8 -NoNewline
+    Tulis "  Ikon .eve aktif: $namaEditor" "Green"
+}
+
 Judul "Pemasang $NamaApp v$Versi"
 if ($Uji) { Tulis "[MODE UJI] Tidak akan ada perubahan pada sistem." "Yellow" }
 Tulis "Tujuan pemasangan : $LokasiInstal"
@@ -255,6 +284,7 @@ if ($TanpaEkstensi) {
                     $berhasil = ($keluaran -match "successfully installed") -or ($keluaran -match "already installed") -or ($kode -eq 0)
                     if ($berhasil) {
                         Tulis "Ekstensi terpasang: $($t.Nama)" "Green"
+                        Aktifkan-Ikon $t.Nama
                     } else {
                         Tulis "Gagal memasang ke $($t.Nama). Coba manual (lihat docs/PANDUAN.txt)." "Yellow"
                     }
@@ -266,6 +296,7 @@ if ($TanpaEkstensi) {
             }
             Tulis ""
             Tulis "Aktifkan tema (opsional): Ctrl+Shift+P -> Preferences: Color Theme -> 'Evernight Nusantara Gelap'" "White"
+            Tulis "Tema ikon '.eve' sudah aktif otomatis (evernight-icons)." "White"
         }
     }
 }

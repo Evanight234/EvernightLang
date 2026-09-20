@@ -223,12 +223,15 @@ impl Apl {
         self.pekerja = Some(rx);
         self.log.clear();
         self.status_teks = "Mencopot...".to_string();
+        self.progres.set_target(0.0);
+
+        let hapus_ekstensi = self.rencana.pasang_ekstensi;
 
         std::thread::spawn(move || {
             let mut lapor = |p: Pesan| {
                 let _ = tx.send(p);
             };
-            let hasil = pasang::copot(&mut lapor);
+            let hasil = pasang::copot(hapus_ekstensi, &mut lapor);
             let _ = tx.send(Pesan::Selesai(hasil));
         });
     }
@@ -242,6 +245,9 @@ impl Apl {
                         self.progres.set_target(persen);
                         self.status_teks = teks.clone();
                         self.log.push(format!("> {}", teks));
+                    }
+                    Pesan::Peringatan { teks } => {
+                        self.log.push(format!("! {}", teks));
                     }
                     Pesan::Selesai(hasil) => {
                         selesai = Some(hasil);
@@ -267,7 +273,8 @@ impl Apl {
             if self.mode == Mode::Pasang {
                 self.pindah(Halaman::Selesai);
             } else {
-                std::process::exit(0);
+                // Copot: tampilkan halaman Selesai (ringkasan).
+                self.pindah(Halaman::Selesai);
             }
         }
     }
@@ -418,9 +425,14 @@ impl eframe::App for Apl {
 
                     // Tahapan
                     ui.horizontal_wrapped(|ui| {
-                        for (i, label) in halaman::LANGKAH.iter().enumerate() {
+                        let langkah_labels = if self.mode == Mode::Copot {
+                            halaman::LANGKAH_COPOT
+                        } else {
+                            halaman::LANGKAH
+                        };
+                        for (i, label) in langkah_labels.iter().enumerate() {
                             let status =
-                                halaman::status_langkah(self.halaman, i, self.pekerja.is_some());
+                                halaman::status_langkah(self.halaman, i, self.pekerja.is_some(), self.mode == Mode::Copot);
                             penanda_langkah(ui, i + 1, label, status, waktu);
                             ui.add_space(6.0);
                         }
@@ -446,7 +458,6 @@ impl eframe::App for Apl {
                             progres: &self.progres,
                             status_teks: &self.status_teks,
                             log: &self.log,
-                            selesai_ok: self.selesai_ok,
                             mencopot: self.mode == Mode::Copot,
                         };
                         let aksi = halaman::gambar(
@@ -499,7 +510,7 @@ pub fn jalankan_diam(mode: Mode) -> i32 {
 
     let hasil = if mode == Mode::Copot {
         let mut lapor = |_p: Pesan| {};
-        pasang::copot(&mut lapor)
+        pasang::copot(true, &mut lapor)
     } else {
         let payload = crate::muat_payload();
         let mut lapor = |_p: Pesan| {};

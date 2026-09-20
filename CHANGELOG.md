@@ -17,6 +17,11 @@
 
 ## [Belum Dirilis]
 
+### Ditambahkan
+- **Tema ikon Symbols (Fase 6G)**: VSIX mengandung **352 SVG** (249 `files/` + 104 `folders/`) dari Symbols (MIT) + mapping `.eve` -> `_eve` -> `evernight-file.png`. Label tema diganti ke **IconStyles** (id tetap `evernight-icons`). `build-vsix.ps1` dirombak: patch dinamis semua berkas ikon rekursif. Kompatibel 6 editor.
+- **Sistem Uninstaller (Fase 6H)**: alur pencopotan beda dari install — hapus PATH + registry + folder + ekstensi editor + reset `workbench.iconTheme`. Perintah terminal: `kill evernight System`. Desain GUI menunggu mockup Stitch dari user.
+- **Sistem Updater (Fase 6I)**: perintah CLI `update Evernight system` — menarik file update dari folder khusus GitHub + memasang ke instalasi lokal. Tanpa GUI. Jika tidak ada update: pesan zhongk.
+
 ### Diubah
 - **Revisi desain installer (Fase 6F)**: window diperlebar dari 760x520 menjadi **1000x640** (minimum 880x580) agar tidak ada UI yang terpotong. Setiap halaman kini memakai **satu box** yang isinya hanya judul + keterangan; semua kendali interaktif (radio, checkbox, input, progress, log) diletakkan di luar box. Halaman **Lokasi Tujuan** dan **Siap Pasang** masing-masing disederhanakan dari dua kartu menjadi satu.
 - **Installer memakai dialog folder native** lewat crate `rfd` 0.17 (`default-features = false`): tombol **Telusuri...** membuka File Explorer untuk memilih folder tujuan.

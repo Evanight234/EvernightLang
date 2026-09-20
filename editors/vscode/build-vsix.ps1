@@ -1,60 +1,90 @@
-# build-vsix.ps1 — bangun .vsix EvernightLanguage tanpa vsce/npx.
-# Strategi: patch zip vsix yang sudah ada (Update mode) + verifikasi isi.
+# build-vsix.ps1 - bangun vsix EvernightLanguage PENUH (semua ikon SVG + tema gabungan).
+# Strategi: buka vsix dasar vsce (zip Update mode), HAPUS entri icons/ lama + package.json,
+# lalu TULIS dari disk: package.json berlabel IconStyles + SEMUA berkas folder icons\ (rekursif).
 param([string]$Versi = "0.1.0")
 
 $ErrorActionPreference = "Stop"
-$Dalam = Split-Path -Parent $MyInvocation.MyCommand.Path
-$Out = Join-Path $Dalam "evernight-language-$Versi.vsix"
+$Dalam        = Split-Path -Parent $MyInvocation.MyCommand.Path
+$VsixDasar    = Join-Path $Dalam "evernight-language-$Versi.vsix"
+$Out          = $VsixDasar
 
-if (-not (Test-Path -LiteralPath $Out)) { throw "Vsix dasar tidak ada: $Out" }
+if (-not (Test-Path -LiteralPath $VsixDasar)) { throw "Vsix dasar tidak ada: $VsixDasar" }
 
 Add-Type -AssemblyName System.IO.Compression
 Add-Type -AssemblyName System.IO.Compression.FileSystem
+$ZipOpsi = [System.IO.Compression.CompressionLevel]::Optimal
 
-# Entri yang harus selalu dirombak (asli/modifikasi dari disk).
-$Disk = @{
-    "extension/icons/evernight-file.png"         = Join-Path $Dalam "icons\evernight-file.png"
-    "extension/icons/evernight-icon-theme.json"  = Join-Path $Dalam "icons\evernight-icon-theme.json"
-    "extension/icons/evernight-icon.png"         = Join-Path $Dalam "icons\evernight-icon.png"
+function Tulis-Entri([System.IO.Compression.ZipArchive]$Zip, [string]$Nama, [string]$AsalDisk) {
+    $E = $Zip.CreateEntry($Nama, $ZipOpsi)
+    $S = $E.Open()
+    try {
+        $B = [IO.File]::ReadAllBytes((Resolve-Path -LiteralPath $AsalDisk))
+        $S.Write($B, 0, $B.Length)
+    }
+    finally { $S.Close() }
 }
 
-function Tulis-Entri($zip, $tujuan, $asal) {
-    $e = $zip.CreateEntry($tujuan, [System.IO.Compression.CompressionLevel]::Optimal)
-    $s = $e.Open()
-    try { $b = [IO.File]::ReadAllBytes((Resolve-Path $asal)); $s.Write($b, 0, $b.Length) }
-    finally { $s.Close() }
-}
+# --- Folder ikon di disk (tema gabungan + 353 SVG Symbols). ---
+$FolderIkon  = Join-Path $Dalam "icons"
+$BerkasIkon  = @(Get-ChildItem -LiteralPath $FolderIkon -Recurse -File)
+Write-Output ("berkas ikon di disk: {0}" -f $BerkasIkon.Count)
+$JumlahSVG   = @($BerkasIkon | Where-Object { $_.Extension -eq ".svg" }).Count
+Write-Output ("SVG di disk         : {0}" -f $JumlahSVG)
+if ($JumlahSVG -lt 300) { throw "SVG < 300 - cek folder icons\icons\files & icons\folders" }
 
-$fs = [IO.File]::Open($Out, [IO.FileMode]::Open, [IO.FileAccess]::ReadWrite)
-$zip = New-Object System.IO.Compression.ZipArchive($fs, [System.IO.Compression.ZipArchiveMode]::Update)
+# --- Buka zip vsix (Update). ---
+$FS = [IO.File]::Open($VsixDasar, [IO.FileMode]::Open, [IO.FileAccess]::ReadWrite)
+$Zip = New-Object System.IO.Compression.ZipArchive($FS, [System.IO.Compression.ZipArchiveMode]::Update)
 try {
-    foreach ($k in $Disk.Keys) {
-        $lama = $zip.Entries | Where-Object { $_.FullName -eq $k }
-        if ($lama) { $lama | ForEach-Object { $_.Delete() } }
-        Tulis-Entri $zip $k $Disk[$k]
+    $Hapus = @($Zip.Entries | Where-Object {
+        $_.FullName -like "extension/icons/*" -or $_.FullName -eq "extension/package.json"
+    })
+    Write-Output ("entri icons/package.json lama dihapus: {0}" -f $Hapus.Count)
+    foreach ($H in $Hapus) { $H.Delete() }
+
+    Tulis-Entri $Zip "extension/package.json" (Join-Path $Dalam "package.json")
+
+    foreach ($F in $BerkasIkon) {
+        $Rel = $F.FullName.Substring($FolderIkon.Length + 1) -replace "\\", "/"
+        Tulis-Entri $Zip ("extension/icons/" + $Rel) $F.FullName
     }
 }
 finally {
-    $zip.Dispose(); $fs.Close()
+    $Zip.Dispose()
+    $FS.Close()
 }
 
-Write-Output "VSIX OK: $Out"
-Write-Output ("Ukuran: {0:N0} byte" -f (Get-Item $Out).Length)
+Write-Output ("SELESAI: {0}" -f $Out)
+Write-Output ("Ukuran : {0:N0} byte" -f (Get-Item -LiteralPath $Out).Length)
 
-# Verifikasi isi.
-$Ver = @(
-    "extension/icons/evernight-file.png",
-    "extension/icons/evernight-icon-theme.json",
-    "extension/icons/evernight-icon.png",
+# --- Verifikasi isi (read-only, bounded). ---
+$Verifikasi = @(
     "extension/package.json",
+    "extension/icons/evernight-icon-theme.json",
+    "extension/icons/evernight-file.png",
+    "extension/icons/evernight-icon.png",
+    "extension/icons/icons/files/html.svg",
+    "extension/icons/icons/folders/folder.svg",
+    "extension/out/extension.js",
     "extension.vsixmanifest",
     "[Content_Types].xml"
 )
-$z = [System.IO.Compression.ZipFile]::OpenRead((Resolve-Path $Out))
-$Nama = $z.Entries | ForEach-Object { $_.FullName }
-$z.Dispose()
+$ZR = [System.IO.Compression.ZipFile]::OpenRead((Resolve-Path -LiteralPath $Out))
+try {
+    $Nama = @($ZR.Entries | ForEach-Object { $_.FullName })
+}
+finally { $ZR.Dispose() }
+
 $Gagal = $false
-foreach ($v in $Ver) {
-    if ($Nama -contains $v) { Write-Output ("OK  {0}" -f $v) } else { Write-Output ("MISSING  {0}" -f $v); $Gagal = $true }
+foreach ($V in $Verifikasi) {
+    if ($Nama -contains $V) { Write-Output ("OK  {0}" -f $V) }
+    else { Write-Output ("MISSING  {0}" -f $V); $Gagal = $true }
+}
+$JumlahSVGZX = @($Nama | Where-Object { $_ -like "extension/icons/icons/*.svg" }).Count
+Write-Output ("SVG di vsix  : {0}" -f $JumlahSVGZX)
+if ($JumlahSVGZX -lt 300) {
+    Write-Output "PERINGATAN: SVG < 300 - cek folder icons\icons\files & icons\folders"
+    $Gagal = $true
 }
 if ($Gagal) { exit 2 }
+exit 0

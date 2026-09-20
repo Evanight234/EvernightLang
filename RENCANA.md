@@ -140,13 +140,15 @@ PERINGATAN: Baris 8 - Variabel 'x' tidak didefinisikan
     ```
     Evernight/
     ├── bin/
-    │   └── evernight.exe           # Biner compiler + VM + REPL + runner
+    │   ├── evernight.exe           # Biner compiler + VM + REPL + runner
+    │   ├── kill.cmd                # `kill evernight system` (CMD)
+    │   └── kill.ps1                # `.\kill.ps1` (PowerShell)
     ├── assets/
     │   ├── icon.ico                # Ikon resmi berkas .eve di Explorer
     │   └── logo.png
     ├── docs/
     │   └── PANDUAN.txt
-    └── uninstall.cmd / uninstall.ps1
+    └── uninstall.exe               # Uninstaller GUI (3 tahap wizard)
     ```
   - **Otomatisasi PATH Sistem**: Pengguna cukup buka terminal baru dan langsung dapat menjalankan `evernight run berkas.eve`, `evernight berkas.eve`, atau `evernight`.
   - **Asosiasi Berkas Windows Instan**: Klik dua kali pada berkas `.eve` langsung mengeksekusi program melalui `evernight.exe "%1"`.
@@ -218,6 +220,33 @@ PERINGATAN: Baris 8 - Variabel 'x' tidak didefinisikan
   - [x] Hasil: `installer/dist/EvernightLanguage-0.1.0-Setup.exe` (**8.35 MB** + `SHA256SUMS.txt`)
   - [x] **Pratinjau 6 halaman** untuk tinjauan desain: `installer/aset/tinjau/` + flag `--mulai N`
   - *Poles desain akhir + uji komputer/VM bersih: Fase 7E.*
+- **6G — Tema Ikon Lengkap (Symbols + `.eve`) + Kompatibilitas 6 Editor** ✅ *(selesai 2026-09-19)*
+  - [x] Tema gabungan dari `miguelsolorio.vscode-symbols` (MIT): 348 SVG `files/` + 104 SVG `folders/` + mapping `.eve` → `_eve` → `evernight-file.png`
+  - [x] `package.json`: label tema → **IconStyles** (id tetap `evernight-icons`, path `./icons/evernight-icon-theme.json`)
+  - [x] `build-vsix.ps1` dirombak total: patch vsix dasar dengan SEMUA berkas ikon rekursif (bukan 3 entri hardcoded)
+  - [x] VSIX baru: **1.264.065 byte**, 720 entri, 352 SVG, tema 98.686 B
+  - [x] **Verifikasi lolos**: semua target SVG ada (0 hilang), `.eve`→`_eve` mapping OK, label IconStyles OK
+  - [x] **VSIX kompatibel 6 editor**: VS Code, Cursor, Windsurf, VSCodium, Antigravity IDE, Theia — struktur standar, API universal (TextMate, iconThemes, snippets, CompletionProvider), tanpa native module/node_modules
+  - [x] Terpasang di Antigravity via CLI (`--install-extension --force`) → **semua ikon kelihatan**
+- **6H — Sistem Uninstaller** ✅
+  - 3 tahap wizard: **Konfirmasi** (judul "Hapus EvernightLanguage?" + peringatan tak-bisa-batal + daftar komponen yang dicabut dalam box; checkbox "Hapus juga ekstensi editor" di luar box → tombol Kembali + Copot) → **Menghapus** (progress bar + log nyata dari `pasang::copot(hapus_ekstensi, ...)`) → **Selesai** (ringkasan dalam box + tombol Tutup)
+  - Navigasi back/forward berfungsi di mode copot (3 langkah: Konfirmasi/Menghapus/Selesai; panel tahapan pakai `LANGKAH_COPOT`)
+  - `pasang::copot()` menerima parameter `hapus_ekstensi: bool` — bila false, skip copot ekstensi + reset iconTheme
+  - Perintah terminal cepat: `kill evernight System` (CMD via `kill.cmd` di bin/; PowerShell via function di `$PROFILE` dengan `Remove-Item alias:kill` untuk override alias bawaan) — di-embed di installer & dicopy ke `bin/` otomatis saat install; function didaftarkan ke `$PROFILE` otomatis
+  - Fondasi lama: `Mode::Copot` + self-copy `--dari-temp` + `pindah_ke_temp()` tetap dipertahankan
+- **6I — Sistem Updater (CLI saja, tanpa desain visual)** ✅
+  - Perintah: `update Evernight system` (nama kerja dari user) — murni terminal CMD/PowerShell, tanpa GUI/desain installer
+  - Sumber: folder `version/` di GitHub (`version/version` = manifes teks satu baris; file update + installer masuk folder yang sama); lokal: `pembaruan/version`
+  - Tanpa update: `Istriku lagi sibuk jangan dingagu` | ada update: `terupdate ke versi <versi>, jangan panggil istriku lagi dasar karbit` (verbatim user)
+  - Scope: exe + vsix + reinstall ekstensi best-effort; exe terkunci → penimpaan terjadwal; flag `--cek` (dry-run)
+  - Prasyarat aktif: push repo + ganti placeholder `<akun>/<repo>` di `update.ps1`
+- **Sinkronisasi distribusi vsix baru (wajib sebelum rilis ke orang lain)** ✅ *(selesai 2026-09-19)*
+  1. Salin vsix 1.264.065 B → `installer/aset/payload/` + `paket/.../extensions/` (timpa 20.797 B)
+  2. Regenerasi ZIP paket portabel (±membesar 1,3 MB)
+  3. Rebuild `Setup.exe` via `installer/build-installer.ps1`
+  4. Verifikasi SHA256 + ukuran + payload; smoke test install→uninstall opsional
+  5. Catat SHA/ukuran baru di KONTEKS.md/PROGRES.md
+
 ### Addendum Akhir 6D — Desain Installer Evernight
 
 > Keputusan user 2026-09-14. Ini spesifikasi desain resmi installer GUI (6F). Sumber palet: gambar referensi user `assets/evernight instaler models.jpeg` (dieksraksi programatik via PIL). Struktur wizard: adaptasi dari desain Stitch "Desktop Setup Wizard Interface".
@@ -422,7 +451,7 @@ Catatan pelaksanaan (Fase 6):
 2. Deteksi konflik: bila `.eve` sudah diklaim aplikasi lain, installer meminta konfirmasi sebelum menimpa.
 3. Biner defaultnya `evernight.exe` (dijalankan dengan argumen berkas). Di Linux/macOS asosiasi menyusul (MIME/UTI) — tidak menghambat Windows.
 
-## Fase 7: Stabilisasi & Rilis 1.0 (DEV)
+## Fase 7: Stabilisasi & Rilis 1.0 (DEV) — **DITUNDA** (keputusan user 2026-09-19)
 - [ ] Audit keamanan dasar (akses file, batasan sandbox)
 - [ ] Stabilisasi versi bytecode (kompatibilitas antar-rilis)
 - [ ] Pengujian ketahanan edge-case + regresi performa

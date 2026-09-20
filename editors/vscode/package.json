@@ -76,7 +76,7 @@
     "iconThemes": [
       {
         "id": "evernight-icons",
-        "label": "Evernight File Icons",
+        "label": "IconStyles",
         "path": "./icons/evernight-icon-theme.json"
       }
     ]

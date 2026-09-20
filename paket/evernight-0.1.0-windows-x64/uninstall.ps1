@@ -43,6 +43,27 @@ function Cari-CliEditor($entri) {
     return $null
 }
 
+# Kembalikan tema ikon ke bawaan editor agar explorer tidak "nol ikon" setelah
+# ekstensi dicopot.
+$FolderSettings = @{
+    "Antigravity IDE" = "Antigravity"
+    "Visual Studio Code" = "Code"
+    "VS Code Insiders" = "Code - Insiders"
+    "Cursor" = "Cursor"
+    "Windsurf" = "Windsurf"
+    "VSCodium" = "VSCodium"
+}
+function Reset-Ikon($namaEditor) {
+    $sub = $FolderSettings[$namaEditor]
+    if (-not $sub) { return }
+    $settings = Join-Path $env:APPDATA "$sub\User\settings.json"
+    if (-not (Test-Path $settings)) { return }
+    $isi = Get-Content $settings -Raw
+    $isi = [regex]::Replace($isi, '"workbench\.iconTheme"\s*:\s*"(?:[^"])*"', '"workbench.iconTheme": "default"')
+    Set-Content -Path $settings -Value $isi -Encoding UTF8 -NoNewline
+    Tulis "  Tema ikon editor dikembalikan ke bawaan." "DarkGray"
+}
+
 Judul "Pencopot EvernightLanguage"
 if ($Uji) { Tulis "[MODE UJI] Tidak akan ada perubahan pada sistem." "Yellow" }
 Tulis "Folder instalasi : $LokasiInstal"
@@ -130,6 +151,7 @@ if ($SimpanEkstensi) {
                         Tulis "Tidak terpasang di $($t.Nama) (dilewati)." "DarkGray"
                     } else {
                         Tulis "Ekstensi dicopot dari $($t.Nama)." "Green"
+                        Reset-Ikon $t.Nama
                     }
                 } catch {
                     Tulis "Gagal mencopot dari $($t.Nama): $($_.Exception.Message)" "Yellow"

@@ -26,6 +26,10 @@ pub struct Payload {
     pub icon_ico: &'static [u8],
     pub logo_png: &'static [u8],
     pub lisensi: &'static [u8],
+    pub kill_cmd: &'static [u8],
+    pub kill_ps1: &'static [u8],
+    pub update_cmd: &'static [u8],
+    pub update_ps1: &'static [u8],
 }
 
 /// Pilihan pengguna dari halaman wizard.
@@ -77,6 +81,7 @@ impl Rencana {
 #[derive(Debug, Clone)]
 pub enum Pesan {
     Langkah { persen: f32, teks: String },
+    Peringatan { teks: String },
     Selesai(Result<(), String>),
 }
 
@@ -134,7 +139,7 @@ pub fn jalankan(
     payload: &Payload,
     lapor: &mut dyn FnMut(Pesan),
 ) -> Result<(), String> {
-    let total = 7.0f32;
+    let total = 8.0f32;
     let mut n = 0.0f32;
     // Helper: majukan langkah lalu lapor. Ditulis sebagai fungsi bebas agar
     // tidak menahan borrow `lapor` (yang juga dipakai untuk pesan peringatan).
@@ -186,6 +191,20 @@ pub fn jalankan(
         .join("evernight-language-0.1.0.vsix");
     fs::write(&vsix_path, payload.vsix).map_err(|e| format!("Gagal menulis .vsix: {}", e))?;
 
+    // Salin kill.cmd & kill.ps1 ke bin/ agar perintah `kill evernight system`
+    // bisa dijalankan dari mana saja (bin/ sudah di PATH).
+    fs::write(rencana.bin().join("kill.cmd"), payload.kill_cmd)
+        .map_err(|e| format!("Gagal menulis kill.cmd: {}", e))?;
+    fs::write(rencana.bin().join("kill.ps1"), payload.kill_ps1)
+        .map_err(|e| format!("Gagal menulis kill.ps1: {}", e))?;
+
+    // Salin update.cmd & update.ps1 ke bin/ agar perintah
+    // `update evernight system` bisa dijalankan dari mana saja.
+    fs::write(rencana.bin().join("update.cmd"), payload.update_cmd)
+        .map_err(|e| format!("Gagal menulis update.cmd: {}", e))?;
+    fs::write(rencana.bin().join("update.ps1"), payload.update_ps1)
+        .map_err(|e| format!("Gagal menulis update.ps1: {}", e))?;
+
     // Salin installer ini sendiri sebagai `uninstall.exe` di folder instalasi.
     // Pola standar installer: entri "Apps & Features" tetap berfungsi walau
     // Setup.exe asli sudah dipindahkan atau dihapus oleh pengguna.
@@ -221,7 +240,14 @@ pub fn jalankan(
     maju(&mut n, total, lapor, "Memasang ekstensi editor...");
     if rencana.pasang_ekstensi {
         for ed in deteksi_editor() {
-            let _ = pasang_ekstensi(&ed, &vsix_path);
+            if pasang_ekstensi(&ed, &vsix_path).is_ok() {
+                // Ikut mengaktifkan tema ikon agar `.eve` langsung tampil.
+                let _ = aktifkan_icon_theme(&ed);
+            } else {
+                lapor(Pesan::Peringatan {
+                    teks: format!("Gagal memasang ekstensi di {}", ed.nama),
+                });
+            }
         }
     }
 
@@ -235,7 +261,89 @@ pub fn jalankan(
     maju(&mut n, total, lapor, "Mendaftarkan di Apps & Features...");
     daftar_uninstall(rencana).map_err(|e| format!("Gagal mendaftarkan uninstaller: {}", e))?;
 
+    // 8. Daftarkan function `kill` di PowerShell profile
+    maju(&mut n, total, lapor, "Mendaftarkan perintah kill di PowerShell...");
+    let _ = daftarkan_kill_ps1();
+
     Ok(())
+}
+
+// ---------------------------------------------------------------------------
+// PowerShell profile — function `kill` untuk override alias bawaan
+// ---------------------------------------------------------------------------
+
+/// Marker untuk menandai blok kill function di $PROFILE.
+const KILL_PS1_MENERIMA: &str = "# >>> EvernightLanguage kill function";
+const KILL_PS1_AKHIR: &str = "# <<< EvernightLanguage kill function";
+
+/// Daftarkan function `kill` ke $PROFILE pengguna agar `kill evernight system`
+/// bisa dijalankan dari PowerShell tanpa error alias `Stop-Process`.
+fn daftarkan_kill_ps1() -> Result<(), String> {
+    let profile = powershell_profile()?;
+    if let Some(isi) = fs::read_to_string(&profile).ok() {
+        if isi.contains(KILL_PS1_MENERIMA) {
+            return Ok(()); // sudah terdaftar
+        }
+    }
+
+    let fungsi = format!(
+        "\n{menerima}\n\
+         Remove-Item alias:kill -ErrorAction SilentlyContinue\n\
+         function kill {{\n\
+         \x20   param(\n\
+         \x20       [Parameter(Position=0)] $Name,\n\
+         \x20       [Parameter(Position=1, ValueFromRemainingArguments)] $Remaining\n\
+         \x20   )\n\
+         \x20   if ($Name -eq 'evernight') {{\n\
+         \x20       $regPath = 'HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\EvernightLanguage'\n\
+         \x20       $lokasi = (Get-ItemProperty -Path $regPath -ErrorAction SilentlyContinue).InstallLocation\n\
+         \x20       if (-not $lokasi) {{ $lokasi = Join-Path $env:LOCALAPPDATA 'Programs\\Evernight' }}\n\
+         \x20       $uninstall = Join-Path $lokasi 'uninstall.exe'\n\
+         \x20       if (Test-Path $uninstall) {{ & $uninstall --uninstall @Remaining }}\n\
+         \x20       else {{ Write-Host '  EvernightLanguage tidak terpasang.' }}\n\
+         \x20   }} else {{\n\
+         \x20       Stop-Process -Name $Name @Remaining\n\
+         \x20   }}\n\
+         }}\n\
+         {akhir}\n",
+        menerima = KILL_PS1_MENERIMA,
+        akhir = KILL_PS1_AKHIR,
+    );
+
+    if let Some(induk) = profile.parent() {
+        let _ = fs::create_dir_all(induk);
+    }
+    fs::write(&profile, fungsi).map_err(|e| format!("Gagal menulis $PROFILE: {}", e))
+}
+
+/// Hapus function `kill` dari $PROFILE pengguna.
+fn hapus_kill_ps1() {
+    let Some(profile) = powershell_profile().ok() else {
+        return;
+    };
+    let Ok(isi) = fs::read_to_string(&profile) else {
+        return;
+    };
+    let awal = isi.find(KILL_PS1_MENERIMA);
+    let akhir = isi.find(KILL_PS1_AKHIR);
+    if let (Some(_a), Some(k)) = (awal, akhir) {
+        // Ambil baris setelah marker akhir.
+        let sisa = &isi[k + KILL_PS1_AKHIR.len()..];
+        let sisa = sisa.trim_start_matches('\n');
+        let baru = format!("{}\n", sisa.trim_end());
+        let _ = fs::write(&profile, baru);
+    }
+}
+
+/// Lokasi $PROFILE pengguna (CurrentUserAllHosts).
+fn powershell_profile() -> Result<std::path::PathBuf, String> {
+    let keluaran = powershell("$PROFILE.CurrentUserAllHosts")?;
+    let path = keluaran.trim().to_string();
+    if path.is_empty() {
+        Err("Tidak bisa menentukan lokasi $PROFILE".to_string())
+    } else {
+        Ok(std::path::PathBuf::from(path))
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -384,6 +492,80 @@ pub fn copot_ekstensi(editor: &Editor) -> Result<(), String> {
     }
 }
 
+/// Tulis/atur `workbench.iconTheme` ke `evernight-icons` pada settings editor,
+/// agar ikon berkas `.eve` langsung tampil tanpa langkah manual.
+pub fn aktifkan_icon_theme(editor: &Editor) -> Result<(), String> {
+    let Some(settings) = berkas_settings(editor) else {
+        return Ok(());
+    };
+    if let Some(induk) = settings.parent() {
+        let _ = fs::create_dir_all(induk);
+    }
+    let isi = fs::read_to_string(&settings).unwrap_or_default();
+    let baru = ganti_icon_theme(&isi);
+    fs::write(settings, baru).map_err(|e| format!("Gagal menulis settings: {}", e))
+}
+
+/// Ganti/sisipkan `"workbench.iconTheme": "evernight-icons"` dalam teks JSON.
+/// Tanpa dependensi JSON, cukup manipulasi teks untuk satu kunci.
+fn ganti_icon_theme(isi: &str) -> String {
+    ganti_icon_theme_nilai(isi, "evernight-icons")
+}
+
+/// Saat uninstall, kembalikan tema ikon ke bawaan editor agar tidak "nol ikon".
+fn nonaktifkan_icon_theme(editor: &Editor) {
+    if let Some(settings) = berkas_settings(editor) {
+        if let Ok(isi) = fs::read_to_string(&settings) {
+            let _ = fs::write(settings, ganti_icon_theme_nilai(&isi, "default"));
+        }
+    }
+}
+
+fn ganti_icon_theme_nilai(isi: &str, nilai_baru: &str) -> String {
+    let kunci = "\"workbench.iconTheme\"";
+    let nilai = format!("\"{}\"", nilai_baru);
+    if let Some(awal) = isi.find(kunci) {
+        let setelah = &isi[awal + kunci.len()..];
+        if let Some(i_kutip) = setelah.find('"') {
+            let kutip = awal + kunci.len() + i_kutip;
+            if let Some(i_tutup) = isi[kutip + 1..].find('"') {
+                let tutup = kutip + 1 + i_tutup;
+                return format!("{}{}{}", &isi[..kutip], nilai, &isi[tutup + 1..]);
+            }
+        }
+        return isi.to_string();
+    }
+    if isi.trim().is_empty() || isi.trim() == "{}" || isi[isi.find('{').map_or(0, |p| p + 1)..].trim_start() == "}" {
+        format!("{{\n  {}: {}\n}}\n", kunci, nilai)
+    } else {
+        let pos = isi.find('{').map_or(0, |p| p + 1);
+        format!("{}\n  {}: {},{}", &isi[..pos], kunci, nilai, &isi[pos..])
+    }
+}
+
+/// Lokasi `settings.json` user tiap editor keluarga VS Code (via APPDATA).
+fn berkas_settings(editor: &Editor) -> Option<PathBuf> {
+    const FOLDER_DATA: &[(&str, &str)] = &[
+        ("Antigravity IDE", "Antigravity"),
+        ("Visual Studio Code", "Code"),
+        ("VS Code Insiders", "Code - Insiders"),
+        ("Cursor", "Cursor"),
+        ("Windsurf", "Windsurf"),
+        ("VSCodium", "VSCodium"),
+    ];
+    let appdata = std::env::var("APPDATA").ok()?;
+    let sub = FOLDER_DATA
+        .iter()
+        .find(|(nama, _)| *nama == editor.nama)?
+        .1;
+    Some(
+        Path::new(&appdata)
+            .join(sub)
+            .join("User")
+            .join("settings.json"),
+    )
+}
+
 // ---------------------------------------------------------------------------
 // Pintasan
 // ---------------------------------------------------------------------------
@@ -520,7 +702,10 @@ fn hitung_ukuran(dir: &Path) -> u64 {
 // ---------------------------------------------------------------------------
 
 /// Jalankan pencopotan penuh.
-pub fn copot(lapor: &mut dyn FnMut(Pesan)) -> Result<(), String> {
+///
+/// Bila `hapus_ekstensi` true, copot juga ekstensi editor dari semua editor
+/// yang terdeteksi. Bila false, pertahankan ekstensi.
+pub fn copot(hapus_ekstensi: bool, lapor: &mut dyn FnMut(Pesan)) -> Result<(), String> {
     let tujuan = baca_install_location().unwrap_or_else(|| {
         let lokal = std::env::var("LOCALAPPDATA").unwrap_or_default();
         Path::new(&lokal).join("Programs").join("Evernight")
@@ -540,12 +725,15 @@ pub fn copot(lapor: &mut dyn FnMut(Pesan)) -> Result<(), String> {
     let _ = hapus_path(&bin, false);
     let _ = hapus_path(&bin, true);
 
-    lapor(Pesan::Langkah {
-        persen: 0.6,
-        teks: "Mencopot ekstensi editor...".to_string(),
-    });
-    for ed in deteksi_editor() {
-        let _ = copot_ekstensi(&ed);
+    if hapus_ekstensi {
+        lapor(Pesan::Langkah {
+            persen: 0.6,
+            teks: "Mencopot ekstensi editor...".to_string(),
+        });
+        for ed in deteksi_editor() {
+            let _ = copot_ekstensi(&ed);
+            nonaktifkan_icon_theme(&ed);
+        }
     }
     hapus_pintasan();
 
@@ -555,6 +743,9 @@ pub fn copot(lapor: &mut dyn FnMut(Pesan)) -> Result<(), String> {
     });
     let _ = reg_delete(&kunci_uninstall(false));
     let _ = reg_delete(&kunci_uninstall(true));
+
+    // Hapus function `kill` dari $PROFILE PowerShell.
+    hapus_kill_ps1();
 
     lapor(Pesan::Langkah {
         persen: 0.9,
@@ -824,5 +1015,38 @@ mod tests {
     fn kunci_uninstall_berbeda_per_mode() {
         assert!(kunci_uninstall(false).starts_with("HKCU"));
         assert!(kunci_uninstall(true).starts_with("HKLM"));
+    }
+
+    #[test]
+    fn icon_theme_disetel_ke_evernight() {
+        let hasil = ganti_icon_theme("");
+        assert!(hasil.contains("\"workbench.iconTheme\": \"evernight-icons\""));
+        // Membuat objek kosong menghasilkan JSON valid (tanpa koma menggantung).
+        assert!(serde_trail(&ganti_icon_theme("{}")));
+    }
+
+    #[test]
+    fn icon_theme_mengganti_nilai_yang_sudah_ada() {
+        let isi = r#"{
+  "workbench.iconTheme": "vscode-icons",
+  "editor.fontSize": 14
+}"#;
+        let hasil = ganti_icon_theme(isi);
+        assert!(hasil.contains("\"workbench.iconTheme\": \"evernight-icons\""));
+        assert!(!hasil.contains("vscode-icons"));
+        assert!(hasil.contains("editor.fontSize"));
+    }
+
+    #[test]
+    fn icon_theme_disispkan_setelah_tanda_buka() {
+        let isi = "{\"a\": 1}";
+        let hasil = ganti_icon_theme(isi);
+        assert!(hasil.contains("\"workbench.iconTheme\": \"evernight-icons\""));
+        assert!(hasil.contains("\"a\": 1"));
+    }
+
+    /// Cek ringan tidak ada ",\n}" (koma sebelum tutup) atau dapat diurai serde.
+    fn serde_trail(s: &str) -> bool {
+        !s.contains(",\n}")
     }
 }

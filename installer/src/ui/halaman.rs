@@ -5,13 +5,20 @@ use crate::pasang::Rencana;
 use crate::tema;
 use crate::ui::komponen::{self, StatusLangkah, Tombol};
 
-/// Daftar langkah wizard (untuk panel tahapan).
+/// Daftar langkah wizard pemasangan (untuk panel tahapan).
 pub const LANGKAH: &[&str] = &[
     "Selamat datang",
     "Lisensi",
     "Lokasi tujuan",
     "Siap pasang",
     "Memasang",
+    "Selesai",
+];
+
+/// Daftar langkah wizard pencopotan (3 tahap).
+pub const LANGKAH_COPOT: &[&str] = &[
+    "Konfirmasi",
+    "Menghapus",
     "Selesai",
 ];
 
@@ -73,7 +80,10 @@ impl Halaman {
 }
 
 /// Status semua langkah relatif ke halaman saat ini.
-pub fn status_langkah(sekarang: Halaman, indeks: usize, sedang_pasang: bool) -> StatusLangkah {
+pub fn status_langkah(sekarang: Halaman, indeks: usize, sedang_pasang: bool, copot: bool) -> StatusLangkah {
+    if copot {
+        return status_langkah_copot(sekarang, indeks);
+    }
     let i = sekarang.indeks();
     if sekarang == Halaman::Memasang {
         // Saat memasang, langkah 1-4 selesai; langkah 5 aktif.
@@ -92,6 +102,26 @@ pub fn status_langkah(sekarang: Halaman, indeks: usize, sedang_pasang: bool) -> 
     if indeks < i {
         StatusLangkah::Selesai
     } else if indeks == i {
+        StatusLangkah::Aktif
+    } else {
+        StatusLangkah::Menunggu
+    }
+}
+
+/// Status langkah untuk mode pencopotan (3 tahap: Konfirmasi/Menghapus/Selesai).
+fn status_langkah_copot(sekarang: Halaman, indeks: usize) -> StatusLangkah {
+    let langkah = match sekarang {
+        Halaman::SiapPasang => 0,
+        Halaman::Memasang => 1,
+        Halaman::Selesai => 2,
+        _ => 0,
+    };
+    if sekarang == Halaman::Selesai {
+        return StatusLangkah::Selesai;
+    }
+    if indeks < langkah {
+        StatusLangkah::Selesai
+    } else if indeks == langkah {
         StatusLangkah::Aktif
     } else {
         StatusLangkah::Menunggu
@@ -117,7 +147,6 @@ pub struct KonteksHalaman<'a> {
     pub progres: &'a AnimasiProgress,
     pub status_teks: &'a str,
     pub log: &'a [String],
-    pub selesai_ok: bool,
     /// True bila wizard sedang dalam mode pencopotan.
     pub mencopot: bool,
 }
@@ -251,10 +280,10 @@ pub fn gambar(
 
         Halaman::SiapPasang => {
             if konteks.mencopot {
-                judul(ui, "Copot EvernightLanguage");
+                judul(ui, "Hapus EvernightLanguage?");
                 sub(
                     ui,
-                    "Installer akan mencabut seluruh komponen yang terpasang.",
+                    "Aplikasi dan file program terkait akan dihapus dari komputer ini.",
                 );
                 ui.add_space(12.0);
                 komponen::kartu(ui, |ui| {
@@ -266,13 +295,28 @@ pub fn gambar(
                     ui.add_space(6.0);
                     ui.label(
                         egui::RichText::new(
-                            "Berkas program, entri PATH, asosiasi berkas .eve, ekstensi \
-                             editor, pintasan Start Menu, dan entri di Apps & Features.",
+                            "Berkas program, entri PATH, asosiasi berkas .eve, \
+                             pintasan Start Menu, dan entri di Apps & Features.",
                         )
                         .font(tema::font_isi())
                         .color(tema::SEKUNDER),
                     );
+                    ui.add_space(4.0);
+                    ui.label(
+                        egui::RichText::new(
+                            "Tindakan ini tidak bisa dibatalkan setelah dimulai.",
+                        )
+                        .font(tema::font_kecil())
+                        .color(tema::BAHAYA),
+                    );
                 });
+
+                // Kontrol interaktif DI LUAR box.
+                ui.add_space(14.0);
+                ui.checkbox(
+                    &mut konteks.rencana.pasang_ekstensi,
+                    "Hapus juga ekstensi editor (pewarnaan sintaksis)",
+                );
             } else {
                 judul(ui, "Siap Pasang");
                 sub(ui, "Periksa pilihan Anda, lalu tekan Pasang.");
@@ -371,14 +415,24 @@ pub fn gambar(
             // BOX: hanya keterangan; isinya log teks kemajuan.
             ui.add_space(16.0);
             komponen::kartu(ui, |ui| {
+                let judul_log = if konteks.mencopot {
+                    "Catatan pencopotan"
+                } else {
+                    "Catatan pemasangan"
+                };
                 ui.label(
-                    egui::RichText::new("Catatan pemasangan")
+                    egui::RichText::new(judul_log)
                         .font(tema::font_sub())
                         .color(tema::TEKS),
                 );
                 ui.add_space(6.0);
+                let desc_log = if konteks.mencopot {
+                    "Setiap langkah pencopotan dicatat di bawah ini."
+                } else {
+                    "Setiap langkah pemasangan dicatat di bawah ini."
+                };
                 ui.label(
-                    egui::RichText::new("Setiap langkah pemasangan dicatat di bawah ini.")
+                    egui::RichText::new(desc_log)
                         .font(tema::font_kecil())
                         .color(tema::REDUP),
                 );
@@ -399,63 +453,89 @@ pub fn gambar(
         }
 
         Halaman::Selesai => {
-            if konteks.selesai_ok {
+            if konteks.mencopot {
+                judul(ui, "Pencopotan Selesai");
+                sub(ui, "EvernightLanguage telah dicopot dari komputer ini.");
+                ui.add_space(14.0);
+
+                komponen::kartu(ui, |ui| {
+                    ui.label(
+                        egui::RichText::new("Yang telah dihapus")
+                            .font(tema::font_sub())
+                            .color(tema::TEKS),
+                    );
+                    ui.add_space(6.0);
+                    ui.label(
+                        egui::RichText::new(
+                            "Berkas program, entri PATH, asosiasi berkas .eve, \
+                             pintasan Start Menu, dan entri di Apps & Features.",
+                        )
+                        .font(tema::font_isi())
+                        .color(tema::SEKUNDER),
+                    );
+                    if konteks.rencana.pasang_ekstensi {
+                        ui.add_space(4.0);
+                        ui.label(
+                            egui::RichText::new("Ekstensi editor juga telah dicopot.")
+                                .font(tema::font_isi())
+                                .color(tema::SEKUNDER),
+                        );
+                    }
+                });
+            } else {
                 judul(ui, "Pemasangan Selesai");
                 sub(ui, "EvernightLanguage siap dipakai.");
-            } else {
-                judul(ui, "Pemasangan Gagal");
-                sub(ui, "Terjadi kesalahan. Lihat catatan di bawah.");
+                ui.add_space(14.0);
+
+                komponen::kartu(ui, |ui| {
+                    baris_info(ui, "Tujuan", &konteks.rencana.tujuan.to_string_lossy());
+                    baris_info(ui, "Versi", crate::pasang::VERSI);
+                    ui.add_space(8.0);
+                    ui.label(
+                        egui::RichText::new("Coba jalankan di terminal:")
+                            .font(tema::font_kecil())
+                            .color(tema::SEKUNDER),
+                    );
+                    ui.label(
+                        egui::RichText::new("  evernight --versi")
+                            .font(tema::font_mono())
+                            .color(tema::AKSEN),
+                    );
+                    ui.label(
+                        egui::RichText::new("  evernight program.eve")
+                            .font(tema::font_mono())
+                            .color(tema::AKSEN),
+                    );
+                });
+
+                ui.add_space(12.0);
+                ui.horizontal(|ui| {
+                    if komponen::tombol(
+                        ui,
+                        Tombol::kedua("Jalankan REPL").lebar(130.0),
+                        &mut hover[0],
+                        &mut riak[0],
+                    ) {
+                        aksi = Aksi::JalankanRepl;
+                    }
+                    if komponen::tombol(
+                        ui,
+                        Tombol::kedua("Buka Panduan").lebar(130.0),
+                        &mut hover[1],
+                        &mut riak[1],
+                    ) {
+                        aksi = Aksi::BukaPanduan;
+                    }
+                    if komponen::tombol(
+                        ui,
+                        Tombol::kedua("Buka Folder").lebar(130.0),
+                        &mut hover[2],
+                        &mut riak[2],
+                    ) {
+                        aksi = Aksi::BukaFolder;
+                    }
+                });
             }
-            ui.add_space(14.0);
-
-            komponen::kartu(ui, |ui| {
-                baris_info(ui, "Tujuan", &konteks.rencana.tujuan.to_string_lossy());
-                baris_info(ui, "Versi", crate::pasang::VERSI);
-                ui.add_space(8.0);
-                ui.label(
-                    egui::RichText::new("Coba jalankan di terminal:")
-                        .font(tema::font_kecil())
-                        .color(tema::SEKUNDER),
-                );
-                ui.label(
-                    egui::RichText::new("  evernight --versi")
-                        .font(tema::font_mono())
-                        .color(tema::AKSEN),
-                );
-                ui.label(
-                    egui::RichText::new("  evernight program.eve")
-                        .font(tema::font_mono())
-                        .color(tema::AKSEN),
-                );
-            });
-
-            ui.add_space(12.0);
-            ui.horizontal(|ui| {
-                if komponen::tombol(
-                    ui,
-                    Tombol::kedua("Jalankan REPL").lebar(130.0),
-                    &mut hover[0],
-                    &mut riak[0],
-                ) {
-                    aksi = Aksi::JalankanRepl;
-                }
-                if komponen::tombol(
-                    ui,
-                    Tombol::kedua("Buka Panduan").lebar(130.0),
-                    &mut hover[1],
-                    &mut riak[1],
-                ) {
-                    aksi = Aksi::BukaPanduan;
-                }
-                if komponen::tombol(
-                    ui,
-                    Tombol::kedua("Buka Folder").lebar(130.0),
-                    &mut hover[2],
-                    &mut riak[2],
-                ) {
-                    aksi = Aksi::BukaFolder;
-                }
-            });
         }
     }
 
@@ -511,6 +591,7 @@ pub fn gambar(
 
             if halaman != Halaman::Memasang
                 && halaman != Halaman::Selesai
+                && !(halaman == Halaman::SiapPasang && konteks.mencopot)
                 && komponen::tombol(
                     ui,
                     Tombol::kedua("Kembali").lebar(100.0).aktif(bisa_mundur),
@@ -665,15 +746,15 @@ mod tests {
     fn status_langkah_menandai_selesai_dan_aktif() {
         // Di halaman Tujuan (indeks 2): 0 & 1 selesai, 2 aktif, sisanya menunggu.
         assert!(matches!(
-            status_langkah(Halaman::Tujuan, 0, false),
+            status_langkah(Halaman::Tujuan, 0, false, false),
             StatusLangkah::Selesai
         ));
         assert!(matches!(
-            status_langkah(Halaman::Tujuan, 2, false),
+            status_langkah(Halaman::Tujuan, 2, false, false),
             StatusLangkah::Aktif
         ));
         assert!(matches!(
-            status_langkah(Halaman::Tujuan, 5, false),
+            status_langkah(Halaman::Tujuan, 5, false, false),
             StatusLangkah::Menunggu
         ));
     }
@@ -682,15 +763,15 @@ mod tests {
     fn status_saat_memasang() {
         // Saat memasang: 4 langkah pertama selesai, langkah ke-5 aktif.
         assert!(matches!(
-            status_langkah(Halaman::Memasang, 3, true),
+            status_langkah(Halaman::Memasang, 3, true, false),
             StatusLangkah::Selesai
         ));
         assert!(matches!(
-            status_langkah(Halaman::Memasang, 4, true),
+            status_langkah(Halaman::Memasang, 4, true, false),
             StatusLangkah::Aktif
         ));
         assert!(matches!(
-            status_langkah(Halaman::Memasang, 5, true),
+            status_langkah(Halaman::Memasang, 5, true, false),
             StatusLangkah::Menunggu
         ));
     }
@@ -699,10 +780,41 @@ mod tests {
     fn status_pada_halaman_selesai_semuanya_selesai() {
         for i in 0..6 {
             assert!(matches!(
-                status_langkah(Halaman::Selesai, i, false),
+                status_langkah(Halaman::Selesai, i, false, false),
                 StatusLangkah::Selesai
             ));
         }
+    }
+
+    #[test]
+    fn status_langkah_copot_tiga_tahap() {
+        // SiapPasang = langkah 0 aktif
+        assert!(matches!(
+            status_langkah(Halaman::SiapPasang, 0, false, true),
+            StatusLangkah::Aktif
+        ));
+        assert!(matches!(
+            status_langkah(Halaman::SiapPasang, 1, false, true),
+            StatusLangkah::Menunggu
+        ));
+        // Memasang = langkah 1 aktif, 0 selesai
+        assert!(matches!(
+            status_langkah(Halaman::Memasang, 0, true, true),
+            StatusLangkah::Selesai
+        ));
+        assert!(matches!(
+            status_langkah(Halaman::Memasang, 1, true, true),
+            StatusLangkah::Aktif
+        ));
+        // Selesai = semua selesai
+        assert!(matches!(
+            status_langkah(Halaman::Selesai, 0, false, true),
+            StatusLangkah::Selesai
+        ));
+        assert!(matches!(
+            status_langkah(Halaman::Selesai, 2, false, true),
+            StatusLangkah::Selesai
+        ));
     }
 
     #[test]

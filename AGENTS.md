@@ -88,6 +88,9 @@ Bahasa pemrograman baru dengan karakteristik:
 - [x] Linter (6D-4) — `evernight lint` + 7 aturan `WK*` baru
 - [x] Package manager (6D-6) — `evernight pkg init | jalankan | daftar`
 - [x] CI & rilis biner (6E) — GitHub Actions + `SHA256SUMS.txt`
+- [x] **6G — Tema Ikon Lengkap** — 352 SVG Symbols, tema 98.686 B, label IconStyles, vsix 1.264.065 B
+- [x] **6H — Sistem Uninstaller** — 3 tahap wizard (Konfirmasi/Menghapus/Selesai), checkbox ekstensi di luar box, `pasang::copot(hapus_ekstensi)`, navigasi back/forward, progress+log nyata, `kill evernight system` (CMD + PowerShell profile function dengan alias override)
+- [x] **6I — Sistem Updater CLI** — `update evernight system` (terminal saja, tanpa GUI), folder `version/` GitHub, pesan zhongk verbatim, `--cek` dry-run
 - [ ] Language Server dasar (`evernight-lsp`) — **dipindah ke Fase 7**
 - [ ] Publish `crates.io` + repositori GitHub (remote + push) + optimasi performa runtime
 

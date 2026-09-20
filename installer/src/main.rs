@@ -36,6 +36,10 @@ pub fn muat_payload() -> pasang::Payload {
         icon_ico: include_bytes!("../aset/logo/icon.ico"),
         logo_png: include_bytes!("../aset/logo/logo.png"),
         lisensi: include_bytes!("../aset/payload/LICENSE"),
+        kill_cmd: include_bytes!("../aset/payload/kill.cmd"),
+        kill_ps1: include_bytes!("../aset/payload/kill.ps1"),
+        update_cmd: include_bytes!("../aset/payload/update.cmd"),
+        update_ps1: include_bytes!("../aset/payload/update.ps1"),
     }
 }
 

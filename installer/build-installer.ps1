@@ -78,6 +78,28 @@ if (Test-Path $panduan) {
 Copy-Item (Join-Path $akar "LICENSE") (Join-Path $payload "LICENSE") -Force
 Write-Host "  LICENSE"
 
+# Salin kill scripts (kill.cmd & kill.ps1) ke payload.
+$killCmd = Join-Path $akar "kill.cmd"
+if (Test-Path $killCmd) {
+    Copy-Item $killCmd (Join-Path $payload "kill.cmd") -Force
+    Write-Host "  kill.cmd"
+}
+$killPs1 = Join-Path $akar "kill.ps1"
+if (Test-Path $killPs1) {
+    Copy-Item $killPs1 (Join-Path $payload "kill.ps1") -Force
+    Write-Host "  kill.ps1"
+}
+$updateCmd = Join-Path $akar "update.cmd"
+if (Test-Path $updateCmd) {
+    Copy-Item $updateCmd (Join-Path $payload "update.cmd") -Force
+    Write-Host "  update.cmd"
+}
+$updatePs1 = Join-Path $akar "update.ps1"
+if (Test-Path $updatePs1) {
+    Copy-Item $updatePs1 (Join-Path $payload "update.ps1") -Force
+    Write-Host "  update.ps1"
+}
+
 # --- 3. Installer ------------------------------------------------------
 Write-Host "`n[3/4] Membangun installer (release)..." -ForegroundColor Yellow
 

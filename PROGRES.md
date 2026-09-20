@@ -5,7 +5,7 @@
 
 ## Status Saat Ini
 
-- Fase aktif: **Fase 6 — Tooling Lanjutan & Distribusi Sistem** — **SELESAI** (6A ✅, 6B ✅, 6C ✅, 6D ✅, 6E ✅, 6F ✅). Fase berikutnya: **Fase 7 (Stabilisasi & Rilis 1.0)**
+- Fase aktif: **Fase 6 — Tooling Lanjutan & Distribusi Sistem** — **6H ✅ + 6I ✅**. Berikutnya: **Fase 7 (Stabilisasi & Rilis 1.0)** — **DITUNDA** atas permintaan user.
 - Fase selesai: Fase 1 (Desain Bahasa), Fase 2 (Implementasi Inti), Fase 3 (Standard Library + Identitas Visual), Fase 4 (REPL & CLI + Highlighting Editor), Fase 5 (Testing & Kualitas Internal)
 
 ## Checklist Progres
@@ -99,6 +99,11 @@
 - [x] **6E — CI & Rilis Biner** (`.github/workflows/ci.yml` + `rilis.yml`, `git init`, `.gitignore`/`.gitattributes`, `SHA256SUMS.txt`, contoh `.eve` dirapikan agar lolos CI)
 - [x] **6F — Installer GUI Windows (egui/Rust)** — crate terpisah `installer/`, panel maskot 28%, palet dari referensi user, font dibundel, bilah judul kustom, **window 1000x640**, **satu box per halaman** (isi box hanya judul+keterangan), **pemilih folder native (`rfd`) dengan tombol Telusuri**, **tanpa jendela CMD** (`windows_subsystem` + `CREATE_NO_WINDOW`), 6 halaman wizard, animasi micro-interaction, per-user/per-machine, `uninstall.exe` bersih, `EvernightLanguage-0.1.0-Setup.exe` 8.37 MB + SHA256
 
+- [x] **6G — Tema Ikon Lengkap + Kompatibilitas 6 Editor** (352 SVG Symbols, tema 98.686 B, label IconStyles, vsix 1.264.065 B, terpasang & ikon tampil di Antigravity)
+- [x] **6H — Sistem Uninstaller** — 3 tahap wizard (Konfirmasi/Menghapus/Selesai), checkbox "Hapus ekstensi editor" di luar box, `pasang::copot(hapus_ekstensi)`, progress+log nyata, navigasi back/forward, `kill evernight system` (CMD: `kill.cmd` di bin/; PowerShell: function di `$PROFILE` + `Remove-Item alias:kill`), 21 test hijau
+- [x] **6I — Sistem Updater CLI** (`update evernight system`, folder `version/` GitHub + `pembaruan/version` lokal, pesan zhongk verbatim, exe+vsix+reinstall ekstensi, `--cek` dry-run, 5 skenario teruji, 21 test installer hijau)
+- [x] **Sinkronisasi vsix baru ke payload + paket + rebuild Setup.exe** (vsix 1.264.065 B, ZIP 1.9 MB, Setup.exe 9.56 MB, SHA `dd89006e...`)
+
 ### Fase 7: Stabilisasi & Rilis 1.0 (DEV)
 - [ ] Audit keamanan dasar (akses file, batasan sandbox)
 - [ ] Stabilisasi versi bytecode (kompatibilitas antar-rilis)
@@ -124,6 +129,20 @@
 - [ ] Jadwal pemeliharaan pasca-1.0
 
 ## Log Aktivitas
+
+- **2026-09-19**: **6G/6H/6I DIDEFINISIKAN + 7E DIBATALKAN.**
+  - 7E (poles desain installer) **batal** atas permintaan user — desain 6F final apa adanya; tidak ada perubahan visual.
+  - 6G = tema ikon (selesai, tetap). **6H = uninstaller** (hapus PATH+sistem, perintah `kill evernight System`, GUI tunggu mockup Stitch). **6I = updater CLI tanpa GUI** (`update Evernight system`, tarik dari folder GitHub, pesan zhongk jika tidak ada update).
+  - Ditemukan: payload installer + paket masih vsix basi 20.797 B (vs 1.264.065 B benar) — Setup.exe kini tidak layak edar; sinkronisasi 5 langkah terjadwal sebelum rilis ke orang lain.
+  - **Sinkronisasi SELESAI**: vsix 1.264.065 B → payload + paket; ZIP portabel 1,891,767 byte; `Setup.exe` 9.56 MB, SHA `dd89006e98830dc298fea3098db9bd0784251948689218fb84841ea4162bc7d4`.
+
+- **2026-09-19**: **Ikon editor diperbaiki tuntas + auto-aktif saat install.**
+  - Akar masalah kedua: entri `extensions.json` hasil pasang manual memakai path **`/c://c:/Users/...`** (prefix `/c:/` dobel). Editor gagal memuat ekstensi -> tema `evernight-icons` tidak tersedia -> **explorer nol ikon** (semua file). Ini menjelaskan gejala "pakai tema Evernight juga tidak muncul".
+  - Perbaikan mesin ini: pasang ulang via CLI editor resmi `--install-extension <vsix> --force` (editor menulis registrasi benar: uuid, path, enabled state). `workbench.iconTheme` sudah `evernight-icons`.
+  - **Installer kini auto-aktifkan ikon (fresh install langsung tampil):** `pasang.rs::aktifkan_icon_theme()` menulis `"workbench.iconTheme": "evernight-icons"` ke `settings.json` user tiap editor setelah ekstensi terpasang (peta folder APPDATA per editor). Saat uninstall, `nonaktifkan_icon_theme()` mengembalikan ke `"default"` agar tak jadi "nol ikon". Manipulasi JSON 1 kunci tanpa dependensi; `ganti_icon_theme_nilai()` di-cover 3 unit test.
+  - **`install.ps1`/`uninstall.ps1` disamakan:** fungsi `Aktifkan-Ikon` (set ke `evernight-icons`) dan `Reset-Ikon` (set `default`) untuk jalur CLI/distribusi portabel; sintaks 2 skrip lolos parser PS. ZIP paket diregenerasi (758 KB).
+  - Verifikasi: **20 test installer hijau**, clippy `-D warnings` bersih; Setup.exe baru di `installer/dist/` (8.37 MB, SHA `da187a3c...`).
+  - **[TAMBAHAN SIANG INI]** Tema ikon digabung total: 352 SVG Symbols (249 files + 104 folders) + `_eve` → PNG E. `package.json` label → **IconStyles** (id tetap `evernight-icons`). `build-vsix.ps1` dirombak: patch vsix dasar dengan SEMUA berkas ikon rekursif (bukan 3 entri hardcoded). VSIX baru 1.264.065 byte, 720 entri. **Verifikasi lolos**: semua target SVG ada (0 hilang), tema 98.686 B, `.eve`→`_eve` mapping OK. **VSIX kompatibel 6 editor** (VS Code, Cursor, Windsurf, VSCodium, Antigravity, Theia) — struktur standar, API universal, tanpa native module. Terpasang di Antigravity → **semua ikon kelihatan**.
 
 - **2026-09-18**: **Revisi ikon file `.eve` (Fix penting).**
   - Akar masalah: `editors/vscode/icons/evernight-icon-theme.json` menunjuk `../assets/logo/icon_16.png`, yang relatif terhadap isi `.vsix` = `extension/assets/logo/icon_16.png` — berkas TIDAK ikut terpaket, jadi editor keluarga VS Code gagal memuat ikon dan memakai default.
