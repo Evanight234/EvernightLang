@@ -7,8 +7,8 @@
 # tidak ada update = pesan zhongk | ada update = unduh file -> timpa ->
 # reinstall ekstensi (best-effort) -> pesan zhongk.
 
-# GANTI dengan alamat repo GitHub setelah di-push (mis. "satriyo/EvernightLanguage").
-$REPO = "<akun>/<repo>"
+# Alamat repo GitHub (Evanight234/EvernightLang).
+$REPO = "Evanight234/EvernightLang"
 $DASAR = "https://raw.githubusercontent.com/$REPO/main/version"
 
 $ErrorActionPreference = "Stop"
