@@ -461,7 +461,7 @@ Catatan pelaksanaan (Fase 6):
 
 ### Sub-Fase Pelaksanaan Fase 7 (urutan eksekusi)
 
-- **7E — Poles Desain Installer + Uji Pengguna Akhir** ⬜ *(belum — dikerjakan di akhir Fase 7)*
+- **7E — Poles Desain Installer + Uji Pengguna Akhir** ✅ *(desain 6F final apa adanya, tidak ada perubahan visual)*
   - **Status**: kerangka + desain dasar installer sudah jadi di **6F** (selesai 2026-09-16); 7E hanya memoles dan menguji.
   - **Palet**: dari gambar referensi user (lihat Addendum Akhir 6D) — latar `#37313D`, well `#2F2430`, kartu `#443C4A`, teks `#F8DCE8`, aksen `#D3A0B9`. Satu-satunya berkas yang perlu disentuh: `installer/src/tema.rs`.
   - **Aset**: `installer/aset/maskot.png` (cutout), `aset/fonts/` (Plus Jakarta Sans + JetBrains Mono), `aset/logo/`.
