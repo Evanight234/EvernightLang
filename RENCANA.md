@@ -236,9 +236,10 @@ PERINGATAN: Baris 8 - Variabel 'x' tidak didefinisikan
   - Fondasi lama: `Mode::Copot` + self-copy `--dari-temp` + `pindah_ke_temp()` tetap dipertahankan
 - **6I — Sistem Updater (CLI saja, tanpa desain visual)** ✅
   - Perintah: `update Evernight system` (nama kerja dari user) — murni terminal CMD/PowerShell, tanpa GUI/desain installer
-  - Sumber: folder `version/` di GitHub (`version/version` = manifes teks satu baris; file update + installer masuk folder yang sama)
-  - Tanpa update: `Istriku lagi sibuk jangan dingagu` | ada update: `terupdate ke versi <versi>, jangan panggil istriku lagi dasar karbit` (verbatim user)
+  - Sumber: folder `version/` di GitHub (`version/version` = manifes teks satu baris; `version/catatan-<versi>.txt` = deskripsi isi versi; file update + installer masuk folder yang sama)
+  - Tanpa update: `Istriku lagi sibuk jangan dingagu` | ada update: tampilkan catatan perubahan dulu, lalu pasang + `terupdate ke versi <versi>, jangan panggil istriku lagi dasar karbit` (verbatim user)
   - Scope: exe + vsix + reinstall ekstensi best-effort; exe terkunci → penimpaan terjadwal; flag `--cek` (dry-run)
+  - `evernight system info`: versi + lokasi + ukuran exe (registri) + isi versi (live GitHub, fallback offline)
   - Repo: `Evanight234/EvernightLang` (sudah push; updater live)
 - **Sinkronisasi distribusi vsix baru (wajib sebelum rilis ke orang lain)** ✅ *(selesai 2026-09-19)*
   1. Salin vsix 1.264.065 B → `installer/aset/payload/` + `paket/.../extensions/` (timpa 20.797 B)
