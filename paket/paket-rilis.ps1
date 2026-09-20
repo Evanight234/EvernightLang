@@ -34,7 +34,7 @@ if (-not (Test-Path $ExeSrc)) { throw "evernight.exe tidak ditemukan setelah bui
 # 2. Siapkan folder
 Write-Host "[2/6] Siapkan folder paket..."
 if (Test-Path $OutDir) { Remove-Item $OutDir -Recurse -Force }
-$dirs = @("bin", "docs", "extensions", "assets")
+$dirs = @("bin", "docs", "extensions", "assets", "setup")
 foreach ($d in $dirs) { New-Item -ItemType Directory -Path (Join-Path $OutDir $d) -Force | Out-Null }
 
 # 3. Salin file
@@ -57,6 +57,13 @@ Copy-Item (Join-Path $Root "assets/icon_256.png") (Join-Path $OutDir "assets/ico
 Copy-Item (Join-Path $Root "assets/logo.png") (Join-Path $OutDir "assets/logo.png") -ErrorAction SilentlyContinue
 # LICENSE
 Copy-Item (Join-Path $Payload "LICENSE") (Join-Path $OutDir "LICENSE")
+# Setup installer (v2 only, renamed to Setup.exe)
+$SetupSrc = Join-Path $Root "installer/dist/EvernightLanguage-$Versi-Setup-v2.exe"
+if (Test-Path $SetupSrc) {
+    Copy-Item $SetupSrc (Join-Path $OutDir "setup/Setup.exe")
+} else {
+    Write-Host "  [PERINGATAN] Setup v2 tidak ditemukan: $SetupSrc" -ForegroundColor Yellow
+}
 
 # 4. Generate file versi & BACA-AKU
 Write-Host "[4/6] Generate versi.txt & BACA-AKU.txt..."
@@ -70,16 +77,20 @@ Isi:
   bin/kill.ps1             Uninstall (PowerShell)
   bin/update.cmd           Update (CMD)
   bin/update.ps1           Update (PowerShell)
+  setup/Setup.exe          Installer GUI (wizard)
   extensions/              Ekstensi VS Code (.vsix)
   docs/PANDUAN.txt         Panduan penggunaan
   docs/catatan-$Versi.txt  Catatan rilis
   assets/                  Ikon & logo
   LICENSE                  Lisensi MIT
 
-Mulai:
-  1. Jalankan install.cmd (atau install.ps1 di PowerShell)
-  2. Buka terminal baru, ketik: evernight --versi
-  3. Untuk uninstall: kill evernight system (CMD) atau uninstall.ps1
+Mulai (pilih salah satu):
+  [Cepat]  Jalankan install.cmd (atau install.ps1 di PowerShell)
+  [Wizard] Klik ganda setup/Setup.exe, ikuti wizard
+  Lalu: buka terminal baru, ketik: evernight --versi
+
+Uninstall:
+  kill evernight system (CMD) atau uninstall.ps1
 
 Update:
   update evernight system
@@ -104,9 +115,13 @@ Compress-Archive -Path $OutDir -DestinationPath $ZipPath -Force
 
 $ShaExe = (Get-FileHash (Join-Path $OutDir "bin/evernight.exe") -Algorithm SHA256).Hash.ToLower()
 $ShaZip = (Get-FileHash $ZipPath -Algorithm SHA256).Hash.ToLower()
+$ShaSetup = if (Test-Path (Join-Path $OutDir "setup/Setup.exe")) {
+    (Get-FileHash (Join-Path $OutDir "setup/Setup.exe") -Algorithm SHA256).Hash.ToLower()
+} else { "n/a" }
 $ShaFile = Join-Path $PSScriptRoot "SHA256SUMS.txt"
 @"
 $ShaExe  $NamaPaket/bin/evernight.exe
+$ShaSetup  $NamaPaket/setup/Setup.exe
 $ShaZip  $NamaPaket.zip
 "@ | Set-Content -Path $ShaFile -Encoding ASCII
 
@@ -116,3 +131,4 @@ Write-Host "  Folder : $OutDir"
 Write-Host "  ZIP    : $ZipPath"
 Write-Host "  SHA256 : $ShaFile"
 Write-Host "  exe    : $ShaExe"
+Write-Host "  setup  : $ShaSetup"

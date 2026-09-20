@@ -479,10 +479,11 @@ Catatan pelaksanaan (Fase 6):
   - **Tujuan**: user tinggal download paket → ekstrak → install/setup → bahasa + command langsung jalan.
   - **Struktur paket per versi** `evernight-<versi>-windows-x64/`:
     - `bin/` → `evernight.exe`, `kill.cmd`, `kill.ps1`, `update.cmd`, `update.ps1`
+    - `setup/` → `Setup.exe` (installer GUI v2)
     - `extensions/` → `.vsix` terbaru
     - `docs/` → `PANDUAN.txt`, `catatan-<versi>.txt`
     - root → `LICENSE` (MIT), `BACA-AKU.txt`, `install`/`uninstall` script, `versi.txt` (manifes)
-    - ZIP + SHA256SUMS
+    - ZIP + SHA256SUMS (3 baris: exe, setup, zip)
   - **Skrip `paket/paket-rilis.ps1`**: rakit folder dari repo (cargo build release + payload + vsix + docs) → ZIP → SHA256. Satu perintah = satu paket konsisten, tanpa manual.
   - **Hubungan dengan updater 6I**: ZIP/bin per versi ini sumber update dari `version/` GitHub.
   - **Bukti pertama**: regenerasi paket 0.1.0 pakai skrip baru.

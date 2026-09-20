@@ -1,2 +1,3 @@
 670be73270e0b0b3e08242e090b627856924861e3eb16af6fe1369eefa02f5d5  evernight-0.1.0-windows-x64/bin/evernight.exe
-7e336c312f2e9575db4613e40e2aca6bad97b36b21530f60c1e8f93de990b453  evernight-0.1.0-windows-x64.zip
+a91ef6dee0a0c61bb08ab34e14de150e045e379321cb43266b2d082739a39277  evernight-0.1.0-windows-x64/setup/Setup.exe
+2911976d4b774532c4f852c524510c34eaa5620b47e7b7d164c21945dbe628ff  evernight-0.1.0-windows-x64.zip

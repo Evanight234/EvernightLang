@@ -6,16 +6,20 @@ Isi:
   bin/kill.ps1             Uninstall (PowerShell)
   bin/update.cmd           Update (CMD)
   bin/update.ps1           Update (PowerShell)
+  setup/Setup.exe          Installer GUI (wizard)
   extensions/              Ekstensi VS Code (.vsix)
   docs/PANDUAN.txt         Panduan penggunaan
   docs/catatan-0.1.0.txt  Catatan rilis
   assets/                  Ikon & logo
   LICENSE                  Lisensi MIT
 
-Mulai:
-  1. Jalankan install.cmd (atau install.ps1 di PowerShell)
-  2. Buka terminal baru, ketik: evernight --versi
-  3. Untuk uninstall: kill evernight system (CMD) atau uninstall.ps1
+Mulai (pilih salah satu):
+  [Cepat]  Jalankan install.cmd (atau install.ps1 di PowerShell)
+  [Wizard] Klik ganda setup/Setup.exe, ikuti wizard
+  Lalu: buka terminal baru, ketik: evernight --versi
+
+Uninstall:
+  kill evernight system (CMD) atau uninstall.ps1
 
 Update:
   update evernight system
