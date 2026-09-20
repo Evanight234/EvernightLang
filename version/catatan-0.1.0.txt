@@ -1,4 +1,4 @@
-EvernightLanguage 0.1.0 — Rilis perdana (revisi)
+EvernightLanguage 0.1.0 - Rilis perdana (revisi)
 ================================================
 - Bahasa pemrograman sintaksis Bahasa Indonesia (fungsi/jika/selama/untuk/kembali/cetak)
 - Compiler bytecode + VM (rekursi, closure, cocok, coba/tangkap)
