@@ -515,3 +515,30 @@ fn test_cli_syntax_error_snippet() {
     assert!(stderr.contains("^"));
     let _ = fs::remove_file(file);
 }
+
+#[test]
+fn test_cli_system_info() {
+    let output = Command::new(get_bin())
+        .args(["system", "info"])
+        .output()
+        .expect("Gagal menjalankan biner");
+
+    assert!(output.status.success());
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("EvernightLanguage v"));
+    assert!(stdout.contains("Lokasi:"));
+    assert!(stdout.contains("Isi versi"));
+}
+
+#[test]
+fn test_cli_system_tanpa_aksi() {
+    let output = Command::new(get_bin())
+        .arg("system")
+        .output()
+        .expect("Gagal menjalankan biner");
+
+    assert!(!output.status.success());
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    assert!(stderr.contains("BAHAYA [ARG]"));
+    assert!(stderr.contains("evernight system info"));
+}

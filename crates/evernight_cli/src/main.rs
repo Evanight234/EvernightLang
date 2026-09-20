@@ -27,7 +27,8 @@ fn print_help() {
     println!("    run <berkas.eve>      Jalankan berkas .eve secara eksplisit");
     println!("    format <berkas.eve>   Rapikan format berkas (indentasi & spasi)");
     println!("    lint <berkas.eve>     Periksa gaya & kerapian kode (aturan WK*)");
-    println!("    pkg <subperintah>     Kelola proyek: init | jalankan | daftar\n");
+    println!("    pkg <subperintah>     Kelola proyek: init | jalankan | daftar");
+    println!("    system <aksi>         Info instalasi sistem: info\n");
     println!("OPSI FORMAT:");
     println!(
         "    --cek                 Periksa saja; keluar dengan kode 1 bila belum rapi (untuk CI)"
@@ -74,7 +75,7 @@ fn main() {
     // `evernight pkg --bantuan` menampilkan bantuan pkg (bukan bantuan utama).
     let ada_subperintah = matches!(
         raw_args.get(1).map(|s| s.as_str()),
-        Some("run" | "format" | "lint" | "pkg")
+        Some("run" | "format" | "lint" | "pkg" | "system")
     );
     if !ada_subperintah {
         for arg in raw_args.iter().skip(1) {
@@ -119,6 +120,11 @@ fn main() {
     // Subcommand `pkg` — package manager minimal (Fase 6D-6)
     if raw_args.len() > 1 && raw_args[1] == "pkg" {
         process::exit(pkg::jalankan(&raw_args[2..]));
+    }
+
+    // Subcommand `system` — info instalasi sistem (Fase 6I)
+    if raw_args.len() > 1 && raw_args[1] == "system" {
+        process::exit(perintah_system(&raw_args[2..]));
     }
 
     let mut filename: Option<String> = None;
@@ -536,4 +542,93 @@ fn perintah_lint(args: &[String]) -> i32 {
     }
     eprintln!("\n{} peringatan pada '{}'.", semua.len(), path);
     1
+}
+
+/// Subcommand `system` — info instalasi sistem (Fase 6I).
+///
+/// `evernight system info`: menampilkan versi terpasang (dari registri,
+/// fallback versi biner ini), lokasi instalasi, ukuran exe, dan isi versi
+/// (diambil live dari folder `version/` GitHub; fallback bila offline).
+fn perintah_system(args: &[String]) -> i32 {
+    match args.first().map(|s| s.as_str()) {
+        Some("info") => info_sistem(),
+        _ => {
+            eprintln!("BAHAYA [ARG]: Subcommand 'system' membutuhkan aksi!");
+            eprintln!("Penggunaan: evernight system info");
+            1
+        }
+    }
+}
+
+fn info_sistem() -> i32 {
+    let versi = reg_baca("DisplayVersion").unwrap_or_else(|| VERSION.to_string());
+    let lokasi = reg_baca("InstallLocation").unwrap_or_default();
+
+    println!("EvernightLanguage v{}", versi);
+    if lokasi.is_empty() {
+        println!("Lokasi: (tidak terdaftar di sistem — mungkin dijalankan portabel)");
+    } else {
+        println!("Lokasi: {}", lokasi);
+        let exe = Path::new(&lokasi).join("bin").join("evernight.exe");
+        if let Ok(m) = fs::metadata(&exe) {
+            println!("Ukuran evernight.exe: {} KB", m.len() / 1024);
+        }
+    }
+
+    println!("\nIsi versi {}:", versi);
+    match unduh_catatan(&versi) {
+        Some(t) if !t.is_empty() => println!("{}", t),
+        _ => println!("(catatan tidak dapat diambil — offline?)"),
+    }
+    0
+}
+
+/// Baca satu nilai dari kunci uninstall EvernightLanguage di registri.
+fn reg_baca(nama: &str) -> Option<String> {
+    let keluar = std::process::Command::new("reg")
+        .args([
+            "query",
+            r"HKCU\Software\Microsoft\Windows\CurrentVersion\Uninstall\EvernightLanguage",
+            "/v",
+            nama,
+        ])
+        .output()
+        .ok()?;
+    if !keluar.status.success() {
+        return None;
+    }
+    let teks = String::from_utf8_lossy(&keluar.stdout);
+    let baris = teks.lines().find(|l| l.contains(nama))?;
+    let nilai = baris.split("REG_SZ").nth(1)?.trim();
+    if nilai.is_empty() {
+        None
+    } else {
+        Some(nilai.to_string())
+    }
+}
+
+/// Unduh `version/catatan-<versi>.txt` dari GitHub. `None` bila gagal.
+fn unduh_catatan(versi: &str) -> Option<String> {
+    let url = format!(
+        "https://raw.githubusercontent.com/Evanight234/EvernightLang/main/version/catatan-{}.txt",
+        versi
+    );
+    let keluar = std::process::Command::new("powershell")
+        .args([
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-Command",
+            &format!(
+                "(New-Object System.Net.WebClient).DownloadString('{}')",
+                url
+            ),
+        ])
+        .output()
+        .ok()?;
+    if !keluar.status.success() {
+        return None;
+    }
+    Some(String::from_utf8_lossy(&keluar.stdout).trim().to_string())
 }

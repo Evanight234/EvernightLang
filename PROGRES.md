@@ -101,7 +101,7 @@
 
 - [x] **6G — Tema Ikon Lengkap + Kompatibilitas 6 Editor** (352 SVG Symbols, tema 98.686 B, label IconStyles, vsix 1.264.065 B, terpasang & ikon tampil di Antigravity)
 - [x] **6H — Sistem Uninstaller** — 3 tahap wizard (Konfirmasi/Menghapus/Selesai), checkbox "Hapus ekstensi editor" di luar box, `pasang::copot(hapus_ekstensi)`, progress+log nyata, navigasi back/forward, `kill evernight system` (CMD: `kill.cmd` di bin/; PowerShell: function di `$PROFILE` + `Remove-Item alias:kill`), 21 test hijau
-- [x] **6I — Sistem Updater CLI** (`update evernight system`, folder `version/` GitHub + `pembaruan/version` lokal, pesan zhongk verbatim, exe+vsix+reinstall ekstensi, `--cek` dry-run, 5 skenario teruji, 21 test installer hijau)
+- [x] **6I — Sistem Updater CLI** (`update evernight system`, folder `version/` GitHub, pesan zhongk verbatim, exe+vsix+reinstall ekstensi, `--cek` dry-run, push `Evanight234/EvernightLang`, uji live OK)
 - [x] **Sinkronisasi vsix baru ke payload + paket + rebuild Setup.exe** (vsix 1.264.065 B, ZIP 1.9 MB, Setup.exe 9.56 MB, SHA `dd89006e...`)
 
 ### Fase 7: Stabilisasi & Rilis 1.0 (DEV)

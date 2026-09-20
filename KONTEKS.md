@@ -8,11 +8,11 @@
 
 ## 1. Konteks Aktif (UPDATE TIAP PROMPT)
 
-- **Topik sedang dibahas**: **6I SELESAI** — Updater CLI `update evernight system` (terminal saja, tanpa GUI). Folder `version/` GitHub + `pembaruan/version` lokal. Pesan zhongk verbatim. Setup.exe rebuild 9.57 MB (SHA `5b592d49...`). Prasyarat: push repo + ganti `<akun>/<repo>`.
+- **Topik sedang dibahas**: **6I LIVE** — push `Evanight234/EvernightLang` (2 commit), `version/version` di GitHub, updater baca live OK. Setup.exe rebuild 9.57 MB (SHA `135d6723...`).
 - **Keputusan terbaru (2026-09-18)**: **LSP ditunda & crates.io ditunda** oleh user; prioritas = revisi ikon dulu, lalu desain bagian uninstaller (user mau buat mockup di Google Stitch) sebelum Fase 7 lainnya.
 - **Keputusan terbaru (2026-09-16)**: **Installer memakai egui/eframe (Rust), BUKAN Inno Setup** — Inno Setup berbasis Delphi VCL, tidak bisa animasi halus. Crate `installer/` berada **di luar workspace** agar `+crt-static` tidak bentrok dengan `winit`/`eframe`. Palet installer dari gambar referensi user (plum/rose): latar `#37313D`, well `#2F2430`, kartu `#443C4A`, teks `#F8DCE8`, aksen `#D3A0B9`. Font Plus Jakarta Sans + JetBrains Mono (OFL). Panel maskot **28% lebar penuh atas-bawah**. `installer/src/tema.rs` = satu-satunya berkas visual yang perlu disentuh user.
-- **Sedang dikerjakan**: **6H ✅ + 6I ✅ SELESAI**. Menunggu arahan user (Fase 7 masih ditunda).
-- **Langkah berikutnya**: (1) Push repo GitHub + ganti `<akun>/<repo>` di `update.ps1` (uji update nyata); (2) Fase 7 bila user cabut penundaan.
+- **Sedang dikerjakan**: **6H ✅ + 6I ✅ LIVE**. Menunggu arahan user (Fase 7 masih ditunda).
+- **Langkah berikutnya**: (1) Rilis versi baru bila siap (naikkan `version/version` + taruh file di folder `version/` + push → user `update evernight system`); (2) Fase 7 bila user cabut penundaan.
 - **Perintah CLI tersedia**: `evernight <berkas>`, `evernight run <berkas>`, `evernight format <berkas> [--cek|--keluar]`, `evernight lint <berkas>`, `evernight pkg init|jalankan|daftar`, `evernight <berkas> --debug|--waktu|--bytecode|--ast|--tokens|--cek`.
 - **Jangan lupa**: Zero dependencies untuk `evernight_core`/`_vm`/`_cli` (installer adalah **pengecualian sadar**). Semua error message wajib berformat Bahasa Indonesia (`BAHAYA [KODE]` / `PERINGATAN [KODE]`).
 - **Catatan toolchain**: default = `stable-x86_64-pc-windows-gnu` (MSVC **tidak punya linker** di mesin ini). Konfigurasi build statik kini **target-spesifik** di `.cargo/config.toml` (`[target.x86_64-pc-windows-gnu]`, bukan `[build]`) agar aman di CI.
@@ -45,6 +45,8 @@
 - Keyword final: `variabel` (bukan `nyatakan`), `fungsi` (bukan `fn`), `impor` (bukan `pakai`), `kembali` tetap `kembali`.
 
 ## 4. Log Konteks (append ke atas, terbaru dulu)
+
+- **2026-09-20 (lanjut)**: **Push GitHub + updater LIVE.** Push 2 commit ke `Evanight234/EvernightLang` (main). `pembaruan/version` disatukan jadi `version/version` (satu kanonis, sesuai path yang dibaca updater). `$REPO` diisi alamat asli. Uji live: `update evernight system` → fetch GitHub asli → `Istriku lagi sibuk jangan dingagu` ✅. Setup.exe rebuild 9.57 MB SHA `135d6723...`, `uninstall.exe` terpasang diupdate. Logika tanpa-update sesuai maumu: versi lokal ≥ versi GitHub (termasuk folder hanya berisi v1) → pesan zhongk; versi GitHub lebih baru → langsung pasang update. Berkas `version` kosong/rusak → BAHAYA (tanda manifes salah isi, bukan "tidak ada update").
 
 - **2026-09-20**: **6I SELESAI — Sistem Updater CLI.** `update.cmd` (validasi argumen) + `update.ps1` (cek versi via `version/version` GitHub raw → banding `[System.Version]` → unduh exe+vsix dari folder `version/` → timpa → reinstall ekstensi best-effort → catat DisplayVersion). Tanpa update: `Istriku lagi sibuk jangan dingagu`; ada update: `terupdate ke versi <versi>, jangan panggil istriku lagi dasar karbit` (verbatim user). Exe terkunci → penimpaan terjadwal. Flag `--cek` dry-run. Di-embed ke payload installer → `bin/` otomatis. `pembaruan/version` lokal (0.1.0). Setup.exe rebuild 9.57 MB SHA `5b592d49...`. Teruji: sintaks OK + 5 skenario (argumen/BAHAYA jaring/zhongk/cabang update/`--cek`) + PATH resolve dari C:\ + 21 test installer hijau. Prasyarat: push repo + ganti `<akun>/<repo>` (uji update nyata menyusul).
 

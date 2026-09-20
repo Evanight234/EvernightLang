@@ -1,0 +1,9 @@
+EvernightLanguage 0.1.0 — Rilis perdana (revisi)
+================================================
+- Bahasa pemrograman sintaksis Bahasa Indonesia (fungsi/jika/selama/untuk/kembali/cetak)
+- Compiler bytecode + VM (rekursi, closure, cocok, coba/tangkap)
+- 7 modul pustaka standar: konsol, string, matematika, daftar, kamus, sistem, utilitas
+- REPL interaktif + CLI (run/format/lint/pkg/debug/waktu)
+- Ekstensi editor keluarga VS Code (highlighting, tema Nusantara, ikon, snippet)
+- Installer GUI + uninstaller 3 tahap (kill evernight system)
+- Updater CLI (update evernight system) + info sistem (evernight system info)
