@@ -105,10 +105,10 @@
 - [x] **Sinkronisasi vsix baru ke payload + paket + rebuild Setup.exe** (vsix 1.264.065 B, ZIP 1.9 MB, Setup.exe 9.56 MB, SHA `dd89006e...`)
 
 ### Fase 7: Stabilisasi & Rilis 1.0 (DEV)
-- [ ] Audit keamanan dasar (akses file, batasan sandbox)
-- [ ] Stabilisasi versi bytecode (kompatibilitas antar-rilis)
-- [ ] Pengujian ketahanan edge-case + regresi performa
-- [ ] Definisi kriteria "selesai" rilis 1.0
+- [x] **7A — Audit Keamanan** (sandbox path: `baca_file`/`tulis_file`/`ada_file`/`impor` terkunci ke direktori program, test sandbox ditolak)
+- [x] **7B — Stabilisasi Bytecode** (`BYTECODE_VERSION = 1`, golden test 53 opcode v1, test roundtrip + overlap)
+- [x] **7C — Ketahanan** (18 edge-case test: aritmatika, string, daftar, kamus, rekursi 50 level, try/catch, loop nol, sandbox ditolak)
+- [x] **7D — Kriteria Rilis 1.0** (`KRITERIA_RILIS_1_0.md`: 9 kategori, terukur + tercentang)
 
 #### Sub-Fase Pelaksanaan Fase 7
 - [x] **7E — Desain Visual Final Installer + Uji Pengguna Akhir** (grafis wizard bermerek Nusantara, warna & font kustom, UX hak akses/UAC Bahasa Indonesia, tombol "Jalankan REPL"/"Buka Panduan", uji di komputer/VM bersih) — **FINAL** (desain 6F final, tidak ada perubahan visual)

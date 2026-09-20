@@ -1,6 +1,7 @@
 mod common;
 use common::*;
 use evernight_vm::Value;
+use std::fs;
 
 #[test]
 fn sistem_waktu_dan_selisih() {
@@ -21,19 +22,49 @@ fn sistem_waktu_dan_selisih() {
 
 #[test]
 fn sistem_berkas() {
-    let file = std::env::temp_dir().join(format!("eve_test_fs_{}.txt", std::process::id()));
+    let dir = std::env::temp_dir().join(format!("eve_sandbox_{}", std::process::id()));
+    let _ = fs::create_dir_all(&dir);
+    let file = dir.join("test.txt");
     let path_str = file.to_str().unwrap().replace('\\', "/");
 
     let p_tulis = format!(
         "tulis_file(\"{}\", \"Halo Evernight!\")\nkembali ada_file(\"{}\")",
         path_str, path_str
     );
-    assert!(bolean_equal(true, &p_tulis));
+    match eksekusi_dir(&dir, &p_tulis) {
+        Ok(Value::Bolean(b)) => assert!(b, "tulis+ada_file harus true"),
+        other => panic!("tulis+ada_file gagal: {:?}", other),
+    }
 
     let p_baca = format!("kembali baca_file(\"{}\")", path_str);
-    assert!(teks_equal("Halo Evernight!", &p_baca));
+    assert!(teks_equal_dir(&dir, "Halo Evernight!", &p_baca));
 
-    let _ = std::fs::remove_file(file);
+    let _ = fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn sistem_sandbox_tulis_ditolak() {
+    let dir = std::env::temp_dir().join(format!("eve_sandbox_deny_{}", std::process::id()));
+    let _ = fs::create_dir_all(&dir);
+    // Coba tulis ke path di luar direktori program
+    let target = std::env::temp_dir().join("eve_outside_test.txt");
+    let path_str = target.to_str().unwrap().replace('\\', "/");
+    let p = format!("tulis_file(\"{}\", \"boleh\")", path_str);
+    let res = eksekusi_dir(&dir, &p);
+    assert!(res.is_err(), "tulis di luar sandbox harus ditolak");
+    let _ = fs::remove_dir_all(&dir);
+}
+
+#[test]
+fn sistem_sandbox_baca_ditolak() {
+    let dir = std::env::temp_dir().join(format!("eve_sandbox_baca_{}", std::process::id()));
+    let _ = fs::create_dir_all(&dir);
+    let target = std::env::temp_dir().join("eve_outside_read.txt");
+    let path_str = target.to_str().unwrap().replace('\\', "/");
+    let p = format!("kembali baca_file(\"{}\")", path_str);
+    let res = eksekusi_dir(&dir, &p);
+    assert!(res.is_err(), "baca di luar sandbox harus ditolak");
+    let _ = fs::remove_dir_all(&dir);
 }
 
 #[test]

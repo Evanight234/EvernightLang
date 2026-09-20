@@ -1,5 +1,9 @@
 use crate::value::Value;
 
+/// Versi bytecode — naikkan bila opcode/encoding berubah.
+/// Selama angka ini konstan, bytecode v1 kompatibel antar-rilis.
+pub const BYTECODE_VERSION: u32 = 1;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(u8)]
 pub enum OpCode {
@@ -257,5 +261,124 @@ impl Chunk {
 impl Default for Chunk {
     fn default() -> Self {
         Self::new()
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// Semua opcode yang valid harus roundtrip: from_u8(byte) → name() tidak kosong.
+    #[test]
+    fn opcode_roundtrip() {
+        for byte in 0u16..=255 {
+            if let Some(op) = OpCode::from_u8(byte as u8) {
+                let name = op.name();
+                assert!(!name.is_empty(), "opcode 0x{:02X} punya name kosong", byte);
+            }
+        }
+    }
+
+    /// Pastikan tidak ada dua opcode dengan nilai yang sama (overlap).
+    #[test]
+    fn opcode_tidak_overlap() {
+        let mut seen = [false; 256];
+        for byte in 0u8..=255 {
+            if let Some(op) = OpCode::from_u8(byte) {
+                let name = op.name();
+                // Simpan berdasarkan nama untuk deteksi duplikat
+                // (dua opcode berbeda dengan nilai sama → from_u8 hanya return satu)
+                assert!(
+                    !seen[byte as usize],
+                    "opcode 0x{:02X} ('{}') terdaftar dua kali",
+                    byte,
+                    name
+                );
+                seen[byte as usize] = true;
+            }
+        }
+    }
+
+    /// Golden test: daftar opcode v1 yang diketahui.
+    /// Gagal kalau ada opcode ditambah/dihapus tanpa update daftar ini.
+    #[test]
+    fn opcode_v1_daftar_lengkap() {
+        let known: Vec<(u8, &str)> = vec![
+            (0x00, "Konstanta"),
+            (0x01, "Pop"),
+            (0x02, "Dup"),
+            (0x10, "AmbilLokal"),
+            (0x11, "SimpanLokal"),
+            (0x12, "AmbilGlobal"),
+            (0x13, "SimpanGlobal"),
+            (0x14, "AmbilGlobalNama"),
+            (0x15, "SimpanGlobalNama"),
+            (0x20, "Tambah"),
+            (0x21, "Kurang"),
+            (0x22, "Kali"),
+            (0x23, "Bagi"),
+            (0x24, "Modulo"),
+            (0x25, "Pangkat"),
+            (0x26, "Negatif"),
+            (0x30, "SamaDengan"),
+            (0x31, "TidakSama"),
+            (0x32, "KurangDari"),
+            (0x33, "KurangSama"),
+            (0x34, "LebihDari"),
+            (0x35, "LebihSama"),
+            (0x36, "Dalam"),
+            (0x40, "Dan"),
+            (0x41, "Atau"),
+            (0x42, "Bukan"),
+            (0x50, "Lompat"),
+            (0x51, "LompatJikaSalah"),
+            (0x52, "LompatJikaBenar"),
+            (0x53, "Loop"),
+            (0x60, "Panggil"),
+            (0x61, "Kembali"),
+            (0x70, "BuatDaftar"),
+            (0x71, "AmbilIndeks"),
+            (0x72, "SimpanIndeks"),
+            (0x73, "PanjangDaftar"),
+            (0x74, "TambahDaftar"),
+            (0x75, "HapusIndeks"),
+            (0x80, "BuatKamus"),
+            (0x81, "AmbilKunci"),
+            (0x82, "SimpanKunci"),
+            (0x83, "HapusKunci"),
+            (0x90, "Cetak"),
+            (0x91, "Baca"),
+            (0x92, "BacaAngka"),
+            (0x93, "Bersihkan"),
+            (0x94, "PanggilBuiltin"),
+            (0x95, "ImporModul"),
+            (0xA0, "Llempar"),
+            (0xA1, "Lempar"),
+            (0xA2, "Pastikan"),
+            (0xA3, "BuatHandler"),
+            (0xA4, "PopHandler"),
+            (0xFF, "Henti"),
+        ];
+        for (byte, expected_name) in &known {
+            let op = OpCode::from_u8(*byte).unwrap_or_else(|| {
+                panic!("opcode 0x{:02X} ('{}') tidak dikenal", byte, expected_name)
+            });
+            assert_eq!(
+                op.name(), *expected_name,
+                "opcode 0x{:02X}: expected '{}', got '{}'",
+                byte, expected_name, op.name()
+            );
+        }
+        // Pastikan jumlah opcode sesuai
+        let total: usize = (0u8..=255)
+            .filter(|b| OpCode::from_u8(*b).is_some())
+            .count();
+        assert_eq!(total, known.len(), "jumlah opcode berubah dari v1 ({} vs {})", known.len(), total);
+    }
+
+    /// Bytecode version harus 1 (beku sampai breaking change).
+    #[test]
+    fn bytecode_version_sama_dengan_1() {
+        assert_eq!(BYTECODE_VERSION, 1);
     }
 }

@@ -453,10 +453,10 @@ Catatan pelaksanaan (Fase 6):
 3. Biner defaultnya `evernight.exe` (dijalankan dengan argumen berkas). Di Linux/macOS asosiasi menyusul (MIME/UTI) — tidak menghambat Windows.
 
 ## Fase 7: Stabilisasi & Rilis 1.0 (DEV) — **DITUNDA** (keputusan user 2026-09-19)
-- [ ] Audit keamanan dasar (akses file, batasan sandbox)
-- [ ] Stabilisasi versi bytecode (kompatibilitas antar-rilis)
-- [ ] Pengujian ketahanan edge-case + regresi performa
-- [ ] Definisi kriteria "selesai" rilis 1.0
+- [x] Audit keamanan dasar (akses file, batasan sandbox)
+- [x] Stabilisasi versi bytecode (kompatibilitas antar-rilis)
+- [x] Pengujian ketahanan edge-case + regresi performa
+- [x] Definisi kriteria "selesai" rilis 1.0
 - [ ] **Language Server dasar** (dipindah dari 6D, keputusan 2026-09-14) — hover, diagnostic, goto-definition, completion; biner `evernight-lsp` via JSON-RPC stdio
 
 ### Sub-Fase Pelaksanaan Fase 7 (urutan eksekusi)

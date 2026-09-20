@@ -6,7 +6,7 @@ use evernight_core::{Lexer, Parser};
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::rc::Rc;
 
 struct CallFrame {
@@ -107,6 +107,41 @@ impl Vm {
 
     pub fn set_args(&mut self, args: Vec<String>) {
         self.program_args = args;
+    }
+
+    /// Pastikan path berada di dalam direktori program (sandbox).
+    /// Untuk tulis: cari parent yang ada, canonicalize, lalu cek.
+    fn resolve_sandbox(&self, path: &str) -> Result<PathBuf, EvernightError> {
+        let target = Path::new(path);
+        let base = if target.exists() {
+            target.canonicalize().map_err(|e| {
+                EvernightError::bahaya("FILE", 0, 0, format!("Gagal resolve path '{}': {}", path, e))
+            })?
+        } else {
+            let parent = target.parent().unwrap_or(Path::new("."));
+            let canon_parent = if parent.exists() {
+                parent.canonicalize().map_err(|e| {
+                    EvernightError::bahaya("FILE", 0, 0, format!("Gagal resolve path '{}': {}", path, e))
+                })?
+            } else {
+                return Err(EvernightError::bahaya(
+                    "FILE", 0, 0,
+                    format!("Direktori '{}' tidak ditemukan", parent.display()),
+                ));
+            };
+            let name = target.file_name().unwrap_or_default();
+            canon_parent.join(name)
+        };
+        let entry = self.entry_dir.canonicalize().map_err(|e| {
+            EvernightError::bahaya("FILE", 0, 0, format!("Gagal resolve direktori program: {}", e))
+        })?;
+        if !base.starts_with(&entry) {
+            return Err(EvernightError::bahaya(
+                "SECURITY", 0, 0,
+                format!("Akses ditolak: '{}' berada di luar direktori program", path),
+            ));
+        }
+        Ok(base)
     }
 
     pub fn set_capture_output(&mut self, enable: bool) {
@@ -1626,7 +1661,8 @@ impl Vm {
             }
             52 => {
                 let path = s!(0);
-                match std::fs::read_to_string(&path) {
+                let resolved = self.resolve_sandbox(&path)?;
+                match std::fs::read_to_string(&resolved) {
                     Ok(isi) => Value::Teks(isi),
                     Err(e) => {
                         return self.raise(
@@ -1651,7 +1687,8 @@ impl Vm {
                         )
                     }
                 };
-                match std::fs::write(&path, isi) {
+                let resolved = self.resolve_sandbox(&path)?;
+                match std::fs::write(&resolved, isi) {
                     Ok(()) => Value::Kosong,
                     Err(e) => {
                         return self.raise(
@@ -1663,11 +1700,18 @@ impl Vm {
                     }
                 }
             }
-            54 => Value::Bolean(
-                std::fs::metadata(s!(0))
-                    .map(|m| m.is_file())
-                    .unwrap_or(false),
-            ),
+            54 => {
+                let path = s!(0);
+                let resolved = match self.resolve_sandbox(&path) {
+                    Ok(p) => p,
+                    Err(_) => return Ok(()), // path di luar sandbox → anggap tidak ada
+                };
+                Value::Bolean(
+                    std::fs::metadata(&resolved)
+                        .map(|m| m.is_file())
+                        .unwrap_or(false),
+                )
+            }
             55 => {
                 let nama = s!(0);
                 let bawaan = args.get(1);
@@ -2043,7 +2087,22 @@ impl Vm {
         if path.is_relative() {
             path = self.entry_dir.join(path);
         }
-        let path_str = path.to_string_lossy().to_string();
+        // Sandbox: pastikan path impor masih dalam direktori program
+        let path_str = match path.canonicalize() {
+            Ok(c) => c.to_string_lossy().to_string(),
+            Err(_) => path.to_string_lossy().to_string(),
+        };
+        let entry = self.entry_dir.canonicalize().map_err(|e| {
+            EvernightError::bahaya("FILE", line, 0, format!("Gagal resolve direktori program: {}", e))
+        })?;
+        if !Path::new(&path_str).starts_with(&entry) {
+            return self.raise(
+                rchunk,
+                "FILE",
+                &format!("Akses ditolak: impor '{}' di luar direktori program", module),
+                line,
+            );
+        }
 
         if let Some(exports) = self.import_cache.get(&path_str) {
             self.stack.push(exports.clone());

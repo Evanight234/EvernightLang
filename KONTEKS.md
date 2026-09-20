@@ -8,7 +8,7 @@
 
 ## 1. Konteks Aktif (UPDATE TIAP PROMPT)
 
-- **Topik sedang dibahas**: **Setup-v2 kanonis** — `dist/EvernightLanguage-0.1.0-Setup-v2.exe` (payload penuh: kill+update+CLI baru). Reinstall `--diam` dari v2 terverifikasi, `update`/`system info` jalan di PS baru. Fase 7 ditambah **7F — Paket Rilis Per-Versi** (skrip `paket-rilis.ps1`, paket per-versi isi lengkap + ZIP + SHA256).
+- **Topik sedang dibahas**: **Fase 7 dikerjakan** — 7A (sandbox path) ✅, 7B (bytecode v1 frozen) ✅, 7C (18 edge-case test) ✅, 7D (KRITERIA_RILIS_1_0.md) ✅, 7F (paket-rilis.ps1) ✅. Sisa: LSP (evernight-lsp). 163 test hijau, clippy bersih.
 - **Keputusan terbaru (2026-09-18)**: **LSP ditunda & crates.io ditunda** oleh user; prioritas = revisi ikon dulu, lalu desain bagian uninstaller (user mau buat mockup di Google Stitch) sebelum Fase 7 lainnya.
 - **Keputusan terbaru (2026-09-16)**: **Installer memakai egui/eframe (Rust), BUKAN Inno Setup** — Inno Setup berbasis Delphi VCL, tidak bisa animasi halus. Crate `installer/` berada **di luar workspace** agar `+crt-static` tidak bentrok dengan `winit`/`eframe`. Palet installer dari gambar referensi user (plum/rose): latar `#37313D`, well `#2F2430`, kartu `#443C4A`, teks `#F8DCE8`, aksen `#D3A0B9`. Font Plus Jakarta Sans + JetBrains Mono (OFL). Panel maskot **28% lebar penuh atas-bawah**. `installer/src/tema.rs` = satu-satunya berkas visual yang perlu disentuh user.
 - **Sedang dikerjakan**: **6H ✅ + 6I ✅ LIVE**. Menunggu arahan user (Fase 7 masih ditunda).
@@ -47,6 +47,8 @@
 ## 4. Log Konteks (append ke atas, terbaru dulu)
 
 - **2026-09-20 (v2)**: **Setup-v2 jadi artefak kanonis.** User reinstall pakai v2 lama (payload kill saja) sehingga `update.cmd` hilang dari `bin/` → `update` tak dikenal di PS (bukan masalah alias; PS lama juga PATH basi). Perbaikan: rebuild payload penuh ke `dist/EvernightLanguage-0.1.0-Setup-v2.exe` (SHA `a91ef6de...`, sama dgn v1 karena payload identik), SHA256SUMS dua baris, reinstall `--diam` dari v2 → bin/ lengkap (exe+kill+update). Verifikasi PS baru: `update evernight system` → zhongk ✅, `evernight system info` ✅. Catatan: file `Setup.exe` lama di dist dibiarkan apa adanya.
+
+- **2026-09-20 (Fase 7)**: **Fase 7 dikerjakan.** 7A: sandbox path (`resolve_sandbox` untuk baca/tulis/ada_file + impor), test sandbox ditolak. 7B: `BYTECODE_VERSION = 1`, 4 golden test (roundtrip, overlap, daftar v1, versi). 7C: 18 edge-case test (aritmatika, pembagian nol, string kosong/panjang, daftar kosong/besar, kamus, rekursi 50, try/catch, loop nol, boolean, nested expr, string ops, daftar ops, kamus ops, sandbox). 7D: `KRITERIA_RILIS_1_0.md` (9 kategori). 7F: `paket/paket-rilis.ps1` (-Versi X.Y.Z) — build release + rakit folder + ZIP + SHA256; regenerasi 0.1.0 OK. Total: 163 test hijau, clippy bersih.
 
 - **2026-09-20 (revisi)**: **Catatan versi + `evernight system info` + Setup 0.1.0 revisi.** `version/catatan-0.1.0.txt` (ASCII saja — em-dash bikin mojibake terminal). Subcommand `evernight system <aksi>` (`info`: versi+lokasi+ukuran dari registri, isi versi live GitHub + fallback offline; tanpa aksi → BAHAYA [ARG]). 2 test CLI baru (28/28 hijau). `update.ps1` cetak catatan perubahan sebelum memasang (teruji mock). Rantai build penuh: CLI→payload→installer→dist Setup.exe 9.59 MB SHA `a91ef6de...`. Reinstall `--diam` terverifikasi: bin/ berisi exe baru + kill + update, `system info` + `update evernight system` (zhongk) jalan dari instalasi. `version/version` tetap 0.1.0 (bukan update). Push `81249db`.
 

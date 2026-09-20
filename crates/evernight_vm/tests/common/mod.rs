@@ -84,6 +84,16 @@ pub fn teks_equal(expected: &str, program: &str) -> bool {
     }
 }
 
+pub fn teks_equal_dir(dir: &Path, expected: &str, program: &str) -> bool {
+    match eksekusi_dir(dir, program) {
+        Ok(Value::Teks(s)) => s == expected,
+        other => {
+            eprintln!("teks_equal_dir({}) -> {:?}", program, other);
+            false
+        }
+    }
+}
+
 pub fn angka_equal(expected: f64, program: &str) -> bool {
     match eksekusi(program) {
         Ok(Value::Angka(n)) => (n - expected).abs() < 1e-9,
