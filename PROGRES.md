@@ -111,7 +111,8 @@
 - [ ] Definisi kriteria "selesai" rilis 1.0
 
 #### Sub-Fase Pelaksanaan Fase 7
-- [ ] **7E — Desain Visual Final Installer + Uji Pengguna Akhir** (grafis wizard bermerek Nusantara, warna & font kustom, UX hak akses/UAC Bahasa Indonesia, tombol "Jalankan REPL"/"Buka Panduan", uji di komputer/VM bersih)
+- [ ] **7E — Desain Visual Final Installer + Uji Pengguna Akhir** (grafis wizard bermerek Nusantara, warna & font kustom, UX hak akses/UAC Bahasa Indonesia, tombol "Jalankan REPL"/"Buka Panduan", uji di komputer/VM bersih) — **BATAL** (desain 6F final, tidak ada perubahan visual)
+- [ ] **7F — Paket Rilis Per-Versi** (skrip `paket-rilis.ps1`, paket `evernight-<versi>-windows-x64/` isi lengkap: exe, kill, update, vsix, docs, LICENSE + ZIP + SHA256, sumber updater 6I)
 
 ### Fase 8: Dokumentasi Publik, Website & Komunitas (NON-DEV)
 - [ ] README utama publik (logo, quickstart, status fase, fitur)

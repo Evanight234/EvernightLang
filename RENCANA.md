@@ -474,6 +474,19 @@ Catatan pelaksanaan (Fase 6):
   - **Catatan**: installer 6F memakai egui (Rust), bukan Inno Setup — animasi & tampilan dikendalikan `installer/src/tema.rs` + `anim.rs`.
   - *Catatan: fungsionalitas dasar installer dibangun di **Fase 6F**; 7E hanya memoles desain + uji akhir.*
 
+- **7F — Paket Rilis Per-Versi** ⬜ *(belum — dikerjakan di Fase 7)*
+  - **Status**: paket `paket/evernight-0.1.0-windows-x64/` sudah ada (Fase 6B), tapi isi belum lengkap (kurang `kill.*`, `update.*`, `LICENSE`, catatan versi) dan belum ada skrip otomatis untuk merakit paket per-versi.
+  - **Tujuan**: user tinggal download paket → ekstrak → install/setup → bahasa + command langsung jalan.
+  - **Struktur paket per versi** `evernight-<versi>-windows-x64/`:
+    - `bin/` → `evernight.exe`, `kill.cmd`, `kill.ps1`, `update.cmd`, `update.ps1`
+    - `extensions/` → `.vsix` terbaru
+    - `docs/` → `PANDUAN.txt`, `catatan-<versi>.txt`
+    - root → `LICENSE` (MIT), `BACA-AKU.txt`, `install`/`uninstall` script, `versi.txt` (manifes)
+    - ZIP + SHA256SUMS
+  - **Skrip `paket/paket-rilis.ps1`**: rakit folder dari repo (cargo build release + payload + vsix + docs) → ZIP → SHA256. Satu perintah = satu paket konsisten, tanpa manual.
+  - **Hubungan dengan updater 6I**: ZIP/bin per versi ini sumber update dari `version/` GitHub.
+  - **Bukti pertama**: regenerasi paket 0.1.0 pakai skrip baru.
+
 ## Fase 8: Dokumentasi Publik, Website & Komunitas (NON-DEV)
 - [ ] README utama publik (logo, quickstart, status fase, fitur)
 - [ ] Panduan sintaks Bahasa Indonesia per keyword
