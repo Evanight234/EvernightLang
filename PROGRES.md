@@ -122,7 +122,7 @@
 - [ ] Referensi stdlib lengkap (penjelasan tiap fungsi + contoh kode)
 - [ ] 10+ contoh program bertahap (sebagai materi ajar publik)
 - [ ] Website resmi + playground online berbasis WASM (eksperimen)
-- [x] **Perencanaan desain web** — `WEB.md` final: review 2 layar Stitch (Homepage dark + Docs light), palet/ font, sidebar menu final sesuai fitur asli, spesifikasi switch "Ganti Bahasa" (ID: knob kanan + merah-putih; EN: kiri + hitam-putih), checklist koreksi (sintaks Evernight, v0.1.0, `.eve`). **Edit Stitch belum dieksekusi** — menunggu persetujuan plan eksekusi §8.
+- [x] **Perencanaan desain web** — `WEB.md` final: review 2 layar Stitch (Homepage dark + Docs light), palet/font, sidebar menu final sesuai fitur asli, spesifikasi switch "Ganti Bahasa" (ID: knob kanan + merah-putih; EN: kiri + hitam-putih), checklist koreksi (sintaks Evernight, v0.1.0, `.eve`), **§7 framework FINAL = Astro + Tailwind + i18n client-side (URL tunggal, MD root dipakai langsung)**. **Eksekusi scaffold `situs/` + edit Stitch menunggu "clear" user.**
 - [ ] Publish ekstensi VS Code ke Marketplace (satu `.vsix` untuk keluarga VS Code)
 - [ ] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, template issue/PR
 - [ ] Peta jalan (roadmap) v1.x / v2.0

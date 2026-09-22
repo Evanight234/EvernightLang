@@ -137,14 +137,89 @@ Konten placeholder Stitch ≠ Evernight asli. Checklist koreksi:
 - [ ] **Navbar homepage**: tambah switch Ganti Bahasa §5
 - [ ] Teks marketing (Why Evernight dsb.) boleh dipertahankan, nanti diterjemahkan saat mode ID
 
-## 7. Teknis (implementasi nanti)
+## 7. Framework (FINAL — keputusan 2026-09-22)
 
-- HTML polos + CSS (Tailwind CDN dari export Stitch boleh dipakai awal; evaluasi sebelum production)
-- Hosting: GitHub Pages (branch `main` / folder `docs/`)
-- Playground WASM: **eksperimen, ditunda pasca-1.0**
-- Pipeline: tiap rilis → update versi + daftar paket di halaman Unduh dari `version/` + `paket/`
+### Keputusan
+| Aspek | Pilihan |
+|-------|---------|
+| Framework | **Astro** (static output, zero-JS default) |
+| Styling | **Tailwind** (compat ekspor Stitch HTML) |
+| Konten MD | **File MD root repo tetap** (`KEYWORD.md`, `STDLIB.md`, dll.) — tidak diduplikasi ke `situs/` |
+| Bahasa | **Toggle client-side, URL tidak berubah** (tanpa `/id/`, `/en/`) |
+| Dokumentasi EN | **(a) UI chrome saja** yang switch (navbar, tombol, judul); konten docs tetap ID (MD root) — opsional blok terjemahan nanti |
+| Hosting | GitHub Pages (`dist/` via Actions) |
+| Non-goal 1.0 | Playground WASM, search penuh, CMS |
 
-## 8. Langkah Eksekusi (setelah planning disetujui)
+### 7.1 Struktur folder `situs/`
+```
+situs/
+├── astro.config.mjs          # tailwind integration, site URL
+├── package.json              # astro, @astrojs/tailwind, tailwindcss
+├── public/assets/            # logo, icon (symlink/copy dari ../assets)
+├── src/
+│   ├── layouts/Base.astro    # navbar + switch bahasa + footer
+│   ├── layouts/Docs.astro    # sidebar 20% + konten 80%
+│   ├── pages/
+│   │   ├── index.astro       # homepage (dari ekspor Stitch)
+│   │   ├── unduh.astro
+│   │   └── docs/[...slug].astro  # render MD → halaman docs
+│   ├── components/           # Navbar, Sidebar, SwitchBahasa, CodePanel, KartuFitur
+│   ├── content/
+│   │   ├── docs/             # hubungan ke MD root (lihat §7.3)
+│   │   └── i18n/
+│   │       ├── id.json       # teks UI Indonesia
+│   │       └── en.json       # teks UI Inggris
+│   └── styles/global.css
+```
+
+### 7.2 Routing & i18n (tanpa ganti URL)
+- URL tunggal: `/`, `/docs/sintaks`, `/unduh` — sama untuk ID & EN
+- Mekanisme:
+  - `<html data-lang="id">` (default; `localStorage.evernight_lang`)
+  - Elemen terjemahan: `<span data-i18n="nav.unduh">` → JS ganti teks dari `id.json`/`en.json`
+  - Konten MD = Bahasa Indonesia; switch hanya ubah UI chrome (lihat keputusan di atas)
+  - Switch component: sesuai §5 (ID: knob kanan merah-putih; EN: kiri hitam-putih), tulis `localStorage`, sinkron semua tab
+- **Tidak ada** middleware/redirect/`hreflang` path
+
+### 7.3 Konten MD root → Astro
+- **Astro Content Layer** (`glob()` loader) menunjuk ke `../KEYWORD.md` dsb. — file MD **tidak dipindah/diduplikasi**
+- Frontmatter minimal: judul, slug, grup sidebar
+- Mapping awal (sesuai §4):
+  - `KEYWORD.md` → Syntax & Keywords
+  - `TIPE.md` → Variables & Types
+  - `FUNCTION.md` → Functions
+  - `STDLIB.md` → Standard Library + modul
+  - `ERROR.md` → Error Handling
+  - `GRAMMAR.md` → Syntax detail
+  - `examples/*.eve` → halaman Examples (code block)
+- Fallback jika glob di luar `src/` bermasalah: build step copy-in ke `src/content/docs/` (MD root tetap sumber kebenaran)
+
+### 7.4 Data rilis
+- Build time: baca `../version/version` + daftar isi `../paket/` → variabel halaman Unduh + chip versi sidebar (`v0.1.0`)
+- Regenerasi otomatis saat commit ke `version/` (GH Action)
+
+### 7.5 Pipeline GitHub Pages
+```yaml
+# .github/workflows/situs.yml
+on: push [main, paths: situs/** | version/** | *.md]
+jobs: build (npm ci → astro build) → deploy (actions/deploy-pages)
+```
+- Output: `situs/dist/` → GitHub Pages dari Actions
+
+### 7.6 Integrasi Stitch
+1. Ekspor HTML 2 layar → pecah jadi komponen Astro (`Hero`, `CodeEditor`, `Sidebar`, `SwitchBahasa`)
+2. Tailwind CDN → `@astrojs/tailwind` (config di `tailwind.config.mjs`)
+3. Koreksi §6 (sintaks, v0.1.0, `.eve`, sidebar) dilakukan saat pemindahan ke komponen — `stitch_edit_screens` jadi opsional
+
+### 7.7 Tahapan eksekusi (tunggu "clear" dari user)
+1. Scaffold `situs/` (Astro + Tailwind + struktur §7.1)
+2. Port homepage Stitch → `index.astro` + `SwitchBahasa` (state ID/EN)
+3. Content layer MD root + `docs/[...slug].astro` + sidebar §4
+4. Halaman Unduh (baca `version/` + `paket/`)
+5. GH Action deploy Pages
+6. (Opsional) `stitch_edit_screens` — jika mockup Stitch ikut dikoreksi
+
+## 8. Langkah Eksekusi Stitch (setelah planning disetujui)
 
 1. `stitch_edit_screens` Homepage — tambah switch §5 + kode Evernight §6
 2. `stitch_edit_screens` Docs — versi, `.eve`, sidebar §4, kode Evernight §6
