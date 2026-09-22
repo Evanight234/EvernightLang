@@ -8,8 +8,8 @@
 
 ## 1. Konteks Aktif (UPDATE TIAP PROMPT)
 
-- **Topik sedang dibahas**: **Fase 7 SELESAI** — 7A (sandbox) ✅, 7B (bytecode v1) ✅, 7C (edge-case) ✅, 7D (kriteria 1.0) ✅, 7F (paket-rilis) ✅, LSP (evernight-lsp) ✅. 163 test hijau, clippy bersih. Semua Fase 7 selesai.
-- **Keputusan terbaru (2026-09-18)**: **LSP ditunda & crates.io ditunda** oleh user; prioritas = revisi ikon dulu, lalu desain bagian uninstaller (user mau buat mockup di Google Stitch) sebelum Fase 7 lainnya.
+- **Topik sedang dibahas**: **Fase 7 SELESAI** (7A–7D, 7F, LSP). Sekarang **Fase 8 — perencanaan desain web**. 2 desain Google Stitch sudah direview; `WEB.md` diisi plan lengkap (palet, struktur, sidebar final, switch bahasa ID/EN, checklist koreksi sintaks/versi). Belum eksekusi edit Stitch — menunggu persetujuan plan.
+- **Keputusan terbaru (2026-09-22)**: **Desain web = 2 layar Stitch** (project `18139361705705476795`): Homepage dark full-bleed + Docs light 20/80. **Switch "Ganti Bahasa"** di navbar homepage: state ID = knob kanan + track merah-putih (bendera), state EN = knob kiri + track hitam-putih. Sidebar docs disesuaikan fitur asli (hapus Pattern Matching/Concurrency/Memory Model/Optional Types). Koreksi wajib: versi `0.18.4`→`0.1.0`, `main.ev`→`main.eve`, sintaks Rust/Go→Evernight (`fungsi`/`jika`/`cetak`). Paket 7F kini berisi `setup/Setup.exe` (v2 kanonis, diganti nama dari Setup-v2.exe).
 - **Keputusan terbaru (2026-09-16)**: **Installer memakai egui/eframe (Rust), BUKAN Inno Setup** — Inno Setup berbasis Delphi VCL, tidak bisa animasi halus. Crate `installer/` berada **di luar workspace** agar `+crt-static` tidak bentrok dengan `winit`/`eframe`. Palet installer dari gambar referensi user (plum/rose): latar `#37313D`, well `#2F2430`, kartu `#443C4A`, teks `#F8DCE8`, aksen `#D3A0B9`. Font Plus Jakarta Sans + JetBrains Mono (OFL). Panel maskot **28% lebar penuh atas-bawah**. `installer/src/tema.rs` = satu-satunya berkas visual yang perlu disentuh user.
 - **Sedang dikerjakan**: **6H ✅ + 6I ✅ LIVE**. Menunggu arahan user (Fase 7 masih ditunda).
 - **Langkah berikutnya**: (1) Rilis versi baru bila siap (naikkan `version/version` + taruh file di folder `version/` + push → user `update evernight system`); (2) Fase 7 bila user cabut penundaan.
@@ -45,6 +45,8 @@
 - Keyword final: `variabel` (bukan `nyatakan`), `fungsi` (bukan `fn`), `impor` (bukan `pakai`), `kembali` tetap `kembali`.
 
 ## 4. Log Konteks (append ke atas, terbaru dulu)
+
+- **2026-09-22**: **Fase 8 — perencanaan desain web.** `WEB.md` diisi plan lengkap dari review 2 layar Google Stitch (project `18139361705705476795`): Homepage dark full-bleed (`9457a23a...`) + Docs light 20/80 (`e8b35806...`). Isi plan: palet (`#7F77DD`/`#C9B8FF`/`#F1EDFB`), font Inter/Geist + JetBrains Mono, sidebar final sesuai fitur asli (Conditionals/Loops/Error Handling/Imports — bukan Pattern Matching/Concurrency), **switch "Ganti Bahasa"** (ID: knob kanan + track merah-putih bendera; EN: kiri + hitam-putih), checklist koreksi (sintaks Rust→Evernight, v0.18.4→0.1.0, main.ev→main.eve). **Edit Stitch belum dieksekusi** — menunggu persetujuan plan §8. Paket 7F juga sudah berisi `setup/Setup.exe` (Setup-v2 kanonis diganti nama).
 
 - **2026-09-20 (v2)**: **Setup-v2 jadi artefak kanonis.** User reinstall pakai v2 lama (payload kill saja) sehingga `update.cmd` hilang dari `bin/` → `update` tak dikenal di PS (bukan masalah alias; PS lama juga PATH basi). Perbaikan: rebuild payload penuh ke `dist/EvernightLanguage-0.1.0-Setup-v2.exe` (SHA `a91ef6de...`, sama dgn v1 karena payload identik), SHA256SUMS dua baris, reinstall `--diam` dari v2 → bin/ lengkap (exe+kill+update). Verifikasi PS baru: `update evernight system` → zhongk ✅, `evernight system info` ✅. Catatan: file `Setup.exe` lama di dist dibiarkan apa adanya.
 
