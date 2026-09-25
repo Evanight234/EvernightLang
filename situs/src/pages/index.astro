@@ -131,23 +131,9 @@ const slides = [
           ))}
         </div>
 
-        <div class="mt-7 flex items-center gap-2" role="tablist" aria-label="Slideshow beranda">
-          {slides.map((_, i) => (
-            <button
-              type="button"
-              class="tombol-slide w-8 h-8 rounded-lg text-xs font-semibold transition-colors"
-              data-slide-tombol={i}
-              aria-label={`Slide ${i + 1}`}
-              data-aktif={i === 0 ? 'ya' : 'tidak'}
-            >
-              {i + 1}
-            </button>
-          ))}
-        </div>
-
         <a
           href="/docs/quickstart"
-          class="mt-7 inline-flex items-center gap-2 rounded-[10px] bg-[#7F77DD] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#534AB7] transition-colors"
+          class="mt-8 inline-flex items-center gap-2 rounded-[10px] bg-[#7F77DD] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#534AB7] transition-colors"
           data-i18n="hero.coba"
         >Coba dokumentasinya</a>
       </div>
@@ -155,53 +141,22 @@ const slides = [
   </section>
 </Base>
 
-<style is:global>
-  .tombol-slide {
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #9ca3af;
-  }
-  .tombol-slide:hover { color: #fff; border-color: #c9b8ff; }
-  .tombol-slide[data-aktif='ya'] {
-    background: #7f77dd;
-    border-color: #7f77dd;
-    color: #fff;
-  }
-</style>
-
 <script define:vars={{ konten: slides.map((s) => ({ kode: s.kode, keluaran: s.keluaran })) }}>
   const total = konten.length;
-  const tombol = document.querySelectorAll('[data-slide-tombol]');
   const panel = document.querySelectorAll('[data-slide]');
   const kode = document.getElementById('kode-slide');
   const keluaran = document.getElementById('keluaran-slide');
 
   let sekarang = 0;
-  let jeda;
 
   function tampilkan(n) {
     sekarang = n;
     panel.forEach((p) => {
       p.hidden = Number(p.dataset.slide) !== n;
     });
-    tombol.forEach((t) => {
-      t.dataset.aktif = Number(t.dataset.slideTombol) === n ? 'ya' : 'tidak';
-    });
     if (kode) kode.innerHTML = konten[n].kode;
     if (keluaran) keluaran.textContent = konten[n].keluaran;
   }
 
-  function jadwal() {
-    clearInterval(jeda);
-    jeda = setInterval(() => tampilkan((sekarang + 1) % total), 6000);
-  }
-
-  tombol.forEach((t) =>
-    t.addEventListener('click', () => {
-      tampilkan(Number(t.dataset.slideTombol));
-      jadwal();
-    })
-  );
-
-  jadwal();
+  setInterval(() => tampilkan((sekarang + 1) % total), 4000);
 </script>

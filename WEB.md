@@ -238,16 +238,18 @@ jobs: build (npm ci â†’ astro build) â†’ deploy (actions/deploy-pages)
 
 ---
 
+---
+
 ## 9. Revisi Desain Menyeluruh (keputusan user 2026-09-26)
 
 Berlaku di SEMUA halaman (Beranda, Dokumentasi, Unduh):
 
-- **Navbar**: latar hitam `#15151B` di semua halaman (termasuk docs/unduh). Logo = gambar `logo_badge.png` (32-36px, rounded) + "Evernight" tebal putih — **bukan** kotak "E" CSS. Menu: **Beranda | Dokumentasi | Unduh** (menu Tutorial DIHAPUS dari navbar; sidebar docs tetap punya grup Tutorial). Aktif = teks `#C9B8FF` + garis bawah `#7F77DD`. Tanpa pencarian.
-- **Palet tambahan**: ungu tua `#534AB7` (hover/aksen), teal `#0F6E56` (badge Live, aksen benar), krem `#FAEEDA`, pink lembut `#ED93B1` (nama fungsi), latar panel kode `#15151B`–`#1A1E33`.
-- **Footer**: HANYA satu baris tengah "© 2026 EvernightLanguage · Lisensi MIT" — tagline dihapus.
-- **Beranda**: badge `v0.1.0 · Windows x64` dihapus. Angka 1-5 = **slideshow otomatis 6 detik** (judul + paragraf + KODE contoh di panel ikut berganti; 5 contoh kode berbeda). Nomor aktif = ungu solid, lain outline. String kode teal, keyword ungu muda, angka amber, fungsi pink, komentar abu. Tanpa glow (flat).
+- **Navbar**: latar hitam `#15151B` di semua halaman (termasuk docs/unduh). Logo = gambar `logo_badge.png` (32-36px, rounded) + "Evernight" tebal putih â€” **bukan** kotak "E" CSS. Menu: **Beranda | Dokumentasi | Unduh** (menu Tutorial DIHAPUS dari navbar; sidebar docs tetap punya grup Tutorial). Aktif = teks `#C9B8FF` + garis bawah `#7F77DD`. Tanpa pencarian.
+- **Palet tambahan**: ungu tua `#534AB7` (hover/aksen), teal `#0F6E56` (badge Live, aksen benar), krem `#FAEEDA`, pink lembut `#ED93B1` (nama fungsi), latar panel kode `#15151B`â€“`#1A1E33`.
+- **Footer**: HANYA satu baris tengah "Â© 2026 EvernightLanguage Â· Lisensi MIT" â€” tagline dihapus.
+- **Beranda**: badge `v0.1.0 Â· Windows x64` dihapus. **Tanpa kotak angka 1-5 sama sekali** â€” slideshow sepenuhnya **otomatis tiap 4 detik** (judul + paragraf + KODE contoh di panel ikut berganti; 5 contoh kode berbeda, loop terus, tanpa kontrol manual). String kode teal, keyword ungu muda, angka amber, fungsi pink, komentar abu. Tanpa glow (flat).
 - **Unduh**: badge versi + subjudul dihapus; hero langsung ke judul, lalu dua kartu.
-- **Template tahap tutorial** (urutan): judul/isi + blok kode dengan tombol **Jalankan** ? section **"Coba Kamu Run"** (kartu border 10px, header + badge Live teal, editor gelap `#17151E` contenteditable + kursor berkedip + border terang, tombol ungu "Coba Kamu Run ?", panel terminal hitam pekat `$ evernight main.eve` + output) yang **dipindahkan JS sebelum section Latihan** ? Latihan ? section **"Uji Pemahaman"** (kuis ungu: subteks, progres "Soal 1 dari 4", 4 opsi radio flat, tombol "Kirim Jawaban »", skor + ulangi; data `situs/src/data/quis.ts` 10 tahap × 4 soal) ? navigasi ‹/› bawah.
+- **Template tahap tutorial** (urutan): judul/isi + blok kode dengan tombol **Jalankan** â†’ section **"Coba Kamu Run"** (kartu border 10px, header + badge Live teal, editor gelap `#17151E` contenteditable + kursor berkedip + border terang, tombol ungu "Coba Kamu Run â–¶", panel terminal hitam pekat `$ evernight main.eve` + output) yang **dipindahkan JS sebelum section Latihan** â†’ Latihan â†’ section **"Uji Pemahaman"** (kuis ungu: subteks, progres "Soal 1 dari 4", 4 opsi radio flat, tombol "Kirim Jawaban Â»", skor + ulangi; data `situs/src/data/quis.ts` 10 tahap x 4 soal) â†’ navigasi sebelumnya/berikutnya di bawah.
 - **Gaya**: flat, minim shadow, tanpa neon/glow, radius 8-10px.
 
-Status §9: **SELESAI diimplementasikan 2026-09-26** (build 31 halaman, preview 200). Simulasi run di "Coba Kamu Run" masih tiruan — pengganti aslinya `evernight_wasm` (belum ada).
+Status Â§9: **SELESAI diimplementasikan 2026-09-26** (build 31 halaman, preview 200; kotak angka dihapus + interval 4 detik pada revisi lanjutan hari yang sama). Simulasi run di "Coba Kamu Run" masih tiruan â€” pengganti aslinya `evernight_wasm` (belum ada).
