@@ -1,0 +1,92 @@
+---
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import Base from './Base.astro';
+import { sidebar, tetangga } from '../lib/docs';
+
+interface Props {
+  judul: string;
+  slug: string;
+}
+
+const { judul, slug } = Astro.props;
+const kini = `/docs/${slug}`;
+const { sebelum, sesudah } = tetangga(slug);
+
+let versi = '0.1.0';
+try {
+  versi = readFileSync(join(process.cwd(), '..', 'version', 'version'), 'utf8').trim();
+} catch {}
+---
+
+<Base judul={`${judul} — EvernightLanguage`} tema="terang" aktif="dokumentasi">
+  <div class="flex items-start">
+    <!-- Sidebar -->
+    <aside class="hidden md:block w-[272px] shrink-0 sticky top-14 h-[calc(100vh-3.5rem)] overflow-y-auto bg-[#FAFAF8] border-r border-[#E6E6EA] pb-10" style="scrollbar-width: thin;">
+      <nav class="py-6 px-5 space-y-6">
+        {sidebar.map((g) => (
+          <div>
+            <p class="px-3 mb-1.5 text-[11px] font-bold tracking-[0.12em] uppercase text-[#8A87A0]" data-i18n={g.label}>{g.label}</p>
+            <ul class="space-y-0.5">
+              {g.item.map((it) => {
+                const aktif = it.href === kini;
+                return (
+                  <li>
+                    <a
+                      href={it.href}
+                      class:list={[
+                        'block rounded-md px-3 py-[7px] text-[13.5px] leading-snug border-l-[3px] transition-colors',
+                        aktif
+                          ? 'bg-[#F1EDFB] border-[#7F77DD] text-[#5B54B8] font-semibold'
+                          : 'border-transparent text-[#4A4756] hover:bg-[#F1EDFB]/50 hover:text-[#1C1B22]',
+                      ]}
+                    >{it.label}</a>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        ))}
+      </nav>
+
+      <div class="mx-5 mt-2 flex items-center gap-2 rounded-lg border border-[#7F77DD]/30 bg-white px-3 py-2 text-xs font-medium text-[#4A4756]">
+        <span class="w-2 h-2 rounded-full bg-[#7F77DD] shadow-[0_0_8px_rgba(127,119,221,0.8)]"></span>
+        <span data-i18n="docs.versi">Versi</span>
+        <span class="font-mono font-semibold text-[#1C1B22]">v{versi}</span>
+      </div>
+    </aside>
+
+    <!-- Konten -->
+    <main class="flex-1 min-w-0 bg-white">
+      <article class="max-w-3xl mx-auto px-5 md:px-10 py-10 md:py-14">
+        <h1 class="text-[1.9rem] md:text-[2.4rem] font-extrabold tracking-tight text-[#1C1B22] leading-tight">{judul}</h1>
+
+        <div class="mt-5 mb-8 flex items-center justify-between gap-3">
+          {sebelum ? (
+            <a href={sebelum.href} class="inline-flex items-center gap-1.5 rounded-lg border border-[#7F77DD]/50 px-4 py-2 text-sm font-semibold text-[#5B54B8] hover:bg-[#F1EDFB] transition-colors">‹ {sebelum.label}</a>
+          ) : (
+            <span></span>
+          )}
+          {sesudah ? (
+            <a href={sesudah.href} class="inline-flex items-center gap-1.5 rounded-lg border border-[#7F77DD]/50 px-4 py-2 text-sm font-semibold text-[#5B54B8] hover:bg-[#F1EDFB] transition-colors">{sesudah.label} ›</a>
+          ) : (
+            <span></span>
+          )}
+        </div>
+
+        <div class="konten-md">
+          <slot />
+        </div>
+
+        <div class="mt-12 pt-6 border-t border-[#EBEAF1] flex items-center justify-between gap-3">
+          {sebelum ? (
+            <a href={sebelum.href} class="text-sm text-[#5B54B8] hover:underline">‹ {sebelum.label}</a>
+          ) : <span></span>}
+          {sesudah ? (
+            <a href={sesudah.href} class="text-sm text-[#5B54B8] hover:underline">{sesudah.label} ›</a>
+          ) : <span></span>}
+        </div>
+      </article>
+    </main>
+  </div>
+</Base>

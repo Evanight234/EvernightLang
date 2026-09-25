@@ -490,11 +490,14 @@ Catatan pelaksanaan (Fase 6):
 
 ## Fase 8: Dokumentasi Publik, Website & Komunitas (NON-DEV)
 - [ ] README utama publik (logo, quickstart, status fase, fitur)
-- [ ] Panduan sintaks Bahasa Indonesia per keyword
-- [ ] Tutorial pemula + latihan bertahap
-- [ ] Referensi stdlib lengkap (penjelasan tiap fungsi + contoh kode)
-- [ ] 10+ contoh program bertahap (sebagai materi ajar publik)
+- [x] Panduan sintaks Bahasa Indonesia per keyword — `docs/panduan/01–07` + `docs/kata-kunci` (KEYWORD.md)
+- [x] Tutorial pemula + latihan bertahap — `docs/tutorial/01–10` (tiap contoh diverifikasi jalan)
+- [ ] Referensi stdlib lengkap (penjelasan tiap fungsi + contoh kode) — `STDLIB.md` sudah ada, kolom contoh menyusul
+- [x] 10+ contoh program bertahap — `examples/` (11 program) + galeri `docs/contoh.md`
 - [ ] Website resmi + playground online berbasis WASM (eksperimen)
+  - [x] **Situs Astro dibangun lokal 2026-09-25** — `situs/`: beranda (desain Stitch + switch ID/EN), 29 halaman docs (sidebar 4 grup, prev/next, plugin link `.md`), halaman Unduh (Setup.exe + ZIP + SHA256), `astro build` 31 halaman
+  - [ ] Deploy GitHub Pages (Actions) + domain
+  - [ ] Playground WASM (`evernight_wasm`)
 - [ ] Publish ekstensi VS Code ke Marketplace (satu `.vsix` untuk keluarga VS Code)
 - [ ] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, template issue/PR
 - [ ] Peta jalan (roadmap) v1.x / v2.0

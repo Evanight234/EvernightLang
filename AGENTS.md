@@ -102,8 +102,8 @@ Bahasa pemrograman baru dengan karakteristik:
 - [x] **Language Server dasar** (`evernight-lsp`) — biner JSON-RPC stdio, hover/diagnostic/goto-definition/completion, zero async deps
 
 ### Fase 8: Dokumentasi Publik, Website & Komunitas
-- [ ] README utama publik, panduan sintaks, tutorial, referensi stdlib, 10+ contoh program
-- [ ] Website resmi + playground WASM + publish ekstensi VS Code ke Marketplace
+- [ ] README utama publik + referensi stdlib (panduan sintaks ✓ `docs/panduan/`, tutorial ✓ `docs/tutorial/01-10`, contoh ✓ `examples/` + `docs/contoh.md`)
+- [ ] Website resmi — **situs Astro lokal ✓** (`situs/`, build 31 halaman, 2026-09-25); sisa: deploy GH Pages + playground WASM + publish ekstensi VS Code ke Marketplace
 - [ ] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, template issue/PR, peta jalan, galeri komunitas, tantangan pertama
 - [ ] Pengumuman rilis 1.0, survei pengguna, jadwal pemeliharaan
 

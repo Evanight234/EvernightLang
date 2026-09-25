@@ -1,0 +1,22 @@
+---
+import { getCollection, render } from 'astro:content';
+import Docs from '../../layouts/Docs.astro';
+import { slugDari, judulDariBody } from '../../lib/docs';
+
+export async function getStaticPaths() {
+  const semua = await getCollection('docs');
+  return semua.map((entry) => ({
+    params: { slug: slugDari(entry.id) },
+    props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const judul = entry.data.judul ?? judulDariBody(entry.body ?? '', entry.id);
+const slug = slugDari(entry.id);
+---
+
+<Docs judul={judul} slug={slug}>
+  <Content />
+</Docs>

@@ -1,0 +1,47 @@
+---
+// Saklar ID/EN (WEB.md §5): ID = knob kanan, track merah/putih; EN = knob kiri, track hitam/putih.
+---
+<button
+  id="saklar-bahasa"
+  type="button"
+  class="group flex items-center gap-2.5"
+  aria-label="Ganti bahasa / Switch language"
+  title="ID / EN"
+>
+  <span class="hidden md:inline text-xs font-medium tracking-wide text-[#9CA3AF] group-hover:text-white transition-colors" data-i18n="nav.ganti_bahasa">Ganti Bahasa</span>
+  <span class="saklar" aria-hidden="true">
+    <span class="saklar-knob"></span>
+  </span>
+</button>
+
+<style>
+  .saklar {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+    border-radius: 9999px;
+    background: linear-gradient(to bottom, #e7000b 0 50%, #ffffff 50% 100%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: background 0.25s ease;
+    flex: none;
+  }
+  :global([data-lang="en"]) .saklar {
+    background: linear-gradient(to bottom, #1c1b22 0 50%, #ffffff 50% 100%);
+  }
+  .saklar-knob {
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    transition: transform 0.2s ease;
+    transform: translateX(24px); /* ID = kanan */
+  }
+  :global([data-lang="en"]) .saklar-knob {
+    transform: translateX(0); /* EN = kiri */
+  }
+</style>

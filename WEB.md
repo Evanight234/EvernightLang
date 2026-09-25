@@ -211,13 +211,21 @@ jobs: build (npm ci → astro build) → deploy (actions/deploy-pages)
 2. Tailwind CDN → `@astrojs/tailwind` (config di `tailwind.config.mjs`)
 3. Koreksi §6 (sintaks, v0.1.0, `.eve`, sidebar) dilakukan saat pemindahan ke komponen — `stitch_edit_screens` jadi opsional
 
-### 7.7 Tahapan eksekusi (tunggu "clear" dari user)
-1. Scaffold `situs/` (Astro + Tailwind + struktur §7.1)
-2. Port homepage Stitch → `index.astro` + `SwitchBahasa` (state ID/EN)
-3. Content layer MD root + `docs/[...slug].astro` + sidebar §4
-4. Halaman Unduh (baca `version/` + `paket/`)
-5. GH Action deploy Pages
-6. (Opsional) `stitch_edit_screens` — jika mockup Stitch ikut dikoreksi
+### 7.7 Tahapan eksekusi — **CLEAR DIBERIKAN, EKSEKUSI SELESAI 2026-09-25**
+1. [x] Scaffold `situs/` (Astro 5.18 + Tailwind 4.3 + struktur §7.1)
+2. [x] Port homepage Stitch → `index.astro` + `SwitchBahasa` (state ID/EN, 5 slide, kode faktorial asli)
+3. [x] Content layer MD root + `docs/[...slug].astro` + sidebar §4 (+ plugin `plugins/remark-md-link.mjs` ubah link `.md` relatif → `/docs/slug/`)
+4. [x] Halaman Unduh (baca `version/version` + `paket/SHA256SUMS.txt` via `process.cwd()` — `import.meta.url` tidak reliabel saat build)
+5. [ ] GH Action deploy Pages (**belum**)
+6. [ ] (Opsional) `stitch_edit_screens` — mockup Stitch biarkan apa adanya (**belum**)
+
+**Status build 2026-09-25**: `astro build` → **31 halaman** (1 beranda + 1 unduh + 29 docs: 22 file `docs/` baru + 7 MD root), preview 200 OK, 0 link `.md` nyasar. Konten docs (panduan 7 + tutorial 10 + memulai 5) ditulis subagent, seluruh contoh kode **diverifikasi jalan** via `evernight.exe`.
+
+**Catatan implementasi (pelajaran)**:
+- ID file MD root di glob loader **lowercase** (`KEYWORD.md` → `keyword`) — `petaSlug` wajib kunci huruf kecil.
+- `{` mentah di template `.astro` (mis. blok kode) = ekspresi JS → pindahkan ke frontmatter + `set:html`.
+- Nav docs v1: Beranda | Tutorial | Dokumentasi | Unduh (About digabung ke docs/pengenalan).
+- Konten `.md` di dalam halaman docs memakai h1 pertama disembunyikan CSS (judul dirender layout dari frontmatter `judul`).
 
 ## 8. Langkah Eksekusi Stitch (setelah planning disetujui)
 

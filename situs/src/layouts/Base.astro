@@ -1,0 +1,111 @@
+---
+import '../styles/global.css';
+import SwitchBahasa from '../components/SwitchBahasa.astro';
+
+interface Props {
+  judul?: string;
+  deskripsi?: string;
+  tema?: 'gelap' | 'terang';
+  aktif?: 'beranda' | 'tutorial' | 'dokumentasi' | 'unduh' | '';
+}
+
+const {
+  judul = 'EvernightLanguage — bahasa pemrograman berbahasa Indonesia',
+  deskripsi = 'Evernight: semudah Python, secanggih C++. Compiler bytecode + VM, standard library lengkap, ekstensi VS Code.',
+  tema = 'gelap',
+  aktif = '',
+} = Astro.props;
+
+const gelap = tema === 'gelap';
+const navKelas = (k: string) =>
+  `flex items-center h-14 px-3 text-sm font-medium transition-colors ${
+    aktif === k
+      ? gelap
+        ? 'text-[#C9B8FF]'
+        : 'text-[#7F77DD]'
+      : gelap
+        ? 'text-[#9CA3AF] hover:text-white'
+        : 'text-[#3A3A40] hover:text-[#1C1B22]'
+  }`;
+---
+
+<!doctype html>
+<html lang="id" data-lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{judul}</title>
+    <meta name="description" content={deskripsi} />
+    <link rel="icon" type="image/png" href="/assets/icon_256.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class={gelap ? 'bg-[#15151B] text-white' : 'bg-white text-[#1C1B22]'} style="font-family: 'Inter', system-ui, sans-serif;">
+    <header
+      class:list={[
+        'sticky top-0 z-50 h-14 flex items-center justify-between px-5 md:px-8 select-none',
+        gelap ? 'bg-[#15151B]/95 backdrop-blur border-b border-white/5' : 'bg-white/95 backdrop-blur border-b border-[#E6E6EA]',
+      ]}
+    >
+      <a href="/" class="flex items-center gap-2.5 shrink-0">
+        <span class="w-8 h-8 rounded-lg bg-[#7F77DD] flex items-center justify-center text-white font-bold text-sm shadow-[0_0_16px_rgba(127,119,221,0.45)]">E</span>
+        <span class:list={['font-semibold tracking-tight', gelap ? 'text-white' : 'text-[#1C1B22]']} data-i18n="nav.nama">Evernight</span>
+      </a>
+
+      <nav class:list={['flex items-center h-14', gelap ? '' : '']}>
+        <a href="/" class={navKelas('beranda')} data-i18n="nav.beranda">Beranda</a>
+        <a href="/docs/tutorial/01-halo-dunia" class={navKelas('tutorial')} data-i18n="nav.tutorial">Tutorial</a>
+        <a href="/docs/quickstart" class={navKelas('dokumentasi')} data-i18n="nav.dokumentasi">Dokumentasi</a>
+        <a href="/unduh" class={navKelas('unduh')} data-i18n="nav.unduh">Unduh</a>
+        <span class:list={['w-px h-5 mx-2', gelap ? 'bg-white/10' : 'bg-[#E6E6EA]']} aria-hidden="true"></span>
+        <SwitchBahasa />
+      </nav>
+    </header>
+
+    <slot />
+
+    <footer class="bg-[#F1EDFB] border-t border-[#7F77DD]/25 px-5 md:px-8 py-4">
+      <p class="text-sm text-[#1C1B22] max-w-5xl mx-auto leading-relaxed" data-i18n-html="banner.teks">
+        Bahasa pemrograman berbahasa Indonesia yang semudah Python, secanggih C++. <a class="font-semibold underline decoration-[#7F77DD] decoration-2 underline-offset-2 hover:text-[#5B54B8]" href="/docs/pengenalan">» Pelajari lebih lanjut</a>
+      </p>
+      <p class="text-xs text-[#6B6880] max-w-5xl mx-auto mt-2">© 2026 EvernightLanguage · Lisensi MIT</p>
+    </footer>
+
+    <script>
+      import id from '../i18n/id.json';
+      import en from '../i18n/en.json';
+
+      const dict: Record<string, Record<string, string>> = { id, en };
+
+      function terapkan(lang: string) {
+        const d = dict[lang] ?? dict.id;
+        document.documentElement.lang = lang;
+        document.documentElement.dataset.lang = lang;
+        document.querySelectorAll<HTMLElement>('[data-i18n]').forEach((el) => {
+          const k = el.dataset.i18n!;
+          if (d[k] != null) el.textContent = d[k];
+        });
+        document.querySelectorAll<HTMLElement>('[data-i18n-html]').forEach((el) => {
+          const k = el.dataset.i18nHtml!;
+          if (d[k] != null) el.innerHTML = d[k];
+        });
+      }
+
+      const awal = localStorage.getItem('evernight_lang') === 'en' ? 'en' : 'id';
+      terapkan(awal);
+
+      window.addEventListener('DOMContentLoaded', () => {
+        const saklar = document.getElementById('saklar-bahasa');
+        saklar?.addEventListener('click', () => {
+          const lang = document.documentElement.dataset.lang === 'id' ? 'en' : 'id';
+          localStorage.setItem('evernight_lang', lang);
+          terapkan(lang);
+        });
+      });
+    </script>
+  </body>
+</html>

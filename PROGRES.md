@@ -117,12 +117,14 @@
 
 ### Fase 8: Dokumentasi Publik, Website & Komunitas (NON-DEV)
 - [ ] README utama publik (logo, quickstart, status fase, fitur)
-- [ ] Panduan sintaks Bahasa Indonesia per keyword
-- [ ] Tutorial pemula + latihan bertahap
-- [ ] Referensi stdlib lengkap (penjelasan tiap fungsi + contoh kode)
-- [ ] 10+ contoh program bertahap (sebagai materi ajar publik)
+- [x] **Panduan sintaks** — `docs/panduan/01–07` (struktur, variabel, fungsi, percabangan, perulangan, kesalahan, impor) + `docs/kata-kunci` (KEYWORD.md)
+- [x] **Tutorial pemula 10 tahap** — `docs/tutorial/01–10` (akhir: mini proyek kalkulator), tiap contoh kode **diverifikasi jalan** pakai `evernight.exe` (exit 0)
+- [ ] Referensi stdlib lengkap (penjelasan tiap fungsi + contoh kode) — `STDLIB.md` sudah ada; kolom contoh menyusul
+- [x] **10+ contoh program** — `examples/` (11 program) + galeri `docs/contoh.md`
 - [ ] Website resmi + playground online berbasis WASM (eksperimen)
-- [x] **Perencanaan desain web** — `WEB.md` final: review 2 layar Stitch (Homepage dark + Docs light), palet/font, sidebar menu final sesuai fitur asli, spesifikasi switch "Ganti Bahasa" (ID: knob kanan + merah-putih; EN: kiri + hitam-putih), checklist koreksi (sintaks Evernight, v0.1.0, `.eve`), **§7 framework FINAL = Astro + Tailwind + i18n client-side (URL tunggal, MD root dipakai langsung)**. **Eksekusi scaffold `situs/` + edit Stitch menunggu "clear" user.**
+  - [x] **Situs Astro DIBANGUN 2026-09-25** (`situs/`) — beranda port desain Stitch (hero bg, showcase kode faktorial, 5 slide, switch ID/EN `localStorage`), 29 halaman docs (sidebar 4 grup + prev/next + chip versi), halaman Unduh (Setup.exe + ZIP + tabel SHA256), i18n id/en JSON. `astro build` **31 halaman**, preview 5 rute 200 OK, 0 link `.md` nyasar (plugin `remark-md-link.mjs`)
+  - [ ] Deploy GitHub Pages (Actions) + domain `evernight-lang.org`
+  - [ ] Playground WASM (`evernight_wasm`)
 - [ ] Publish ekstensi VS Code ke Marketplace (satu `.vsix` untuk keluarga VS Code)
 - [ ] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, template issue/PR
 - [ ] Peta jalan (roadmap) v1.x / v2.0
@@ -133,6 +135,13 @@
 
 ## Log Aktivitas
 
+- **2026-09-25**: **Fase 8 — situs Astro + 22 file konten docs DIBANGUN.**
+  - Clear diterima → `situs/` scaffold Astro 5.18 + Tailwind 4.3 (install kedua setelah `node_modules` korup/shiki hilang — fix: hapus + install ulang).
+  - Beranda port dari HTML export Stitch (`stitch-review/homepage.html`): hero bg `assets/hero.jpg` (diunduh dari URL aida), showcase kode faktorial (highlight manual `tok-*`), 5 slide + pagination, switch ID/EN (knob kanan/merah-putih ↔ kiri/hitam-putih, `localStorage.evernight_lang`, i18n JSON `data-i18n`).
+  - Docs: Content Collection glob `../` (22 file `docs/` + 7 MD root), sidebar 4 grup (Memulai/Tutorial/Inti Bahasa/Rujukan, 29 item), prev/next, chip versi dari `version/version`. **Bug diperbaiki**: ID MD root lowercase di glob loader → `petaSlug` kunci kecil (`kata-kunci` dll); baca file via `import.meta.url` gagal saat build → ganti `process.cwd()/..`; link `.md` relatif di docs → plugin `plugins/remark-md-link.mjs`.
+  - Konten: subagent menulis `docs/panduan/01–07`, `docs/tutorial/01–10`, `docs/pengenalan|instalasi|quickstart|cli|contoh` — seluruh contoh `.eve` diverifikasi berjalan exit 0. Temuan: komentar `#`, `untuk...sampai` inklusif, `berhenti/lanjut` rusak di `untuk` (bug scope, layak isu), `tangkap` hanya fungsi searah, `d.panjang` (bukan `panjang(d)`), jalur file relatif CWD.
+  - Unduh: kartu Cepat (ZIP) + Wizard (Setup.exe), tabel SHA256 dari `paket/SHA256SUMS.txt`, perintah penting. ZIP 0.1.0 rencana `git add -f` (sudah di-gitignore `paket/*.zip`) agar link Unduh hidup.
+  - Build final: **31 halaman**, preview `/`, docs, tutorial, unduh, kata-kunci = 200. Belum: GH Pages Actions, domain, playground WASM, edit mockup Stitch (opsional).
 - **2026-09-19**: **6G/6H/6I DIDEFINISIKAN + 7E DIBATALKAN.**
   - 7E (poles desain installer) **batal** atas permintaan user — desain 6F final apa adanya; tidak ada perubahan visual.
   - 6G = tema ikon (selesai, tetap). **6H = uninstaller** (hapus PATH+sistem, perintah `kill evernight System`, GUI tunggu mockup Stitch). **6I = updater CLI tanpa GUI** (`update Evernight system`, tarik dari folder GitHub, pesan zhongk jika tidak ada update).
