@@ -70,7 +70,7 @@
   padding: 1rem 1.15rem;
   background: #15151e;
   border: 1px solid #26263a;
-  border-radius: 12px;
+  border-radius: 10px;
   overflow-x: auto;
   font-size: 13.5px;
   line-height: 1.65;
@@ -109,10 +109,30 @@
   margin: 2rem 0;
 }
 
-/* Sorotan sintaks Evernight manual (blok showcase) */
-.tok-k { color: #c9b8ff; font-weight: 500; }   /* keyword */
-.tok-s { color: #38bdf8; }                      /* string */
-.tok-n { color: #fbbf24; }                      /* angka */
-.tok-f { color: #ed93b1; }                      /* nama fungsi */
-.tok-c { color: #6b7280; font-style: italic; }  /* komentar */
+/* Sorotan sintaks Evernight (panel kode) */
+.tok-k { color: #c9b8ff; font-weight: 500; }   /* keyword: ungu muda */
+.tok-s { color: #2fbfa8; }                      /* string: teal */
+.tok-n { color: #fbbf24; }                      /* angka: amber */
+.tok-f { color: #ed93b1; }                      /* nama fungsi: pink lembut */
+.tok-c { color: #6b7280; font-style: italic; }  /* komentar: abu */
 .tok-o { color: #94a3b8; }                      /* operator/tanda */
+
+/* Tombol "Jalankan" di bawah blok kode contoh (halaman tahap tutorial) */
+.tombol-jalankan {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: -0.55rem 0 1.1rem;
+  padding: 0.4rem 1rem;
+  border: 1px solid #7f77dd;
+  border-radius: 8px;
+  background: #fff;
+  color: #534ab7;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+.tombol-jalankan:hover {
+  background: #f1edfb;
+}

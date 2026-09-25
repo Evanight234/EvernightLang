@@ -2,7 +2,7 @@
 
 > Perencanaan desain web publik EvernightLanguage.
 > Sumber desain awal: **Google Stitch** (2 layar) + keputusan user 2026-09-22.
-> Status: **PLANNING** â€” implementasi HTML menyusul.
+> Status: **DIBANGUN** â€” `situs/` hidup lokal; revisi desain menyusul di Â§9.
 
 ## 0. Sumber Desain (Google Stitch)
 
@@ -235,3 +235,19 @@ jobs: build (npm ci â†’ astro build) â†’ deploy (actions/deploy-pages)
 4. Verifikasi `stitch_get_screen` â†’ screenshot kedua layar
 5. Update MD ini (tandai selesai) + `KONTEKS.md` + commit/push
 6. Ekspor HTML â†’ mulai situs di repo (Fase 8)
+
+---
+
+## 9. Revisi Desain Menyeluruh (keputusan user 2026-09-26)
+
+Berlaku di SEMUA halaman (Beranda, Dokumentasi, Unduh):
+
+- **Navbar**: latar hitam `#15151B` di semua halaman (termasuk docs/unduh). Logo = gambar `logo_badge.png` (32-36px, rounded) + "Evernight" tebal putih — **bukan** kotak "E" CSS. Menu: **Beranda | Dokumentasi | Unduh** (menu Tutorial DIHAPUS dari navbar; sidebar docs tetap punya grup Tutorial). Aktif = teks `#C9B8FF` + garis bawah `#7F77DD`. Tanpa pencarian.
+- **Palet tambahan**: ungu tua `#534AB7` (hover/aksen), teal `#0F6E56` (badge Live, aksen benar), krem `#FAEEDA`, pink lembut `#ED93B1` (nama fungsi), latar panel kode `#15151B`–`#1A1E33`.
+- **Footer**: HANYA satu baris tengah "© 2026 EvernightLanguage · Lisensi MIT" — tagline dihapus.
+- **Beranda**: badge `v0.1.0 · Windows x64` dihapus. Angka 1-5 = **slideshow otomatis 6 detik** (judul + paragraf + KODE contoh di panel ikut berganti; 5 contoh kode berbeda). Nomor aktif = ungu solid, lain outline. String kode teal, keyword ungu muda, angka amber, fungsi pink, komentar abu. Tanpa glow (flat).
+- **Unduh**: badge versi + subjudul dihapus; hero langsung ke judul, lalu dua kartu.
+- **Template tahap tutorial** (urutan): judul/isi + blok kode dengan tombol **Jalankan** ? section **"Coba Kamu Run"** (kartu border 10px, header + badge Live teal, editor gelap `#17151E` contenteditable + kursor berkedip + border terang, tombol ungu "Coba Kamu Run ?", panel terminal hitam pekat `$ evernight main.eve` + output) yang **dipindahkan JS sebelum section Latihan** ? Latihan ? section **"Uji Pemahaman"** (kuis ungu: subteks, progres "Soal 1 dari 4", 4 opsi radio flat, tombol "Kirim Jawaban »", skor + ulangi; data `situs/src/data/quis.ts` 10 tahap × 4 soal) ? navigasi ‹/› bawah.
+- **Gaya**: flat, minim shadow, tanpa neon/glow, radius 8-10px.
+
+Status §9: **SELESAI diimplementasikan 2026-09-26** (build 31 halaman, preview 200). Simulasi run di "Coba Kamu Run" masih tiruan — pengganti aslinya `evernight_wasm` (belum ada).

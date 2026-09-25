@@ -1,37 +1,110 @@
 ---
 import Base from '../layouts/Base.astro';
 
-const slides = [1, 2, 3, 4, 5];
-
-const kodeContoh = [
-  '<span class="tok-c"># Program Faktorial EvernightLanguage</span>',
-  '<span class="tok-k">fungsi</span> <span class="tok-f">faktorial</span>(n) {',
-  '    <span class="tok-k">jika</span> n <span class="tok-o">&lt;=</span> <span class="tok-n">1</span> {',
-  '        <span class="tok-k">kembali</span> <span class="tok-n">1</span>',
-  '    } <span class="tok-k">lainnya</span> {',
-  '        <span class="tok-k">kembali</span> n <span class="tok-o">*</span> <span class="tok-f">faktorial</span>(n <span class="tok-o">-</span> <span class="tok-n">1</span>)',
-  '    }',
-  '}',
-  '',
-  '<span class="tok-k">variabel</span> angka = <span class="tok-n">5</span>',
-  '<span class="tok-k">variabel</span> hasil = <span class="tok-f">faktorial</span>(angka)',
-  '<span class="tok-f">cetak</span>(<span class="tok-s">"Faktorial:"</span>, hasil)',
-].join('\n');
+const slides = [
+  {
+    judul: 'Keamanan Ekspresif Tanpa Overhead Runtime',
+    teks: 'Evernight menyatukan keselamatan kompilasi-waktu dengan sintaks ergonomis. Dirancang untuk eksekusi yang dapat diprediksi, abstraksi biaya-nol, dan konkurensi tanpa usaha.',
+    kode: [
+      '<span class="tok-c"># Program Faktorial EvernightLanguage</span>',
+      '<span class="tok-k">fungsi</span> <span class="tok-f">faktorial</span>(n) {',
+      '    <span class="tok-k">jika</span> n <span class="tok-o">&lt;=</span> <span class="tok-n">1</span> {',
+      '        <span class="tok-k">kembali</span> <span class="tok-n">1</span>',
+      '    } <span class="tok-k">lainnya</span> {',
+      '        <span class="tok-k">kembali</span> n <span class="tok-o">*</span> <span class="tok-f">faktorial</span>(n <span class="tok-o">-</span> <span class="tok-n">1</span>)',
+      '    }',
+      '}',
+      '',
+      '<span class="tok-k">variabel</span> angka = <span class="tok-n">5</span>',
+      '<span class="tok-f">cetak</span>(<span class="tok-s">"Faktorial:"</span>, <span class="tok-f">faktorial</span>(angka))',
+    ].join('\n'),
+    keluaran: 'Faktorial: 120',
+  },
+  {
+    judul: 'Sintaks Berbahasa Indonesia',
+    teks: 'Keyword seperti jika, selama, fungsi, dan kembali membuat kode terasa alami — semudah Python, secanggih C++, tanpa titik-koma.',
+    kode: [
+      '<span class="tok-c"># Sintaks alami berbahasa Indonesia</span>',
+      '<span class="tok-k">variabel</span> nama = <span class="tok-s">"Nusantara"</span>',
+      '<span class="tok-k">jika</span> nama.panjang <span class="tok-o">&gt;</span> <span class="tok-n">5</span> {',
+      '    <span class="tok-f">cetak</span>(<span class="tok-s">"Nama panjang:"</span>, nama)',
+      '}',
+      '',
+      '<span class="tok-k">untuk</span> i <span class="tok-k">dari</span> <span class="tok-n">1</span> <span class="tok-k">sampai</span> <span class="tok-n">3</span> {',
+      '    <span class="tok-f">cetak</span>(<span class="tok-s">"Baris"</span>, i)',
+      '}',
+    ].join('\n'),
+    keluaran: 'Nama panjang: Nusantara / Baris 1 / Baris 2 / Baris 3',
+  },
+  {
+    judul: 'Compiler Bytecode + VM',
+    teks: 'Kompilasi ke bytecode lalu dieksekusi di VM rakitan sendiri — ringan, cepat, dan mandiri tanpa dependensi eksternal.',
+    kode: [
+      '<span class="tok-c"># Kompilasi ke bytecode, eksekusi di VM</span>',
+      '<span class="tok-k">fungsi</span> <span class="tok-f">kuadrat</span>(x) {',
+      '    <span class="tok-k">kembali</span> x <span class="tok-o">*</span> x',
+      '}',
+      '',
+      '<span class="tok-k">fungsi</span> <span class="tok-f">jumlah_kuadrat</span>(n) {',
+      '    <span class="tok-k">variabel</span> s = <span class="tok-n">0</span>',
+      '    <span class="tok-k">untuk</span> i <span class="tok-k">dari</span> <span class="tok-n">1</span> <span class="tok-k">sampai</span> n {',
+      '        s = s <span class="tok-o">+</span> <span class="tok-f">kuadrat</span>(i)',
+      '    }',
+      '    <span class="tok-k">kembali</span> s',
+      '}',
+      '<span class="tok-f">cetak</span>(<span class="tok-s">"Jumlah kuadrat 1..10:"</span>, <span class="tok-f">jumlah_kuadrat</span>(<span class="tok-n">10</span>))',
+    ].join('\n'),
+    keluaran: 'Jumlah kuadrat 1..10: 385',
+  },
+  {
+    judul: 'Standard Library Lengkap',
+    teks: '7 modul siap pakai: konsol, string, matematika, daftar, kamus, sistem, dan utilitas — semuanya bawaan, tanpa paket tambahan.',
+    kode: [
+      '<span class="tok-c"># Modul bawaan siap pakai</span>',
+      '<span class="tok-k">variabel</span> teks = <span class="tok-s">"evernight"</span>',
+      '<span class="tok-f">cetak</span>(teks.<span class="tok-f">besar</span>())',
+      '',
+      '<span class="tok-k">variabel</span> angka = [<span class="tok-n">5</span>, <span class="tok-n">2</span>, <span class="tok-n">8</span>, <span class="tok-n">1</span>]',
+      '<span class="tok-f">urutkan</span>(angka)',
+      '<span class="tok-f">cetak</span>(<span class="tok-s">"Terurut:"</span>, angka)',
+      '<span class="tok-f">cetak</span>(<span class="tok-s">"Akar 144:"</span>, <span class="tok-f">akar</span>(<span class="tok-n">144</span>))',
+    ].join('\n'),
+    keluaran: 'EVERNIGHT / Terurut: [1, 2, 5, 8] / Akar 144: 12',
+  },
+  {
+    judul: 'Ekosistem Developer Lengkap',
+    teks: 'Formatter, linter, package manager, LSP, dan ekstensi VS Code — perangkat lengkap untuk produktif sejak baris pertama.',
+    kode: [
+      '<span class="tok-c"># Error handling yang jelas</span>',
+      '<span class="tok-k">fungsi</span> <span class="tok-f">bagi</span>(a, b) {',
+      '    <span class="tok-f">pastikan</span>(b <span class="tok-o">!=</span> <span class="tok-n">0</span>, <span class="tok-s">"Pembagi tidak boleh nol!"</span>)',
+      '    <span class="tok-k">kembali</span> a <span class="tok-o">/</span> b',
+      '}',
+      '',
+      '<span class="tok-k">coba</span> {',
+      '    <span class="tok-f">cetak</span>(<span class="tok-f">bagi</span>(<span class="tok-n">10</span>, <span class="tok-n">2</span>))',
+      '    <span class="tok-f">cetak</span>(<span class="tok-f">bagi</span>(<span class="tok-n">10</span>, <span class="tok-n">0</span>))',
+      '} <span class="tok-k">tangkap</span> (e) {',
+      '    <span class="tok-f">cetak</span>(<span class="tok-s">"Tertangkap:"</span>, e)',
+      '}',
+    ].join('\n'),
+    keluaran: '5 / Tertangkap: Pembagi tidak boleh nol!',
+  },
+];
 ---
 
 <Base aktif="beranda" tema="gelap">
   <!-- ===== Hero ===== -->
-  <section class="relative overflow-hidden min-h-[calc(100vh-3.5rem-4.5rem)] flex items-center">
-    <!-- Latar -->
+  <section class="relative overflow-hidden min-h-[calc(100vh-3.5rem-3rem)] flex items-center">
     <div class="absolute inset-0 bg-[url('/assets/hero.jpg')] bg-cover bg-center" aria-hidden="true"></div>
     <div class="absolute inset-0 bg-gradient-to-r from-[#0F0F14]/95 via-[#0F0F14]/80 to-[#0F0F14]/55" aria-hidden="true"></div>
     <div class="absolute inset-0 bg-gradient-to-t from-[#15151B] via-transparent to-[#15151B]/40" aria-hidden="true"></div>
 
     <div class="relative w-full max-w-7xl mx-auto px-5 md:px-8 py-14 grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-      <!-- Editor kode (beku) -->
+      <!-- Editor kode (ikut slide) -->
       <div class="lg:col-span-7 order-2 lg:order-1">
-        <div class="rounded-2xl bg-[#1A1A22]/90 backdrop-blur-md border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.5)] overflow-hidden">
-          <div class="flex items-center gap-3 h-11 px-4 bg-white/[0.04] border-b border-white/10">
+        <div class="rounded-[10px] bg-[#1A1E33]/95 border border-white/10 overflow-hidden">
+          <div class="flex items-center gap-3 h-11 px-4 bg-[#15151B] border-b border-white/10">
             <span class="flex gap-1.5">
               <span class="w-3 h-3 rounded-full bg-[#FF5F57]"></span>
               <span class="w-3 h-3 rounded-full bg-[#FEBC2E]"></span>
@@ -42,48 +115,39 @@ const kodeContoh = [
               main.eve
             </span>
           </div>
-          <pre class="p-5 md:p-6 overflow-x-auto text-[13px] md:text-[13.5px] leading-[1.7]" style="font-family: var(--font-mono);"><code set:html={kodeContoh}></code></pre>
+          <pre class="p-5 md:p-6 overflow-x-auto text-[13px] md:text-[13.5px] leading-[1.7] min-h-[19rem]" style="font-family: var(--font-mono);"><code id="kode-slide" set:html={slides[0].kode}></code></pre>
         </div>
-        <p class="mt-4 text-sm text-[#9CA3AF] font-mono">$ evernight main.eve → <span class="text-[#28C840]">Faktorial: 120</span></p>
+        <p class="mt-4 text-sm text-[#9CA3AF] font-mono">$ evernight main.eve → <span id="keluaran-slide" class="text-[#28C840]">{slides[0].keluaran}</span></p>
       </div>
 
-      <!-- Headline + pagination -->
+      <!-- Judul + paragraf + indikator slide -->
       <div class="lg:col-span-5 order-1 lg:order-2">
-        <div class="mb-6 inline-flex items-center gap-2 rounded-full border border-[#7F77DD]/40 bg-[#7F77DD]/10 px-3.5 py-1.5 text-xs font-medium text-[#C9B8FF]">
-          <span class="w-1.5 h-1.5 rounded-full bg-[#C9B8FF]"></span>
-          v0.1.0 · Windows x64
-        </div>
-
-        <div class="min-h-[13.5rem] sm:min-h-[12rem]">
-          {slides.map((i) => (
-            <div class="slide-item" data-slide={i} hidden={i !== 1}>
-              <h1 class="text-3xl md:text-[2.6rem] leading-[1.12] font-extrabold tracking-tight text-white" data-i18n={`hero.s${i}_judul`}>
-                Keamanan Ekspresif Tanpa Overhead Runtime
-              </h1>
-              <p class="mt-4 text-[15px] leading-relaxed text-[#B9BAC7]" data-i18n={`hero.s${i}_teks`}>
-                Evernight menyatukan keselamatan kompilasi-waktu dengan sintaks ergonomis.
-              </p>
+        <div class="min-h-[14rem] sm:min-h-[12.5rem]">
+          {slides.map((s, i) => (
+            <div class="slide-item" data-slide={i} hidden={i !== 0}>
+              <h1 class="text-3xl md:text-[2.6rem] leading-[1.12] font-extrabold tracking-tight text-white">{s.judul}</h1>
+              <p class="mt-4 text-[15px] leading-relaxed text-[#B9BAC7]">{s.teks}</p>
             </div>
           ))}
         </div>
 
-        <div class="mt-7 flex items-center gap-2">
-          {slides.map((i) => (
+        <div class="mt-7 flex items-center gap-2" role="tablist" aria-label="Slideshow beranda">
+          {slides.map((_, i) => (
             <button
               type="button"
-              class="tombol-slide w-8 h-8 rounded-lg text-xs font-semibold transition-all"
+              class="tombol-slide w-8 h-8 rounded-lg text-xs font-semibold transition-colors"
               data-slide-tombol={i}
-              aria-label={`Slide ${i}`}
-              data-aktif={i === 1 ? 'ya' : 'tidak'}
+              aria-label={`Slide ${i + 1}`}
+              data-aktif={i === 0 ? 'ya' : 'tidak'}
             >
-              {i}
+              {i + 1}
             </button>
           ))}
         </div>
 
         <a
           href="/docs/quickstart"
-          class="mt-7 inline-flex items-center gap-2 rounded-lg bg-[#7F77DD] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_0_24px_rgba(127,119,221,0.35)] hover:bg-[#6C64CF] transition-colors"
+          class="mt-7 inline-flex items-center gap-2 rounded-[10px] bg-[#7F77DD] px-5 py-2.5 text-sm font-semibold text-white hover:bg-[#534AB7] transition-colors"
           data-i18n="hero.coba"
         >Coba dokumentasinya</a>
       </div>
@@ -93,31 +157,51 @@ const kodeContoh = [
 
 <style is:global>
   .tombol-slide {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.25);
     color: #9ca3af;
   }
-  .tombol-slide:hover { color: #fff; border-color: rgba(201, 184, 255, 0.5); }
+  .tombol-slide:hover { color: #fff; border-color: #c9b8ff; }
   .tombol-slide[data-aktif='ya'] {
     background: #7f77dd;
     border-color: #7f77dd;
     color: #fff;
-    box-shadow: 0 0 14px rgba(127, 119, 221, 0.45);
   }
 </style>
 
-<script>
-  const tombol = document.querySelectorAll<HTMLButtonElement>('[data-slide-tombol]');
-  const panel = document.querySelectorAll<HTMLElement>('[data-slide]');
+<script define:vars={{ konten: slides.map((s) => ({ kode: s.kode, keluaran: s.keluaran })) }}>
+  const total = konten.length;
+  const tombol = document.querySelectorAll('[data-slide-tombol]');
+  const panel = document.querySelectorAll('[data-slide]');
+  const kode = document.getElementById('kode-slide');
+  const keluaran = document.getElementById('keluaran-slide');
 
-  function tampilkan(n: string) {
+  let sekarang = 0;
+  let jeda;
+
+  function tampilkan(n) {
+    sekarang = n;
     panel.forEach((p) => {
-      p.hidden = p.dataset.slide !== n;
+      p.hidden = Number(p.dataset.slide) !== n;
     });
     tombol.forEach((t) => {
-      t.dataset.aktif = t.dataset.slideTombol === n ? 'ya' : 'tidak';
+      t.dataset.aktif = Number(t.dataset.slideTombol) === n ? 'ya' : 'tidak';
     });
+    if (kode) kode.innerHTML = konten[n].kode;
+    if (keluaran) keluaran.textContent = konten[n].keluaran;
   }
 
-  tombol.forEach((t) => t.addEventListener('click', () => tampilkan(t.dataset.slideTombol!)));
+  function jadwal() {
+    clearInterval(jeda);
+    jeda = setInterval(() => tampilkan((sekarang + 1) % total), 6000);
+  }
+
+  tombol.forEach((t) =>
+    t.addEventListener('click', () => {
+      tampilkan(Number(t.dataset.slideTombol));
+      jadwal();
+    })
+  );
+
+  jadwal();
 </script>

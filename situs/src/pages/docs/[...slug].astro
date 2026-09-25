@@ -1,6 +1,8 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Docs from '../../layouts/Docs.astro';
+import CobaRun from '../../components/CobaRun.astro';
+import UjiPaham from '../../components/UjiPaham.astro';
 import { slugDari, judulDariBody } from '../../lib/docs';
 
 export async function getStaticPaths() {
@@ -15,8 +17,43 @@ const { entry } = Astro.props;
 const { Content } = await render(entry);
 const judul = entry.data.judul ?? judulDariBody(entry.body ?? '', entry.id);
 const slug = slugDari(entry.id);
+const tahap = slug.startsWith('tutorial/') ? slug.slice('tutorial/'.length) : null;
 ---
 
 <Docs judul={judul} slug={slug}>
   <Content />
+  {tahap && <CobaRun body={entry.body ?? ''} />}
+  {tahap && <UjiPaham slug={tahap} />}
 </Docs>
+
+{tahap && (
+  <script>
+    function siapkan() {
+      // Pindahkan "Coba Kamu Run" tepat sebelum section Latihan
+      const coba = document.getElementById('coba-kamu-run');
+      const latihan = Array.from(document.querySelectorAll('.konten-md h2')).find((h) =>
+        (h.textContent ?? '').trim().startsWith('Latihan')
+      );
+      if (coba && latihan && latihan.compareDocumentPosition(coba) & Node.DOCUMENT_POSITION_FOLLOWING) {
+        latihan.parentNode?.insertBefore(coba, latihan);
+      }
+
+      // Tombol "Jalankan" di bawah blok kode contoh pertama
+      const pre = document.querySelector('.konten-md pre');
+      if (pre && !pre.nextElementSibling?.classList.contains('tombol-jalankan')) {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'tombol-jalankan';
+        btn.textContent = 'Jalankan';
+        btn.addEventListener('click', () => {
+          document.getElementById('coba-kamu-run')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          const ed = document.getElementById('editor-coba');
+          if (ed instanceof HTMLElement) setTimeout(() => ed.focus(), 350);
+        });
+        pre.insertAdjacentElement('afterend', btn);
+      }
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', siapkan);
+    else siapkan();
+  </script>
+)}

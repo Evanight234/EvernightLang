@@ -20,12 +20,8 @@ const gelap = tema === 'gelap';
 const navKelas = (k: string) =>
   `flex items-center h-14 px-3 text-sm font-medium transition-colors ${
     aktif === k
-      ? gelap
-        ? 'text-[#C9B8FF]'
-        : 'text-[#7F77DD]'
-      : gelap
-        ? 'text-[#9CA3AF] hover:text-white'
-        : 'text-[#3A3A40] hover:text-[#1C1B22]'
+      ? 'text-[#C9B8FF] border-b-2 border-[#7F77DD]'
+      : 'text-[#9CA3AF] hover:text-white'
   }`;
 ---
 
@@ -45,34 +41,25 @@ const navKelas = (k: string) =>
     />
   </head>
   <body class={gelap ? 'bg-[#15151B] text-white' : 'bg-white text-[#1C1B22]'} style="font-family: 'Inter', system-ui, sans-serif;">
-    <header
-      class:list={[
-        'sticky top-0 z-50 h-14 flex items-center justify-between px-5 md:px-8 select-none',
-        gelap ? 'bg-[#15151B]/95 backdrop-blur border-b border-white/5' : 'bg-white/95 backdrop-blur border-b border-[#E6E6EA]',
-      ]}
-    >
+    <header class="sticky top-0 z-50 h-14 flex items-center justify-between px-5 md:px-8 select-none bg-[#15151B] border-b border-white/10">
       <a href="/" class="flex items-center gap-2.5 shrink-0">
-        <span class="w-8 h-8 rounded-lg bg-[#7F77DD] flex items-center justify-center text-white font-bold text-sm shadow-[0_0_16px_rgba(127,119,221,0.45)]">E</span>
-        <span class:list={['font-semibold tracking-tight', gelap ? 'text-white' : 'text-[#1C1B22]']} data-i18n="nav.nama">Evernight</span>
+        <img src="/assets/logo_badge.png" alt="Logo Evernight" class="w-9 h-9 rounded-lg object-cover" width="36" height="36" />
+        <span class="font-bold tracking-tight text-white text-[15px]" data-i18n="nav.nama">Evernight</span>
       </a>
 
-      <nav class:list={['flex items-center h-14', gelap ? '' : '']}>
+      <nav class="flex items-center h-14">
         <a href="/" class={navKelas('beranda')} data-i18n="nav.beranda">Beranda</a>
-        <a href="/docs/tutorial/01-halo-dunia" class={navKelas('tutorial')} data-i18n="nav.tutorial">Tutorial</a>
         <a href="/docs/quickstart" class={navKelas('dokumentasi')} data-i18n="nav.dokumentasi">Dokumentasi</a>
         <a href="/unduh" class={navKelas('unduh')} data-i18n="nav.unduh">Unduh</a>
-        <span class:list={['w-px h-5 mx-2', gelap ? 'bg-white/10' : 'bg-[#E6E6EA]']} aria-hidden="true"></span>
+        <span class="w-px h-5 mx-2 bg-white/10" aria-hidden="true"></span>
         <SwitchBahasa />
       </nav>
     </header>
 
     <slot />
 
-    <footer class="bg-[#F1EDFB] border-t border-[#7F77DD]/25 px-5 md:px-8 py-4">
-      <p class="text-sm text-[#1C1B22] max-w-5xl mx-auto leading-relaxed" data-i18n-html="banner.teks">
-        Bahasa pemrograman berbahasa Indonesia yang semudah Python, secanggih C++. <a class="font-semibold underline decoration-[#7F77DD] decoration-2 underline-offset-2 hover:text-[#5B54B8]" href="/docs/pengenalan">» Pelajari lebih lanjut</a>
-      </p>
-      <p class="text-xs text-[#6B6880] max-w-5xl mx-auto mt-2">© 2026 EvernightLanguage · Lisensi MIT</p>
+    <footer class="bg-[#F1EDFB] border-t border-[#7F77DD]/20 px-5 md:px-8 py-3.5">
+      <p class="text-xs text-[#4A4756] text-center">© 2026 EvernightLanguage · Lisensi MIT</p>
     </footer>
 
     <script>

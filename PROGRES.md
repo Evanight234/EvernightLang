@@ -135,6 +135,11 @@
 
 ## Log Aktivitas
 
+- **2026-09-26**: **Revisi desain situs menyeluruh (spesifikasi user, `WEB.md` §9).**
+  - Navbar global gelap `#15151B` di semua halaman, logo gambar `logo_badge.png`, menu jadi Beranda | Dokumentasi | Unduh (Tutorial dihapus dari navbar), aktif = `#C9B8FF` + underline `#7F77DD`.
+  - Footer satu baris copyright (tagline dihapus). Beranda: badge versi dihapus, angka 1-5 jadi **slideshow otomatis 6 detik** (judul + kode contoh ikut berganti, 5 snippet berbeda), string teal, flat tanpa glow. Unduh: badge + subjudul dihapus.
+  - Halaman tahap tutorial +2 section: **"Coba Kamu Run"** (editor contenteditable `#17151E` + kursor berkedip + badge Live teal + tombol run simulasi + panel terminal) dipindahkan JS sebelum "Latihan", dan **"Uji Pemahaman"** (kuis 4 soal/tahap, data `situs/src/data/quis.ts` 40 soal diverifikasi subagent) + tombol "Jalankan" pada blok kode pertama.
+  - Build 31 halaman, preview 4 rute 200, 14 cek konten hijau. Masih simulasi run (WASM menyusul).
 - **2026-09-25**: **Fase 8 — situs Astro + 22 file konten docs DIBANGUN.**
   - Clear diterima → `situs/` scaffold Astro 5.18 + Tailwind 4.3 (install kedua setelah `node_modules` korup/shiki hilang — fix: hapus + install ulang).
   - Beranda port dari HTML export Stitch (`stitch-review/homepage.html`): hero bg `assets/hero.jpg` (diunduh dari URL aida), showcase kode faktorial (highlight manual `tok-*`), 5 slide + pagination, switch ID/EN (knob kanan/merah-putih ↔ kiri/hitam-putih, `localStorage.evernight_lang`, i18n JSON `data-i18n`).
