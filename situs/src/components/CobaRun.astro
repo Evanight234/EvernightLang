@@ -62,8 +62,7 @@ const contohSorot = sorot(kode);
       <pre
         id="highlight-coba"
         aria-hidden="true"
-        class="pointer-events-none m-0 min-h-[11rem] max-h-80 overflow-auto p-4 pr-10 text-[13px] leading-[1.65] text-[#E6E6F2]"
-        style="font-family: var(--font-mono);"><code set:html={contohSorot}></code></pre>
+        class="pointer-events-none min-h-[11rem] max-h-80 overflow-auto"><code set:html={contohSorot}></code></pre>
 
       <!-- input teks aktif (di atas, teks transparan, kursor native terlihat) -->
       <textarea
@@ -71,8 +70,7 @@ const contohSorot = sorot(kode);
         spellcheck="false"
         wrap="off"
         aria-label="Kode Evernight yang bisa diedit"
-        class="absolute inset-0 z-10 m-0 h-full w-full resize-none overflow-auto border-0 bg-transparent p-4 pr-10 text-[13px] leading-[1.65] text-transparent caret-[#C9B8FF] outline-none"
-        style="font-family: var(--font-mono);">{kode}</textarea>
+        class="absolute inset-0 z-10 h-full w-full resize-none overflow-auto bg-transparent outline-none">{kode}</textarea>
 
       <!-- kursor berkedip halus saat belum difokuskan -->
       <span class="kursor-tipis" aria-hidden="true"></span>
@@ -96,7 +94,35 @@ const contohSorot = sorot(kode);
 </section>
 
 <style is:global>
+  /* Satu sumber tipografi untuk kedua lapisan editor.
+     Rule ID mengalahkan `.konten-md pre` (global.css) yang membuat margin/font-size beda. */
+  #highlight-coba,
   #editor-coba {
+    margin: 0;
+    padding: 1rem 2.5rem;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    line-height: 1.65;
+  }
+  #highlight-coba {
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: #e6e6f2;
+  }
+  #highlight-coba code {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+    color: #e6e6f2;
+    background: none;
+    padding: 0;
+    font-weight: 400;
+  }
+  #editor-coba {
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    caret-color: #7f77dd;
     scrollbar-width: none;
   }
   #editor-coba::-webkit-scrollbar {
@@ -152,17 +178,23 @@ const contohSorot = sorot(kode);
       }
     };
 
-    ta.addEventListener('input', () => {
-      pre.innerHTML = sorot(ta.value);
-    });
-    ta.addEventListener('scroll', () => {
+    const sinkron = () => {
       pre.scrollTop = ta.scrollTop;
       pre.scrollLeft = ta.scrollLeft;
+    };
+
+    ta.addEventListener('input', () => {
+      pre.innerHTML = sorot(ta.value);
+      sinkron();
     });
+    ta.addEventListener('scroll', sinkron);
 
     reset.addEventListener('click', () => {
       ta.value = kodeAwal;
       pre.innerHTML = sorot(kodeAwal);
+      ta.scrollTop = 0;
+      ta.scrollLeft = 0;
+      sinkron();
       render(keluaranAwal.split('\n'));
       ta.focus();
     });
