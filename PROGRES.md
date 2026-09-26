@@ -135,6 +135,7 @@
 
 ## Log Aktivitas
 
+- **2026-09-26 (Coba Kamu Run jadi editor sungguhan)**: overlay textarea (kursor native + fokus outline ungu `#7F77DD`), highlight di-re-render tiap input (fungsi `sorot` dari `eve-run.mjs`), ikon reset "Kembalikan ke kode awal", dan tombol Run mengeksekusi **teks terkini** via mini-interpreter JS (`jalankan()`: translate sintaks Evernight → JS + `with(H)` berisi ~60 helper, guard loop 2 juta langkah). Checker: `scripts/cek-eve-run.mjs` 16/16 lulus; output MD tutorial diverifikasi vs `evernight.exe` (`scripts/cek-output-tutorial.mjs`, 9 cocok + Tahap 10 dilewati) — **1 kesalahan konten diperbaiki** (Tahap 4: `cetak(i," ")` ternyata per baris, bukan satu baris). Build 31 halaman; komponen hanya di 10 tutorial (tanpa bocoran ke panduan/unduh).
 - **2026-09-26 (bugfix)**: `/docs/*` 404 = `situs/src/content.config.ts` terhapus → `git restore`. Warning Shiki `eve` hilang: grammar TextMate resmi + tema palet Evernight didaftarkan di `markdown.shikiConfig` (`astro.config.mjs`). Build 31 halaman 0 warning; dev smoke 200.
 - **2026-09-26**: **Revisi desain situs menyeluruh (spesifikasi user, `WEB.md` §9).**
   - Navbar global gelap `#15151B` di semua halaman, logo gambar `logo_badge.png`, menu jadi Beranda | Dokumentasi | Unduh (Tutorial dihapus dari navbar), aktif = `#C9B8FF` + underline `#7F77DD`.

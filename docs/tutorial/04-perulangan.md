@@ -114,7 +114,12 @@ evernight deret.eve
 
 ```
 Deret 1 sampai 5:
-1 2 3 4 5 
+1 
+2 
+3 
+4 
+5 
+
 Jumlah 1..5 = 15
 Jumlah bilangan genap sampai 12 = 42
 Buah: apel
