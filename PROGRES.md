@@ -135,6 +135,7 @@
 
 ## Log Aktivitas
 
+- **2026-09-26 (bugfix)**: `/docs/*` 404 = `situs/src/content.config.ts` terhapus → `git restore`. Warning Shiki `eve` hilang: grammar TextMate resmi + tema palet Evernight didaftarkan di `markdown.shikiConfig` (`astro.config.mjs`). Build 31 halaman 0 warning; dev smoke 200.
 - **2026-09-26**: **Revisi desain situs menyeluruh (spesifikasi user, `WEB.md` §9).**
   - Navbar global gelap `#15151B` di semua halaman, logo gambar `logo_badge.png`, menu jadi Beranda | Dokumentasi | Unduh (Tutorial dihapus dari navbar), aktif = `#C9B8FF` + underline `#7F77DD`.
   - Footer satu baris copyright (tagline dihapus). Beranda: badge versi dihapus, angka 1-5 jadi **slideshow otomatis 6 detik** (judul + kode contoh ikut berganti, 5 snippet berbeda), string teal, flat tanpa glow. Unduh: badge + subjudul dihapus.
