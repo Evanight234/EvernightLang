@@ -7,55 +7,76 @@ import { slugDari, judulDariBody } from '../../lib/docs';
 
 export async function getStaticPaths() {
   const semua = await getCollection('docs');
-  return semua.map((entry) => ({
-    params: { slug: slugDari(entry.id) },
-    props: { entry },
-  }));
+  // Varian EN (.en.md) tidak jadi rute sendiri — dirender di dalam halaman ID.
+  // Catatan: loader Astro membuang titik pada id (`01-x.en.md` → `01-xen`), jadi saring via filePath.
+  return semua
+    .filter((entry) => !entry.filePath?.endsWith('.en.md'))
+    .map((entry) => ({
+      params: { slug: slugDari(entry.id) },
+      props: { entry },
+    }));
 }
 
 const { entry } = Astro.props;
 const { Content } = await render(entry);
+// getEntry memunculkan warning bila tak ada — pakai filter koleksi (kosong = tanpa varian EN).
+const semua = await getCollection('docs');
+const entryEn = semua.find(
+  (e) => e.filePath && entry.filePath && e.filePath === entry.filePath.replace(/\.md$/, '.en.md'),
+);
+const ContentEn = entryEn ? (await render(entryEn)).Content : null;
 const judul = entry.data.judul ?? judulDariBody(entry.body ?? '', entry.id);
 const slug = slugDari(entry.id);
 const tahap = slug.startsWith('tutorial/') ? slug.slice('tutorial/'.length) : null;
 ---
 
 <Docs judul={judul} slug={slug}>
-  <Content />
+  <div id="isi-id"><Content /></div>
+  {ContentEn && <div id="isi-en" hidden><ContentEn /></div>}
   {tahap && <CobaRun body={entry.body ?? ''} />}
   {tahap && <UjiPaham slug={tahap} />}
 </Docs>
 
 {tahap && (
   <script>
-    function siapkan() {
-      // Pindahkan "Coba Kamu Run" tepat sebelum section Latihan
-      const coba = document.getElementById('coba-kamu-run');
-      const latihan = Array.from(document.querySelectorAll('.konten-md h2')).find((h) =>
-        (h.textContent ?? '').trim().startsWith('Latihan')
-      );
-      if (coba && latihan && latihan.compareDocumentPosition(coba) & Node.DOCUMENT_POSITION_FOLLOWING) {
-        latihan.parentNode?.insertBefore(coba, latihan);
-      }
+    function letakkan() {
+      const en = localStorage.getItem('evernight_lang') === 'en';
+      const wadah = document.getElementById(en && document.getElementById('isi-en') ? 'isi-en' : 'isi-id');
 
-      // Tombol "Jalankan" di bawah blok kode contoh pertama
-      const pre = document.querySelector('.konten-md pre');
-      if (pre && !pre.nextElementSibling?.classList.contains('tombol-jalankan')) {
-        const btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'tombol-jalankan';
-        btn.dataset.en = 'Run';
-        btn.dataset.idAsli = 'Jalankan';
-        btn.textContent = localStorage.getItem('evernight_lang') === 'en' ? 'Run' : 'Jalankan';
-        btn.addEventListener('click', () => {
-          document.getElementById('coba-kamu-run')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          const ed = document.getElementById('editor-coba');
-          if (ed instanceof HTMLElement) setTimeout(() => ed.focus(), 350);
-        });
-        pre.insertAdjacentElement('afterend', btn);
+      // Pindahkan "Coba Kamu Run" tepat sebelum section Latihan/Exercises
+      // di kontainer yang sedang terlihat (dipanggil ulang saat ganti bahasa).
+      const coba = document.getElementById('coba-kamu-run');
+      const latihan = wadah
+        ? Array.from(wadah.querySelectorAll('h2')).find((h) => {
+            const t = (h.textContent ?? '').trim();
+            return t.startsWith('Latihan') || t.startsWith('Exercises');
+          })
+        : undefined;
+      if (coba && latihan) latihan.parentNode?.insertBefore(coba, latihan);
+
+      // Tombol "Jalankan" di bawah blok kode contoh pertama tiap varian bahasa
+      for (const id of ['isi-id', 'isi-en']) {
+        const box = document.getElementById(id);
+        if (!box) continue;
+        const pre = box.querySelector('pre');
+        if (pre && !pre.nextElementSibling?.classList.contains('tombol-jalankan')) {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'tombol-jalankan';
+          btn.dataset.en = 'Run';
+          btn.dataset.idAsli = 'Jalankan';
+          btn.textContent = en ? 'Run' : 'Jalankan';
+          btn.addEventListener('click', () => {
+            document.getElementById('coba-kamu-run')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            const ed = document.getElementById('editor-coba');
+            if (ed instanceof HTMLElement) setTimeout(() => ed.focus(), 350);
+          });
+          pre.insertAdjacentElement('afterend', btn);
+        }
       }
     }
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', siapkan);
-    else siapkan();
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', letakkan);
+    else letakkan();
+    window.addEventListener('evernight-lang', letakkan);
   </script>
 )}

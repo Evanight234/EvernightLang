@@ -93,6 +93,13 @@ const navKelas = (k: string) =>
           if (el.dataset.ariaAsli == null) el.dataset.ariaAsli = el.getAttribute('aria-label') ?? '';
           el.setAttribute('aria-label', lang === 'en' ? el.dataset.enAria! : el.dataset.ariaAsli);
         });
+        // Varian isi artikel (tutorial/panduan): EN bila ada, kalau tidak ID tetap tampil.
+        const isiEn = document.getElementById('isi-en');
+        const isiId = document.getElementById('isi-id');
+        if (isiEn && isiId) {
+          isiEn.hidden = lang !== 'en';
+          isiId.hidden = lang === 'en';
+        }
         window.dispatchEvent(new CustomEvent('evernight-lang', { detail: lang }));
       }
 

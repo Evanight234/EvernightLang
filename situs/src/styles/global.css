@@ -13,8 +13,8 @@
   line-height: 1.75;
   color: #26262e;
 }
-.konten-md > h1:first-child {
-  display: none; /* judul sudah dirender layout */
+.konten-md > div > h1:first-child {
+  display: none; /* judul sudah dirender layout (varian isi: #isi-id / #isi-en) */
 }
 .konten-md h1,
 .konten-md h2,
