@@ -4,7 +4,9 @@ import Base from '../layouts/Base.astro';
 const slides = [
   {
     judul: 'Faktorial dalam Tujuh Baris',
+    judulEn: 'Faktorial in Seven Lines',
     teks: 'Simpan sebagai main.eve, jalankan evernight main.eve, keluarannya Faktorial: 120. Tidak ada langkah build terpisah.',
+    teksEn: 'Save it as main.eve, run evernight main.eve, and you get Faktorial: 120. No separate build step.',
     kode: [
       '<span class="tok-c"># Program Faktorial EvernightLanguage</span>',
       '<span class="tok-k">fungsi</span> <span class="tok-f">faktorial</span>(n) {',
@@ -22,7 +24,9 @@ const slides = [
   },
   {
     judul: 'Sintaks Berbahasa Indonesia',
+    judulEn: 'Syntax in Indonesian',
     teks: 'Keyword seperti jika, selama, fungsi, dan kembali membuat kode mudah dibaca. Semudah Python, secanggih C++, tanpa titik-koma.',
+    teksEn: 'Keywords like jika, selama, fungsi, and kembali make code easy to read. As easy as Python, as powerful as C++, no semicolons.',
     kode: [
       '<span class="tok-c"># Sintaks alami berbahasa Indonesia</span>',
       '<span class="tok-k">variabel</span> nama = <span class="tok-s">"Nusantara"</span>',
@@ -38,7 +42,9 @@ const slides = [
   },
   {
     judul: 'Compiler Bytecode + VM',
+    judulEn: 'Bytecode Compiler + VM',
     teks: 'Kompilasi ke bytecode lalu dieksekusi di VM rakitan sendiri. Biner statis 1,74 MB, tanpa dependensi eksternal.',
+    teksEn: 'Compiles to bytecode, then runs on our own VM. One static binary of 1.74 MB, no external dependencies.',
     kode: [
       '<span class="tok-c"># Kompilasi ke bytecode, eksekusi di VM</span>',
       '<span class="tok-k">fungsi</span> <span class="tok-f">kuadrat</span>(x) {',
@@ -58,7 +64,9 @@ const slides = [
   },
   {
     judul: 'Standard Library Lengkap',
+    judulEn: 'Complete Standard Library',
     teks: '7 modul bawaan: konsol, string, matematika, daftar, kamus, sistem, dan utilitas. Tidak perlu memasang paket tambahan.',
+    teksEn: '7 built-in modules: console, string, math, list, dict, system, and utilities. Nothing extra to install.',
     kode: [
       '<span class="tok-c"># Modul bawaan siap pakai</span>',
       '<span class="tok-k">variabel</span> teks = <span class="tok-s">"evernight"</span>',
@@ -73,7 +81,9 @@ const slides = [
   },
   {
     judul: 'Coba dan Tangkap Error',
+    judulEn: 'Throw and Catch Errors',
     teks: 'pastikan melempar error begitu syaratnya dilanggar, dan coba/tangkap menangkapnya. Setiap error keluar dengan kode BAHAYA dan nomor baris.',
+    teksEn: 'pastikan throws an error the moment a condition is violated, and coba/tangkap catches it. Every error comes back as BAHAYA with a line number.',
     kode: [
       '<span class="tok-c"># Error handling yang jelas</span>',
       '<span class="tok-k">fungsi</span> <span class="tok-f">bagi</span>(a, b) {',
@@ -125,8 +135,8 @@ const slides = [
         <div class="min-h-[14rem] sm:min-h-[12.5rem]">
           {slides.map((s, i) => (
             <div class="slide-item" data-slide={i} hidden={i !== 0}>
-              <h1 class="text-3xl md:text-[2.6rem] leading-[1.12] font-extrabold tracking-tight text-white">{s.judul}</h1>
-              <p class="mt-4 text-[15px] leading-relaxed text-[#B9BAC7]">{s.teks}</p>
+              <h1 class="text-3xl md:text-[2.6rem] leading-[1.12] font-extrabold tracking-tight text-white" data-en={s.judulEn}>{s.judul}</h1>
+              <p class="mt-4 text-[15px] leading-relaxed text-[#B9BAC7]" data-en={s.teksEn}>{s.teks}</p>
             </div>
           ))}
         </div>

@@ -44,7 +44,9 @@ const tahap = slug.startsWith('tutorial/') ? slug.slice('tutorial/'.length) : nu
         const btn = document.createElement('button');
         btn.type = 'button';
         btn.className = 'tombol-jalankan';
-        btn.textContent = 'Jalankan';
+        btn.dataset.en = 'Run';
+        btn.dataset.idAsli = 'Jalankan';
+        btn.textContent = localStorage.getItem('evernight_lang') === 'en' ? 'Run' : 'Jalankan';
         btn.addEventListener('click', () => {
           document.getElementById('coba-kamu-run')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
           const ed = document.getElementById('editor-coba');

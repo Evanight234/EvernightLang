@@ -49,7 +49,9 @@ const contohSorot = sorot(kode);
         id="reset-coba"
         type="button"
         title="Kembalikan ke kode awal"
+        data-en-title="Reset to the original code"
         aria-label="Kembalikan ke kode awal"
+        data-en-aria="Reset to the original code"
         class="absolute right-2 top-2 z-20 rounded-md border border-white/15 bg-[#17151E]/90 p-1.5 text-[#9CA3AF] hover:text-white transition-colors"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -158,6 +160,10 @@ const contohSorot = sorot(kode);
   const stdout = document.getElementById('stdout-coba');
 
   if (ta && pre && tombol && stdout) {
+    const EN = () => localStorage.getItem('evernight_lang') === 'en';
+    if (EN() && (stdout.textContent ?? '').includes('jalankan untuk melihat')) {
+      stdout.textContent = '(run it to see the output)';
+    }
     const kodeAwal = ta.value;
     const keluaranAwal = stdout.textContent ?? '';
 
@@ -165,7 +171,7 @@ const contohSorot = sorot(kode);
       stdout.textContent = '';
       if (baris.length === 0) {
         const d = document.createElement('div');
-        d.textContent = '(tidak ada keluaran)';
+        d.textContent = EN() ? '(no output)' : '(tidak ada keluaran)';
         d.className = 'text-[#6B7280]';
         stdout.appendChild(d);
         return;

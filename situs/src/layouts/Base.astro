@@ -59,7 +59,7 @@ const navKelas = (k: string) =>
     <slot />
 
     <footer class="bg-[#F1EDFB] border-t border-[#7F77DD]/20 px-5 md:px-8 py-3.5">
-      <p class="text-xs text-[#4A4756] text-center">© 2026 EvernightLanguage · Lisensi MIT</p>
+      <p class="text-xs text-[#4A4756] text-center" data-en="© 2026 EvernightLanguage · MIT License">© 2026 EvernightLanguage · Lisensi MIT</p>
     </footer>
 
     <script>
@@ -80,6 +80,20 @@ const navKelas = (k: string) =>
           const k = el.dataset.i18nHtml!;
           if (d[k] != null) el.innerHTML = d[k];
         });
+        // Teks unik per halaman: versi EN di atribut data-en, versi ID = teks asli (disimpan sekali).
+        document.querySelectorAll<HTMLElement>('[data-en]').forEach((el) => {
+          if (el.dataset.idAsli == null) el.dataset.idAsli = el.textContent ?? '';
+          el.textContent = lang === 'en' ? el.dataset.en! : el.dataset.idAsli;
+        });
+        document.querySelectorAll<HTMLElement>('[data-en-title]').forEach((el) => {
+          if (el.dataset.titleAsli == null) el.dataset.titleAsli = el.getAttribute('title') ?? '';
+          el.setAttribute('title', lang === 'en' ? el.dataset.enTitle! : el.dataset.titleAsli);
+        });
+        document.querySelectorAll<HTMLElement>('[data-en-aria]').forEach((el) => {
+          if (el.dataset.ariaAsli == null) el.dataset.ariaAsli = el.getAttribute('aria-label') ?? '';
+          el.setAttribute('aria-label', lang === 'en' ? el.dataset.enAria! : el.dataset.ariaAsli);
+        });
+        window.dispatchEvent(new CustomEvent('evernight-lang', { detail: lang }));
       }
 
       const awal = localStorage.getItem('evernight_lang') === 'en' ? 'en' : 'id';

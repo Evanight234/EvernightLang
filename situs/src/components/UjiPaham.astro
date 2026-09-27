@@ -14,8 +14,8 @@ const soal = data?.soal ?? [];
   <section id="uji-pemahaman" class="mt-8 rounded-[10px] border border-[#7F77DD]/40 bg-[#FCF8FF] overflow-hidden">
     <header class="flex items-start justify-between gap-3 px-5 pt-5">
       <div>
-        <h2 class="text-lg font-bold text-[#1C1B22]">Uji Pemahaman</h2>
-        <p class="text-[13px] text-[#6B6880]">3-5 pertanyaan singkat untuk tahap ini</p>
+        <h2 class="text-lg font-bold text-[#1C1B22]" data-en="Test Your Understanding">Uji Pemahaman</h2>
+        <p class="text-[13px] text-[#6B6880]" data-en="3-5 quick questions for this stage">3-5 pertanyaan singkat untuk tahap ini</p>
       </div>
       <span id="kuis-progres" class="shrink-0 rounded-full bg-[#7F77DD]/15 px-3 py-1 text-xs font-bold text-[#534AB7]">Soal 1 dari {soal.length}</span>
     </header>
@@ -35,6 +35,39 @@ const soal = data?.soal ?? [];
 )}
 
 <script define:vars={{ soal }}>
+  const T = {
+    id: {
+      progres: (a, n) => 'Soal ' + a + ' dari ' + n,
+      kirim: 'Kirim Jawaban »',
+      berikut: 'Soal Berikutnya »',
+      lihat: 'Lihat Hasil »',
+      pilihDulu: 'Pilih salah satu jawaban dulu.',
+      benar: 'Benar!',
+      salah: 'Belum tepat. Jawaban benar ditandai hijau.',
+      selesai: (s, n) => 'Selesai! Skor kamu: ' + s + ' dari ' + n + '.',
+      jumlahBenar: (s, n) => s + ' / ' + n + ' benar',
+      ulangiKuis: 'Ulangi kuis untuk memperbaiki skor.',
+      ulangi: 'Ulangi',
+    },
+    en: {
+      progres: (a, n) => 'Question ' + a + ' of ' + n,
+      kirim: 'Submit Answer »',
+      berikut: 'Next Question »',
+      lihat: 'See Result »',
+      pilihDulu: 'Pick one answer first.',
+      benar: 'Correct!',
+      salah: 'Not quite. The right answer is marked green.',
+      selesai: (s, n) => 'Done! Your score: ' + s + ' of ' + n + '.',
+      jumlahBenar: (s, n) => s + ' / ' + n + ' correct',
+      ulangiKuis: 'Retake the quiz to improve your score.',
+      ulangi: 'Retry',
+    },
+  };
+  const bahasa = () => (localStorage.getItem('evernight_lang') === 'en' ? 'en' : 'id');
+  const t = () => T[bahasa()];
+  const teksSoal = (s) => (bahasa() === 'en' && s.tanyaEn ? s.tanyaEn : s.tanya);
+  const teksPilihan = (s) => (bahasa() === 'en' && s.pilihanEn ? s.pilihanEn : s.pilihan);
+
   const tanya = document.getElementById('kuis-tanya');
   const kotakPilihan = document.getElementById('kuis-pilihan');
   const progres = document.getElementById('kuis-progres');
@@ -44,13 +77,14 @@ const soal = data?.soal ?? [];
     let i = 0;
     let skor = 0;
     let dinilai = false;
+    let umpanJenis = '';
 
     function gambar() {
       const s = soal[i];
-      progres.textContent = 'Soal ' + (i + 1) + ' dari ' + soal.length;
-      tanya.textContent = s.tanya;
+      progres.textContent = t().progres(i + 1, soal.length);
+      tanya.textContent = teksSoal(s);
       kotakPilihan.innerHTML = '';
-      s.pilihan.forEach((teks, idx) => {
+      teksPilihan(s).forEach((teks, idx) => {
         const label = document.createElement('label');
         label.className =
           'flex items-center gap-3 rounded-lg border border-[#E6E2F5] bg-white px-4 py-2.5 text-sm text-[#26262E] cursor-pointer hover:border-[#7F77DD]/60 transition-colors';
@@ -63,14 +97,15 @@ const soal = data?.soal ?? [];
         kotakPilihan.appendChild(label);
       });
       umpan.classList.add('hidden');
-      kirim.textContent = 'Kirim Jawaban »';
+      umpanJenis = '';
+      kirim.textContent = t().kirim;
       dinilai = false;
     }
 
     function nilai() {
       const radio = kotakPilihan.querySelector('input:checked');
       if (!radio) {
-        umpan.textContent = 'Pilih salah satu jawaban dulu.';
+        umpan.textContent = t().pilihDulu;
         umpan.className = 'mt-3 text-sm font-medium text-[#A6522F]';
         umpan.classList.remove('hidden');
         return;
@@ -89,27 +124,51 @@ const soal = data?.soal ?? [];
       });
       if (pilih === benar) {
         skor += 1;
-        umpan.textContent = 'Benar!';
+        umpanJenis = 'benar';
         umpan.className = 'mt-3 text-sm font-medium text-[#0F6E56]';
       } else {
-        umpan.textContent = 'Belum tepat. Jawaban benar ditandai hijau.';
+        umpanJenis = 'salah';
         umpan.className = 'mt-3 text-sm font-medium text-[#A6522F]';
       }
+      umpan.textContent = t()[umpanJenis];
       umpan.classList.remove('hidden');
       dinilai = true;
-      kirim.textContent = i < soal.length - 1 ? 'Soal Berikutnya »' : 'Lihat Hasil »';
+      kirim.textContent = i < soal.length - 1 ? t().berikut : t().lihat;
     }
 
     function selesai() {
-      tanya.textContent = 'Selesai! Skor kamu: ' + skor + ' dari ' + soal.length + '.';
+      tanya.textContent = t().selesai(skor, soal.length);
       kotakPilihan.innerHTML = '';
-      progres.textContent = skor + ' / ' + soal.length + ' benar';
-      umpan.textContent = 'Ulangi kuis untuk memperbaiki skor.';
+      progres.textContent = t().jumlahBenar(skor, soal.length);
+      umpan.textContent = t().ulangiKuis;
       umpan.className = 'mt-3 text-sm font-medium text-[#534AB7]';
       umpan.classList.remove('hidden');
-      kirim.textContent = 'Ulangi';
+      kirim.textContent = t().ulangi;
       dinilai = 'ulang';
     }
+
+    // Ganti bahasa: tukar teks di tempat, status kuis tidak hilang.
+    window.addEventListener('evernight-lang', () => {
+      const s = soal[i];
+      if (dinilai === 'ulang') {
+        tanya.textContent = t().selesai(skor, soal.length);
+        progres.textContent = t().jumlahBenar(skor, soal.length);
+        umpan.textContent = t().ulangiKuis;
+        kirim.textContent = t().ulangi;
+        return;
+      }
+      progres.textContent = t().progres(i + 1, soal.length);
+      tanya.textContent = teksSoal(s);
+      kotakPilihan.querySelectorAll('span').forEach((sp, idx) => {
+        sp.textContent = teksPilihan(s)[idx];
+      });
+      if (umpanJenis) umpan.textContent = t()[umpanJenis];
+      kirim.textContent = dinilai === true
+        ? i < soal.length - 1
+          ? t().berikut
+          : t().lihat
+        : t().kirim;
+    });
 
     kirim.addEventListener('click', () => {
       if (dinilai === false) {

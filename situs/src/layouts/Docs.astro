@@ -2,6 +2,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import Base from './Base.astro';
+import en from '../i18n/en.json';
 import { sidebar, tetangga } from '../lib/docs';
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 const { judul, slug } = Astro.props;
 const kini = `/docs/${slug}`;
 const { sebelum, sesudah } = tetangga(slug);
+const judulEn = (en as Record<string, string>)[`judul.${slug}`] ?? judul;
 
 let versi = '0.1.0';
 try {
@@ -34,6 +36,7 @@ try {
                   <li>
                     <a
                       href={it.href}
+                      data-en={it.labelEn}
                       class:list={[
                         'block rounded-md px-3 py-[7px] text-[13.5px] leading-snug border-l-[3px] transition-colors',
                         aktif
@@ -41,8 +44,7 @@ try {
                           : 'border-transparent text-[#4A4756] hover:bg-[#F1EDFB]/50 hover:text-[#1C1B22]',
                       ]}
                     >{it.label}</a>
-                  </li>
-                );
+                  </li>                );
               })}
             </ul>
           </div>
@@ -59,16 +61,16 @@ try {
     <!-- Konten -->
     <main class="flex-1 min-w-0 bg-white">
       <article class="max-w-3xl mx-auto px-5 md:px-10 py-10 md:py-14">
-        <h1 class="text-[1.9rem] md:text-[2.4rem] font-extrabold tracking-tight text-[#1C1B22] leading-tight">{judul}</h1>
+        <h1 class="text-[1.9rem] md:text-[2.4rem] font-extrabold tracking-tight text-[#1C1B22] leading-tight" data-en={judulEn}>{judul}</h1>
 
         <div class="mt-5 mb-8 flex items-center justify-between gap-3">
           {sebelum ? (
-            <a href={sebelum.href} class="inline-flex items-center gap-1.5 rounded-lg border border-[#7F77DD]/50 px-4 py-2 text-sm font-semibold text-[#5B54B8] hover:bg-[#F1EDFB] transition-colors">‹ {sebelum.label}</a>
+            <a href={sebelum.href} data-en={`‹ ${sebelum.labelEn}`} class="inline-flex items-center gap-1.5 rounded-lg border border-[#7F77DD]/50 px-4 py-2 text-sm font-semibold text-[#5B54B8] hover:bg-[#F1EDFB] transition-colors">‹ {sebelum.label}</a>
           ) : (
             <span></span>
           )}
           {sesudah ? (
-            <a href={sesudah.href} class="inline-flex items-center gap-1.5 rounded-lg border border-[#7F77DD]/50 px-4 py-2 text-sm font-semibold text-[#5B54B8] hover:bg-[#F1EDFB] transition-colors">{sesudah.label} ›</a>
+            <a href={sesudah.href} data-en={`${sesudah.labelEn} ›`} class="inline-flex items-center gap-1.5 rounded-lg border border-[#7F77DD]/50 px-4 py-2 text-sm font-semibold text-[#5B54B8] hover:bg-[#F1EDFB] transition-colors">{sesudah.label} ›</a>
           ) : (
             <span></span>
           )}
@@ -80,10 +82,10 @@ try {
 
         <div class="mt-12 pt-6 border-t border-[#EBEAF1] flex items-center justify-between gap-3">
           {sebelum ? (
-            <a href={sebelum.href} class="text-sm text-[#5B54B8] hover:underline">‹ {sebelum.label}</a>
+            <a href={sebelum.href} data-en={`‹ ${sebelum.labelEn}`} class="text-sm text-[#5B54B8] hover:underline">‹ {sebelum.label}</a>
           ) : <span></span>}
           {sesudah ? (
-            <a href={sesudah.href} class="text-sm text-[#5B54B8] hover:underline">{sesudah.label} ›</a>
+            <a href={sesudah.href} data-en={`${sesudah.labelEn} ›`} class="text-sm text-[#5B54B8] hover:underline">{sesudah.label} ›</a>
           ) : <span></span>}
         </div>
       </article>

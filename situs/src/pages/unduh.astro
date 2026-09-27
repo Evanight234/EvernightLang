@@ -44,19 +44,19 @@ const barisSha = sha
         </div>
       </div>
       <div class="mt-5 rounded-lg bg-[#15151E] p-4 font-mono text-[12.5px] leading-relaxed text-[#E6E6F2]">
-        <div><span class="text-[#6B7280]">1.</span> unduh <span class="text-[#38BDF8]">evernight-{versi}-windows-x64.zip</span></div>
-        <div><span class="text-[#6B7280]">2.</span> ekstrak ke <span class="text-[#FBBF24]">C:\Evernight</span></div>
-        <div><span class="text-[#6B7280]">3.</span> jalankan <span class="text-[#C9B8FF]">install.cmd</span></div>
+        <div><span class="text-[#6B7280]">1.</span> <span data-en="download">unduh</span> <span class="text-[#38BDF8]">evernight-{versi}-windows-x64.zip</span></div>
+        <div><span class="text-[#6B7280]">2.</span> <span data-en="extract to">ekstrak ke</span> <span class="text-[#FBBF24]">C:\Evernight</span></div>
+        <div><span class="text-[#6B7280]">3.</span> <span data-en="run">jalankan</span> <span class="text-[#C9B8FF]">install.cmd</span></div>
       </div>
       <a href={urlZip} class="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-[#7F77DD] px-5 py-3 text-sm font-semibold text-white hover:bg-[#6C64CF] transition-colors shadow-[0_0_20px_rgba(127,119,221,0.3)]">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Unduh ZIP (6,7 MB)
+        <span data-en="Download ZIP (6.7 MB)">Unduh ZIP (6,7 MB)</span>
       </a>
     </div>
 
     <!-- Kartu Wizard -->
     <div class="rounded-2xl border border-[#7F77DD]/40 bg-[#FCF8FF] p-7 shadow-sm flex flex-col relative overflow-hidden">
-      <span class="absolute top-4 right-4 rounded-full bg-[#7F77DD] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white">Direkomendasikan</span>
+      <span class="absolute top-4 right-4 rounded-full bg-[#7F77DD] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white" data-en="Recommended">Direkomendasikan</span>
       <div class="flex items-center gap-3">
         <span class="w-10 h-10 rounded-xl bg-[#7F77DD]/15 text-[#7F77DD] flex items-center justify-center font-bold">⚙</span>
         <div>
@@ -65,13 +65,13 @@ const barisSha = sha
         </div>
       </div>
       <div class="mt-5 rounded-lg bg-[#15151E] p-4 font-mono text-[12.5px] leading-relaxed text-[#E6E6F2]">
-        <div><span class="text-[#6B7280]">1.</span> unduh <span class="text-[#38BDF8]">Setup.exe</span></div>
-        <div><span class="text-[#6B7280]">2.</span> klik dua kali, ikuti wizard</div>
-        <div><span class="text-[#6B7280]">3.</span> selesai — PATH &amp; <span class="text-[#C9B8FF]">.eve</span> otomatis</div>
+        <div><span class="text-[#6B7280]">1.</span> <span data-en="download">unduh</span> <span class="text-[#38BDF8]">Setup.exe</span></div>
+        <div><span class="text-[#6B7280]">2.</span> <span data-en="double-click, follow the wizard">klik dua kali, ikuti wizard</span></div>
+        <div><span class="text-[#6B7280]">3.</span> <span data-en="done - PATH &amp;">selesai - PATH &amp;</span> <span class="text-[#C9B8FF]">.eve</span> <span data-en="set automatically">otomatis</span></div>
       </div>
       <a href={urlSetup} class="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-[#1C1B22] px-5 py-3 text-sm font-semibold text-white hover:bg-[#2E2A3D] transition-colors">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Unduh Setup.exe (1,8 MB)
+        <span data-en="Download Setup.exe (1.8 MB)">Unduh Setup.exe (1,8 MB)</span>
       </a>
     </div>
   </section>
@@ -103,7 +103,7 @@ const barisSha = sha
           <thead>
             <tr class="bg-[#F6F4FD] text-left text-[#1C1B22]">
               <th class="px-4 py-2.5 font-semibold">Hash</th>
-              <th class="px-4 py-2.5 font-semibold">Berkas</th>
+              <th class="px-4 py-2.5 font-semibold" data-en="File">Berkas</th>
             </tr>
           </thead>
           <tbody>
