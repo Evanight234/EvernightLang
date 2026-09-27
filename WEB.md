@@ -221,6 +221,8 @@ jobs: build (npm ci → astro build) → deploy (actions/deploy-pages)
 
 **Status build 2026-09-25**: `astro build` → **31 halaman** (1 beranda + 1 unduh + 29 docs: 22 file `docs/` baru + 7 MD root), preview 200 OK, 0 link `.md` nyasar. Konten docs (panduan 7 + tutorial 10 + memulai 5) ditulis subagent, seluruh contoh kode **diverifikasi jalan** via `evernight.exe`.
 
+**Update 2026-09-27**: tutorial **9 tahap** (Tahap 10 mini proyek dihapus, keputusan user) → `astro build` **30 halaman**. **I18n EN chrome menyeluruh**: mekanisme `data-en` (teks ID asli di-capture sekali, tukar saat mode EN) + `data-en-title`/`data-en-aria` + event `evernight-lang` di `Base.astro`; cakupan: 5 slide (`judulEn`/`teksEn`), judul h1 docs (`en.json` kunci `judul.<slug>`), sidebar (`labelEn` di `lib/docs.ts`), prev/next, tombol Jalankan→Run, CobaRun, UjiPaham + kuis full EN (`tanyaEn`/`pilihanEn`, 36 soal), unduh (leaf span: unduh→download, ekstrak→extract, jalankan→run, badge Direkomendasikan→Recommended), footer. **Isi artikel MD tetap Bahasa Indonesia** (chrome + judul saja). Aturan: `data-en` hanya untuk elemen **daun**; elemen berisi anak (mis. `<a>` + `<svg>`) → bungkus span di dalam.
+
 **Catatan implementasi (pelajaran)**:
 - ID file MD root di glob loader **lowercase** (`KEYWORD.md` → `keyword`) — `petaSlug` wajib kunci huruf kecil.
 - `{` mentah di template `.astro` (mis. blok kode) = ekspresi JS → pindahkan ke frontmatter + `set:html`.

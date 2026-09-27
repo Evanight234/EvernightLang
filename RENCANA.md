@@ -491,12 +491,13 @@ Catatan pelaksanaan (Fase 6):
 ## Fase 8: Dokumentasi Publik, Website & Komunitas (NON-DEV)
 - [ ] README utama publik (logo, quickstart, status fase, fitur)
 - [x] Panduan sintaks Bahasa Indonesia per keyword — `docs/panduan/01–07` + `docs/kata-kunci` (KEYWORD.md)
-- [x] Tutorial pemula + latihan bertahap — `docs/tutorial/01–10` (tiap contoh diverifikasi jalan)
+- [x] Tutorial pemula + latihan bertahap — `docs/tutorial/01–09` (tiap contoh diverifikasi jalan; **Tahap 10 mini proyek dihapus 2026-09-27**, keputusan user)
 - [ ] Referensi stdlib lengkap (penjelasan tiap fungsi + contoh kode) — `STDLIB.md` sudah ada, kolom contoh menyusul
 - [x] 10+ contoh program bertahap — `examples/` (11 program) + galeri `docs/contoh.md`
 - [ ] Website resmi + playground online berbasis WASM (eksperimen)
   - [x] **Situs Astro dibangun lokal 2026-09-25** — `situs/`: beranda (desain Stitch + switch ID/EN), 29 halaman docs (sidebar 4 grup, prev/next, plugin link `.md`), halaman Unduh (Setup.exe + ZIP + SHA256), `astro build` 31 halaman
-  - [ ] Deploy GitHub Pages (Actions) + domain
+  - [x] **I18n EN chrome menyeluruh 2026-09-27** — `data-en`/`data-en-title`/`data-en-aria` (Base.astro): slide, judul h1, sidebar, prev/next, tombol Jalankan, CobaRun, kuis full EN (36 soal), unduh, footer; artikel MD tetap ID; build 30 halaman setelah Tahap 10 dihapus
+  - [ ] Deploy GitHub Pages (Actions) + domain — **DITUNDA oleh user 2026-09-27** (statis, tanpa adapter; Root Directory `situs`)
   - [ ] Playground WASM (`evernight_wasm`)
 - [ ] Publish ekstensi VS Code ke Marketplace (satu `.vsix` untuk keluarga VS Code)
 - [ ] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, template issue/PR
