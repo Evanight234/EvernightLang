@@ -22,7 +22,7 @@ const eveTheme = {
 };
 
 export default defineConfig({
-  site: 'https://evernight-lang.org',
+  site: 'https://evernight.my.id',
   markdown: {
     remarkPlugins: [remarkMdLink],
     shikiConfig: {

@@ -53,7 +53,7 @@ Kedua layar sudah ada HTML export (Tailwind CDN). Konten placeholder Stitch **bu
 - **Navbar**: logo "E" ungu + wordmark Evernight | Home (aktif) / About / Documentation | **Ganti Bahasa (switch)** ← tambahan wajib
 - **Hero**: background art + overlay gelap; kiri = frosted-glass code editor (tab `main.eve`, traffic lights, UTF-8); kanan = headline + paragraf + pagination 1–5
 - **Footer banner**: lavender + tagline + link "Learn more" (terracotta)
-- Domain mockup di browser chrome: `evernight-lang.org`
+- Domain mockup di browser chrome: `evernight.my.id` (aslinya `evernight-lang.org`, diganti user 2026-09-27)
 
 ### 3.2 Dokumentasi (light, 20/80)
 - **Nav atas**: Home / About / Documentation (aktif = underline ungu)
@@ -205,7 +205,7 @@ situs/
   - Build Command: `npm run build` · Output: `dist` (auto) · Install: `npm install` (`package-lock.json` ada)
   - Tanpa env var; Node versi default Vercel.
 - Deploy otomatis tiap push `main`; URL pertama `*.vercel.app`.
-- Domain: `evernight-lang.org` → tab Domains → DNS CNAME `cname.vercel-dns.com`; `site` di `astro.config.mjs` sudah `https://evernight-lang.org`.
+- Domain: **`evernight.my.id`** (keputusan user 2026-09-27, ganti `evernight-lang.org`) → tab Domains Vercel → tambah domain → di panel DNS my.id: A apex → `76.76.21.21`, CNAME `www` → `cname.vercel-dns.com`; `site` di `astro.config.mjs` sudah `https://evernight.my.id`.
 - ZIP halaman Unduh menunjuk URL repo GitHub (`unduh.astro`), bukan hosting Vercel — tidak perlu unggah artefak.
 
 ### 7.5 Lama: Pipeline GitHub Pages (DIGANTI 2026-09-27)
