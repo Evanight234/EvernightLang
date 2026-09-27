@@ -13,6 +13,8 @@ const docs = defineCollection({
       'STDLIB.md',
       'GRAMMAR.md',
       'ARRAY.md',
+      // Varian EN paralel di root (KEYWORD.en.md, dst) — difilter dari rute di [...slug].astro.
+      '*.en.md',
     ],
   }),
   schema: z.object({
