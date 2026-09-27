@@ -147,7 +147,7 @@ Konten placeholder Stitch ≠ Evernight asli. Checklist koreksi:
 | Konten MD | **File MD root repo tetap** (`KEYWORD.md`, `STDLIB.md`, dll.) — tidak diduplikasi ke `situs/` |
 | Bahasa | **Toggle client-side, URL tidak berubah** (tanpa `/id/`, `/en/`) |
 | Dokumentasi EN | **(a) UI chrome saja** yang switch (navbar, tombol, judul); konten docs tetap ID (MD root) — opsional blok terjemahan nanti |
-| Hosting | GitHub Pages (`dist/` via Actions) |
+| Hosting | **Vercel** (statis, Root Directory `situs`, auto Astro; ganti GH Pages — keputusan user 2026-09-27) |
 | Non-goal 1.0 | Playground WASM, search penuh, CMS |
 
 ### 7.1 Struktur folder `situs/`
@@ -198,13 +198,22 @@ situs/
 - Build time: baca `../version/version` + daftar isi `../paket/` → variabel halaman Unduh + chip versi sidebar (`v0.1.0`)
 - Regenerasi otomatis saat commit ke `version/` (GH Action)
 
-### 7.5 Pipeline GitHub Pages
+### 7.5 Pipeline Vercel (PENGANTI GitHub Pages)
+- **Tidak perlu workflow Actions / `vercel.json` / adapter** — Astro statis, preset Vercel auto-detect.
+- Setelan proyek di dashboard Vercel:
+  - **Root Directory: `situs`** (WAJIB — build membaca `../version/version`, `../paket/SHA256SUMS.txt`, glob MD `../KEYWORD.md`, grammar `../editors/vscode/syntaxes/evernight.tmLanguage.json` relatif terhadap cwd/`import.meta.url`)
+  - Build Command: `npm run build` · Output: `dist` (auto) · Install: `npm install` (`package-lock.json` ada)
+  - Tanpa env var; Node versi default Vercel.
+- Deploy otomatis tiap push `main`; URL pertama `*.vercel.app`.
+- Domain: `evernight-lang.org` → tab Domains → DNS CNAME `cname.vercel-dns.com`; `site` di `astro.config.mjs` sudah `https://evernight-lang.org`.
+- ZIP halaman Unduh menunjuk URL repo GitHub (`unduh.astro`), bukan hosting Vercel — tidak perlu unggah artefak.
+
+### 7.5 Lama: Pipeline GitHub Pages (DIGANTI 2026-09-27)
 ```yaml
-# .github/workflows/situs.yml
+# .github/workflows/situs.yml (TIDAK JADI DIBUAT)
 on: push [main, paths: situs/** | version/** | *.md]
 jobs: build (npm ci → astro build) → deploy (actions/deploy-pages)
 ```
-- Output: `situs/dist/` → GitHub Pages dari Actions
 
 ### 7.6 Integrasi Stitch
 1. Ekspor HTML 2 layar → pecah jadi komponen Astro (`Hero`, `CodeEditor`, `Sidebar`, `SwitchBahasa`)
@@ -216,7 +225,7 @@ jobs: build (npm ci → astro build) → deploy (actions/deploy-pages)
 2. [x] Port homepage Stitch → `index.astro` + `SwitchBahasa` (state ID/EN, 5 slide, kode faktorial asli)
 3. [x] Content layer MD root + `docs/[...slug].astro` + sidebar §4 (+ plugin `plugins/remark-md-link.mjs` ubah link `.md` relatif → `/docs/slug/`)
 4. [x] Halaman Unduh (baca `version/version` + `paket/SHA256SUMS.txt` via `process.cwd()` — `import.meta.url` tidak reliabel saat build)
-5. [ ] GH Action deploy Pages (**belum**)
+5. [ ] Deploy **Vercel** (Root Directory `situs`; ganti rencana GH Action Pages) — **belum**
 6. [ ] (Opsional) `stitch_edit_screens` — mockup Stitch biarkan apa adanya (**belum**)
 
 **Status build 2026-09-25**: `astro build` → **31 halaman** (1 beranda + 1 unduh + 29 docs: 22 file `docs/` baru + 7 MD root), preview 200 OK, 0 link `.md` nyasar. Konten docs (panduan 7 + tutorial 10 + memulai 5) ditulis subagent, seluruh contoh kode **diverifikasi jalan** via `evernight.exe`.

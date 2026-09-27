@@ -126,7 +126,7 @@
   - [x] **I18n EN chrome menyeluruh 2026-09-27** — mekanisme `data-en`/`data-en-title`/`data-en-aria` (`Base.astro`, event `evernight-lang`), EN: 5 slide (`judulEn`/`teksEn`), h1 docs (`en.json` `judul.*` 28 kunci), sidebar 30 item (`labelEn`), prev/next, tombol Jalankan/Run, CobaRun, UjiPaham + kuis 36 soal (`tanyaEn`/`pilihanEn`), unduh (leaf span + badge), footer. Setelah hapus Tahap 10: build **30 halaman**, `data-en` di 30/30 HTML
   - [x] **Isi artikel EN (tutorial + panduan) 2026-09-27** — 16 file paralel `docs/<grup>/<slug>.en.md` (tutorial 01–09 + panduan 01–07; **Memulai/Rujukan tetap ID**), dirender ganda `#isi-id`/`#isi-en` di halaman sama (URL tunggal), toggle via `terapkan()`; blok kode **identik byte** dengan ID; filter/lookup varian EN via `filePath` (**loader Astro buang titik pada id**)
   - [x] **Isi artikel EN (Reference 9 halaman) 2026-09-27** — sibling root `KEYWORD/TIPE/FUNCTION/ARRAY/ERROR/GRAMMAR/STDLIB.en.md` + `docs/cli.en.md`/`docs/contoh.en.md`; glob `content.config.ts` +`'*.en.md'`; tabel pesan error/kode/fungsi/contoh byte-identik, deskripsi & prosa diterjemah; checker diperluas → **25 pasangan identik**; dist 25 halaman `isi-en hidden`, 0 rute bocor
-  - [ ] Deploy GitHub Pages (Actions) + domain `evernight-lang.org`
+  - [ ] Deploy **Vercel** (Root Directory `situs`; ganti GH Pages) + domain `evernight-lang.org`
   - [ ] Playground WASM (`evernight_wasm`)
 - [ ] Publish ekstensi VS Code ke Marketplace (satu `.vsix` untuk keluarga VS Code)
 - [ ] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, template issue/PR

@@ -103,7 +103,7 @@ Bahasa pemrograman baru dengan karakteristik:
 
 ### Fase 8: Dokumentasi Publik, Website & Komunitas
 - [ ] README utama publik + referensi stdlib (panduan sintaks ✓ `docs/panduan/`, tutorial ✓ `docs/tutorial/01-09`, contoh ✓ `examples/` + `docs/contoh.md`)
-- [ ] Website resmi — **situs Astro lokal ✓** (`situs/`, build 30 halaman, 2026-09-25; **i18n EN**: chrome menyeluruh + isi 25 halaman tutorial/panduan/Reference via `.en.md` render ganda, 2026-09-27; Memulai tetap ID); sisa: deploy GH Pages + playground WASM + publish ekstensi VS Code ke Marketplace
+- [ ] Website resmi — **situs Astro lokal ✓** (`situs/`, build 30 halaman, 2026-09-25; **i18n EN**: chrome menyeluruh + isi 25 halaman tutorial/panduan/Reference via `.en.md` render ganda, 2026-09-27; Memulai tetap ID); sisa: deploy **Vercel** (ganti GH Pages) + playground WASM + publish ekstensi VS Code ke Marketplace
 - [ ] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, template issue/PR, peta jalan, galeri komunitas, tantangan pertama
 - [ ] Pengumuman rilis 1.0, survei pengguna, jadwal pemeliharaan
 

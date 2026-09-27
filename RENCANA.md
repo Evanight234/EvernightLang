@@ -499,7 +499,7 @@ Catatan pelaksanaan (Fase 6):
   - [x] **I18n EN chrome menyeluruh 2026-09-27** — `data-en`/`data-en-title`/`data-en-aria` (Base.astro): slide, judul h1, sidebar, prev/next, tombol Jalankan, CobaRun, kuis full EN (36 soal), unduh, footer; build 30 halaman setelah Tahap 10 dihapus
   - [x] **Isi artikel EN (tutorial+panduan) 2026-09-27** — 16 file `.en.md` paralel, render ganda `#isi-id`/`#isi-en` URL tunggal (keputusan user: tutorial 01–09 + panduan 01–07 saja, Memulai/Rujukan tetap ID; blok kode byte-identical); varian EN difilter via `filePath` (loader Astro buang titik pada id)
   - [x] **Isi artikel EN (Reference 9 halaman) 2026-09-27** — keputusan user: **Rujukan saja**, file EN sibling root (`KEYWORD/TIPE/FUNCTION/ARRAY/ERROR/GRAMMAR/STDLIB.en.md`) + `docs/cli.en.md`/`docs/contoh.en.md`, glob `content.config.ts` +`'*.en.md'`; Memulai tetap ID; tabel pesan/kode byte-identik, prosa diterjemah
-  - [ ] Deploy GitHub Pages (Actions) + domain — **DITUNDA oleh user 2026-09-27** (statis, tanpa adapter; Root Directory `situs`)
+  - [ ] Deploy **Vercel** + domain — **DITUNDA oleh user 2026-09-27** (statis, tanpa adapter; Root Directory `situs`; menggantikan rencana GH Pages — keputusan user 2026-09-27)
   - [ ] Playground WASM (`evernight_wasm`)
 - [ ] Publish ekstensi VS Code ke Marketplace (satu `.vsix` untuk keluarga VS Code)
 - [ ] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, template issue/PR
