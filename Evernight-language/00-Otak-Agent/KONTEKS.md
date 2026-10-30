@@ -8,12 +8,15 @@
 
 ## 1. Konteks Aktif (UPDATE TIAP PROMPT)
 
-- **Topik sedang dibahas**: **Fase 9 SELESAI TOTAL (9A - 9H Berhasil Dirilis)**.
-  - Subfase 9G sukses 100%: Bump versi `0.2.0`, biner release 3.07 MB teroptimasi, paket rilis ZIP `evernight-0.2.0-windows-x64.zip`, catatan rilis `version/catatan-0.2.0.txt`, VSIX `0.2.0`, push ke GitHub `Evanight234/EvernightLang` (`main -> main`).
-  - Uji terminal Windows (`C:\`): perintah `update evernight system` sukses mengunduh dan menimpa instalasi sistem global, mencatat `DisplayVersion: 0.2.0`, mengeluarkan pesan sukses verbatim, dan verifikasi `evernight system info` serta `evernight march --bantuan` dan eksekusi `matra.larik` berjalan sempurna.
-- **Sebelumnya (2026-10-30)**: Eksekusi 5 tahap Subfase 9G.
-- **Keputusan terbaru (2026-10-30)**: Fase 9 (Ekosistem Sains Data, ML Matra, & Web Notebook March) dinyatakan tuntas 100%.
-- **Langkah berikutnya**: Menunggu arahan pengguna untuk fase selanjutnya: **Fase 8 (Deploy Website Vercel evernight.my.id & Playground WASM)** atau **Fase 7 (Stabilisasi Sistem & Kriteria Rilis 1.0)**.
+- **Topik sedang dibahas**: **Perencanaan Pembaruan Dokumentasi & Ekosistem Web `situs/` (Fase 9 & March)**.
+  - User meminta perencanaan penambahan:
+    1. **Tutorial**: Menambahkan minimal > 3 stage baru (Stage 10, 11, 12, 13) mencakup fitur Fase 9 (Matra Sains Data, Tabel/DataFrame, Grafik SVG, dan Model Machine Learning), lengkap dengan penjelasan konsep dan kuis (`quis.ts`).
+    2. **Language Core**: Memperbarui panduan dasar sintaks & pustaka dengan integrasi modul Matra.
+    3. **Function & Reference**: Memperbarui referensi fungsi/stdlib dengan dokumentasi API lengkap sub-modul Matra (`matra.larik`, `matra.tabel`, `matra.grafik`, `matra.model`, dll).
+    4. **Web Notebook March (`.emlbn`)**: Merancang penempatan panduan dan integrasi March di situs (navigasi, sidebar, homepage, dan panduan lengkap).
+- **Sebelumnya (2026-10-30)**: Rilis sukses `v0.2.0` (Fase 9G selesai 100%), push GitHub, dan verifikasi `update evernight system`.
+- **Keputusan terbaru (2026-10-30)**: Menambahkan 4 stage baru di Tutorial (Tahap 10: Matra & Aljabar Linier, Tahap 11: Analisis Data Tabular & CSV, Tahap 12: Visualisasi Data Grafik SVG, Tahap 13: Machine Learning & Jaringan Syaraf). Menambahkan halaman panduan Web Notebook March (`.emlbn`) di grup Mulai/Peralatan serta referensi Matra di Rujukan.
+- **Langkah berikutnya**: Menyajikan rencana detail kepada pengguna, meminta konfirmasi/feedback, lalu mengeksekusi penulisan dokumen bilingual (ID & EN), kuis interaktif, integrasi sidebar, serta verifikasi build Astro.
 - **Perintah CLI tersedia**: `evernight <berkas>`, `evernight run <berkas>`, `evernight march [berkas.emlbn] [--port 8888]`, `evernight march ekspor <berkas.emlbn>`, `evernight format <berkas> [--cek|--keluar]`, `evernight lint <berkas>`, `evernight pkg init|jalankan|daftar`, `evernight system <info>`, `update evernight system [--cek]`, `evernight <berkas> --debug|--waktu|--bytecode|--ast|--tokens|--cek`.
 - **Jangan lupa**: Zero dependencies untuk `evernight_core`/`_vm`/`_cli` (installer adalah pengecualian sadar). Semua error message wajib berformat Bahasa Indonesia (`BAHAYA [KODE]` / `PERINGATAN [KODE]`).
 - **Catatan toolchain**: default = `stable-x86_64-pc-windows-gnu` (MSVC **tidak punya linker** di mesin ini). Konfigurasi build statik kini **target-spesifik** di `.cargo/config.toml` (`[target.x86_64-pc-windows-gnu]`, bukan `[build]`) agar aman di CI.
@@ -46,6 +49,8 @@
 - Keyword final: `variabel` (bukan `nyatakan`), `fungsi` (bukan `fn`), `impor` (bukan `pakai`), `kembali` tetap `kembali`.
 
 ## 4. Log Konteks (append ke atas, terbaru dulu)
+
+- **2026-10-30 (perencanaan pembaruan situs web dokumentasi untuk Fase 9 & March)**: Merumuskan rencana penambahan konten web pada `situs/`: 4 stage tutorial baru (Stage 10 Tensor/Linalg, Stage 11 Tabel/CSV, Stage 12 Grafik SVG, Stage 13 Machine Learning & Deep Learning) lengkap dengan kuis bilingual di `quis.ts`, pembaruan Language Core & Function/Standard Library Reference dengan spesifikasi API Matra, serta integrasi panduan Web Notebook March (`.emlbn`) pada navbar, sidebar, dan dokumentasi.
 
 - **2026-10-30 (Subfase 9G sukses & Fase 9 SELESAI TOTAL)**: Berhasil merilis ekosistem Sains Data & ML Matra serta Web Notebook March sebagai rilis resmi `v0.2.0`. Bump versi di seluruh crate dan package.json, catatan rilis `version/catatan-0.2.0.txt`, biner rilis 3.07 MB, paket rilis ZIP `evernight-0.2.0-windows-x64.zip`, ekstensi VS Code VSIX `0.2.0` (1.26 MB), serta commit dan push sukses ke repositori GitHub `Evanight234/EvernightLang`. Teruji nyata di terminal Windows (`C:\`): perintah `update evernight system` mengunduh dari GitHub dan menimpa instalasi sistem global, mencatat `DisplayVersion` 0.2.0, mengeluarkan pesan verbatim `terupdate ke versi 0.2.0, jangan panggil istriku lagi dasar karbit`, dan kedua kalinya mengeluarkan `Istriku lagi sibuk jangan dingagu`. Perintah `evernight system info`, `evernight march --bantuan`, dan eksekusi skrip `matra.larik` berjalan 100% sempurna dari direktori mana pun.
 

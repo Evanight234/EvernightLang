@@ -262,44 +262,44 @@ Pengembangan **Matra** dibagi menjadi 7 sub-fase terstruktur:
 * [x] Manipulasi bentuk & matematika elemen: `ubah_bentuk`, `ratakan`, `gabung`, `akar`, `mutlak`, `sin`, `cos`, `tan`, `exp`, `log`, `ke_daftar()`.
 
 ### Sub-Fase 9B: `matra.tabel` — Pengolah Data Tabular (DataFrame)
-* [ ] Parser CSV mandiri di Rust (zero-allocation, performa tinggi).
-* [ ] Tipe `TabelData`: penyimpanan kolom (*columnar storage*).
-* [ ] Operasi filter, pilih kolom, tambah/hapus kolom, pengurutan.
-* [ ] Penanganan nilai kosong: `isi_kosong`, `buang_kosong`.
-* [ ] Agregasi grup: `kelompokkan` (*groupby*).
+* [x] Parser CSV mandiri di Rust (zero-allocation, performa tinggi).
+* [x] Tipe `TabelData`: penyimpanan kolom (*columnar storage*).
+* [x] Operasi filter, pilih kolom, tambah/hapus kolom, pengurutan.
+* [x] Penanganan nilai kosong: `isi_kosong`, `buang_kosong`.
+* [x] Agregasi grup: `kelompokkan` (*groupby*).
 
 ### Sub-Fase 9C: `matra.grafik` — Visualisasi Data & Diagnostik Pengujian
-* [ ] Generator grafik vektor SVG mandiri (bebas dependensi eksternal C/GUI).
-* [ ] Grafik analitis: Garis, Titik Sebar, Batang, Histogram, *Heatmap Matriks Konfusi*.
-* [ ] Grafik diagnostik pelatihan: Kurva Belajar (*Learning Curve*), Kurva ROC-AUC.
-* [ ] Penampil grafik ASCII langsung di terminal untuk pengujian cepat.
+* [x] Generator grafik vektor SVG mandiri (bebas dependensi eksternal C/GUI).
+* [x] Grafik analitis: Garis, Titik Sebar, Batang, Histogram, *Heatmap Matriks Konfusi*.
+* [x] Grafik diagnostik pelatihan: Kurva Belajar (*Learning Curve*), Kurva ROC-AUC.
+* [x] Penampil grafik ASCII langsung di terminal untuk pengujian cepat.
 
 ### Sub-Fase 9D: `matra.latih`, `matra.alur` & `matra.uji` — Suite Pelatihan & Pengujian Data
-* [ ] Pembagian data: `pisah_data` (Latih/Uji/Validasi, acak, stratifikasi).
-* [ ] Validasi silang: `LipatanK`, `LipatanBerlapis`, `LipatanWaktu`.
-* [ ] Penyeimbang data: `SMOTE` dan *resampling*.
-* [ ] Pipa kerja: `PipaKerja` anti kebocoran data (*data leakage prevention*).
-* [ ] Diagnostik integritas: Uji kebocoran data dan deteksi pergeseran fitur (*Data Drift*).
-* [ ] Penyetelan hyperparameter: `PencarianKisi`, `PencarianAcak`, `TalaBayes`.
+* [x] Pembagian data: `pisah_data` (Latih/Uji/Validasi, acak, stratifikasi).
+* [x] Validasi silang: `LipatanK`, `LipatanBerlapis`, `LipatanWaktu`.
+* [x] Penyeimbang data: `SMOTE` dan *resampling*.
+* [x] Pipa kerja: `PipaKerja` anti kebocoran data (*data leakage prevention*).
+* [x] Diagnostik integritas: Uji kebocoran data dan deteksi pergeseran fitur (*Data Drift*).
+* [x] Penyetelan hyperparameter: `PencarianKisi`, `PencarianAcak`, `TalaBayes`.
 
 ### Sub-Fase 9E: `matra.model` & `matra.metrik` — Model ML Klasik & Evaluasi
-* [ ] Pra-pemrosesan: `Standarisasi`, `MinMaksSkala`, `KategoriKeAngka` (*One-Hot*).
-* [ ] Model Klasifikasi & Regresi: `RegresiLinear`, `RegresiLogistik`, `KNNKlasifikasi`, `KNNRegresi`, `PohonKeputusan`, `HutanAcak`, `KMeans`.
-* [ ] Mesin spasial KNN: Implementasi pencarian tetangga cepat berbasis **KD-Tree** dan **Ball-Tree** di level Rust engine.
-* [ ] Metrik evaluasi komprehensif: `laporan_klasifikasi`, `matriks_konfusi`, `akurasi`, `presisi`, `recall`, `f1_skor`, `mse`, `mae`, `r2`.
+* [x] Pra-pemrosesan: `Standarisasi`, `MinMaksSkala`, `KategoriKeAngka` (*One-Hot*).
+* [x] Model Klasifikasi & Regresi: `RegresiLinear`, `RegresiLogistik`, `KNNKlasifikasi`, `KNNRegresi`, `PohonKeputusan`, `HutanAcak`, `KMeans`.
+* [x] Mesin spasial KNN: Implementasi pencarian tetangga cepat berbasis **KD-Tree** dan **Ball-Tree** di level Rust engine.
+* [x] Metrik evaluasi komprehensif: `laporan_klasifikasi`, `matriks_konfusi`, `akurasi`, `presisi`, `recall`, `f1_skor`, `mse`, `mae`, `r2`.
 
 ### Sub-Fase 9F: `matra.syaraf` & `matra.pelatih` — Deep Learning & Otomatisasi Training
-* [ ] Engine *Autograd*: Pelacakan *computational graph* dan *backpropagation*.
-* [ ] Lapisan Jaringan: `Linear`, `Dropout`, `NormalisasiBatch`.
-* [ ] Aktivasi: `Relu`, `Sigmoid`, `Tanh`, `Gelu`, `Softmax`.
-* [ ] Pengoptimal: `SGD`, `Adam`, `AdamW`.
-* [ ] Orkestrasi `Pelatih`: Siklus latih-validasi otomatis, *Early Stopping*, *Model Checkpoint*, pencatat riwayat per putaran.
-* [ ] Simpan dan muat bobot model serial (`.matra`).
+* [x] Engine *Autograd*: Pelacakan *computational graph* dan *backpropagation*.
+* [x] Lapisan Jaringan: `Linear`, `Dropout`, `NormalisasiBatch`.
+* [x] Aktivasi: `Relu`, `Sigmoid`, `Tanh`, `Gelu`, `Softmax`.
+* [x] Pengoptimal: `SGD`, `Adam`, `AdamW`.
+* [x] Orkestrasi `Pelatih`: Siklus latih-validasi otomatis, *Early Stopping*, *Model Checkpoint*, pencatat riwayat per putaran.
+* [x] Simpan dan muat bobot model serial (`.matra`).
 
 ### Sub-Fase 9G: Rilis & Distribusi Pembaruan Sistem via GitHub (`update evernight system`)
-* [ ] Pemaketan biner rilis mandiri teroptimasi (`evernight.exe` + runtime Matra penuh).
-* [ ] Sinkronisasi manifes online `version/version` dan `version/catatan-<versi>.txt` di repositori GitHub `Evanight234/EvernightLang`.
-* [ ] Pengujian rilis auto-update: User di sembarang folder di Windows (misal di root `C:\` atau terminal CMD) dapat langsung memperbarui instalasi sistemnya hanya dengan mengetik perintah:
+* [x] Pemaketan biner rilis mandiri teroptimasi (`evernight.exe` + runtime Matra penuh).
+* [x] Sinkronisasi manifes online `version/version` dan `version/catatan-<versi>.txt` di repositori GitHub `Evanight234/EvernightLang`.
+* [x] Pengujian rilis auto-update: User di sembarang folder di Windows (misal di root `C:\` atau terminal CMD) dapat langsung memperbarui instalasi sistemnya hanya dengan mengetik perintah:
   ```cmd
   update evernight system
   ```
