@@ -2,7 +2,7 @@
 
 
 <p align="center">
-  <img src="https://res.cloudinary.com/dxdon9nfs/video/upload/v1788942366/march-7th.1920x1080_te2sbg.mp4" alt="Portfolio Banner" width="100%" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(224, 20, 60, 0.3); border: 2px solid #e0143c;" />
+  <img src="https://res.cloudinary.com/dxdon9nfs/image/upload/v1780918590/wallpaperflare.com_wallpaper_4_zj37lq.jpg" alt="Portfolio Banner" width="100%" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(224, 20, 60, 0.3); border: 2px solid #e0143c;" />
 </p>
 
 Bahasa pemrograman baru dengan sintaksis Bahasa Indonesia: *se-mudah Python, se-cepat C++, se-multifungsi JavaScript.*
