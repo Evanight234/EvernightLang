@@ -1,0 +1,132 @@
+# ==============================================================================
+# CONTOH PEMROGRAMAN EVERNIGHT: PUSTAKA SAINS DATA MATRA (FASE 9F)
+# Submodul: matra.syaraf (Deep Learning) & matra.pelatih (Automated Training)
+# ==============================================================================
+
+impor "matra" sebagai mt
+
+cetak("======================================================================")
+cetak("     EVERNIGHT DEEP LEARNING ENGINE: MATRA SYARAF & PELATIH (9F)      ")
+cetak("======================================================================")
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 1. PERSIAPAN DATASET NON-LINEAR (PROBLEM XOR)
+# ------------------------------------------------------------------------------
+cetak("=== 1. PERSIAPAN DATA KLASIFIKASI NON-LINEAR (XOR) ===")
+
+variabel X_xor = mt.larik([
+    [0.0, 0.0],
+    [0.0, 1.0],
+    [1.0, 0.0],
+    [1.0, 1.0]
+])
+
+variabel y_xor = mt.larik([
+    [0.0],
+    [1.0],
+    [1.0],
+    [0.0]
+])
+
+cetak("Fitur Masukan X (4 sampel x 2 fitur):")
+cetak(X_xor)
+cetak("Target Luaran y:")
+cetak(y_xor)
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 2. DEFINISI ARSITEKTUR JARINGAN SYARAF (MULTI-LAYER PERCEPTRON)
+# ------------------------------------------------------------------------------
+cetak("=== 2. MEMBANGUN ARSITEKTUR JARINGAN (MULTI-LAYER PERCEPTRON) ===")
+
+# Arsitektur: Input (2) -> Hidden 1 (8, Tanh) -> Dropout (0.1) -> Output (1, Sigmoid)
+variabel model_jst = mt.syaraf.Model([
+    mt.syaraf.Linear(2, 8),
+    mt.syaraf.Tanh(),
+    mt.syaraf.Dropout(0.1),
+    mt.syaraf.Linear(8, 1),
+    mt.syaraf.Sigmoid()
+])
+
+cetak("Arsitektur Model JST Sekuensial berhasil dibangun:")
+cetak("  Lapisan 1 : Linear (2 -> 8 fitur)")
+cetak("  Lapisan 2 : Aktivasi Tanh")
+cetak("  Lapisan 3 : Dropout (10% regularisasi)")
+cetak("  Lapisan 4 : Linear (8 -> 1 fitur)")
+cetak("  Lapisan 5 : Aktivasi Sigmoid (Probabilitas [0.0 - 1.0])")
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 3. KONFIGURASI PENGOPTIMAL (ADAM) & FUNGSI KERUGIAN (BCE)
+# ------------------------------------------------------------------------------
+cetak("=== 3. KONFIGURASI PENGOPTIMAL ADAM & FUNGSI KERUGIAN ===")
+
+variabel optim = mt.syaraf.Adam(model_jst, 0.08)
+variabel kerugian = mt.syaraf.KerugianBCE()
+cetak("Pengoptimal : Adam (Laju Belajar: 0.08)")
+cetak("Fungsi Rugi : Binary Cross-Entropy (BCE)")
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 4. ORKESTRASI PELATIHAN DENGAN CALLBACKS (PELATIH OTOMATIS)
+# ------------------------------------------------------------------------------
+cetak("=== 4. PELATIHAN OTOMATIS DENGAN CALLBACKS ===")
+
+variabel pelatih = mt.pelatih.Pelatih(
+    model_jst,
+    optim,
+    kerugian,
+    ["akurasi"]
+)
+
+# Pasang callback: Simpan model terbaik & pencatat riwayat
+variabel berkas_model = "model_xor_terbaik.matra"
+pelatih.pasang_callback([
+    mt.pelatih.SimpanTerbaik(berkas_model, "akurasi", "maks"),
+    mt.pelatih.BerhentiAwal("rugi", 20, 0.0001, "min"),
+    mt.pelatih.PencatatRiwayat("log_pelatihan_xor.json")
+])
+
+cetak("Memulai proses pelatihan otomatis selama 80 putaran:")
+variabel riwayat = pelatih.latih(X_xor, y_xor, 80, 4)
+cetak("Pelatihan selesai. Total putaran tercatat:", riwayat["putaran"].panjang)
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 5. PENGUJIAN & PREDIKSI MODEL SETELAH DILATIH
+# ------------------------------------------------------------------------------
+cetak("=== 5. PREDIKSI DATA & EVALUASI AKHIR ===")
+
+variabel hasil_prediksi = model_jst.prediksi(X_xor)
+cetak("Probabilitas Prediksi JST :")
+cetak(hasil_prediksi)
+
+variabel hasil_evaluasi = pelatih.evaluasi(X_xor, y_xor)
+cetak("Nilai Rugi Akhir (Loss)   :", hasil_evaluasi["rugi"])
+cetak("Akurasi Model Final       :", hasil_evaluasi["akurasi"] * 100, "%")
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 6. SERIALISASI & MEMUAT KEMBALI BOBOT (.MATRA)
+# ------------------------------------------------------------------------------
+cetak("=== 6. SERIALISASI DAN PEMUATAN MODEL DARI BERKAS .MATRA ===")
+
+variabel model_baru = mt.syaraf.Model([
+    mt.syaraf.Linear(2, 8),
+    mt.syaraf.Tanh(),
+    mt.syaraf.Linear(8, 1),
+    mt.syaraf.Sigmoid()
+])
+
+model_baru.muat(berkas_model)
+cetak("Bobot model terbaik berhasil dimuat kembali dari berkas:", berkas_model)
+
+variabel pred_model_baru = model_baru.prediksi(X_xor)
+cetak("Prediksi Model Baru (Hasil Muat) :")
+cetak(pred_model_baru)
+
+cetak("")
+cetak("======================================================================")
+cetak("         FASE 9F MATRA SYARAF & PELATIH BERHASIL TOTAL!               ")
+cetak("======================================================================")

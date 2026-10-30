@@ -59,6 +59,24 @@
 - **Master SVG logo** belum tersedia (sumber raster saja).
 - **Installer belum diuji di komputer bersih** (7E).
 
+## [0.2.0] - 2026-10-30
+
+### Ditambahkan
+- **Ekosistem Sains Data & Machine Learning (Matra)**:
+  - `matra.larik`: Tipe tensor/array homogen multidimensi (`Value::Larik`), aljabar linier, invers matriks Gauss-Jordan, transposisi, dot product, statistik dasar, dan manipulasi bentuk.
+  - `matra.tabel`: Struktur data DataFrame columnar (`Value::Tabel`), pembaca & penulis CSV zero-dependency, agregasi grup (`kelompokkan`), filter mask, handling nilai hilang (`isi_kosong`/`buang_kosong`), dan interop tensor.
+  - `matra.grafik`: Engine visualisasi data murni Rust tanpa GUI (vektor SVG mandiri & render ASCII terminal) mencakup garis, sebar, diagram batang, histogram, dan matriks konfusi.
+  - `matra.latih` & `matra.alur`: Pembagian data train/test/val berstratifikasi, validasi silang K-Fold, penyeimbangan kelas SMOTE, alur anti kebocoran data `PipaKerja`, deteksi data drift, dan tuning Bayesian `TalaBayes`.
+  - `matra.model` & `matra.metrik`: Model ML klasik (`RegresiLinear`, `RegresiLogistik`, `KNNKlasifikasi`, `KNNRegresi`, `PohonKeputusan`, `HutanAcak`, `KMeans`) serta metrik evaluasi lengkap (`akurasi`, `presisi`, `recall`, `f1_skor`, `matriks_konfusi`, `laporan_klasifikasi`, `mse`, `rmse`, `mae`, `r2_skor`, `mape`).
+  - `matra.syaraf` & `matra.pelatih`: Deep Learning autograd analitik, lapisan `Linear` & `Dropout`, aktivasi non-linear, optimizer `Adam` & `SGD`, fungsi kerugian, serialisasi format `.matra`, serta orkestrator `Pelatih` dengan early stopping dan model checkpointing.
+- **Web Notebook Interaktif "March" (`.emlbn`)**:
+  - Subcommand CLI baru: `evernight march [berkas.emlbn] [--port 8888] [--folder <DIR>]` dan `evernight march ekspor [berkas.emlbn]`.
+  - Format berkas notebook `.emlbn` (*Evernight Machine Learning Notebook*) berbasis JSON terbuka.
+  - Akses dataset & berkas CSV 100% lokal dari harddisk laptop pengguna tanpa upload cloud.
+  - Antarmuka SPA Google Colab Dark Mode disematkan langsung di biner release berbasis standar desain **Hallmark v2.0** (*The Floor*, *dark discipline*, ikon SVG inline, micro-interactions).
+  - Editor sel kode multi-baris dual-layer dengan syntax highlighting tema Nusantara dan autocomplete floating popup IntelliSense navigasi keyboard.
+  - Render interaktif tabel DataFrame HTML dan plot visualisasi grafik SVG.
+
 ---
 
 ## [0.1.0] - 2026-09-12

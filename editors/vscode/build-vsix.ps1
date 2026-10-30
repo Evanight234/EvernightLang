@@ -63,7 +63,7 @@ $Verifikasi = @(
     "extension/icons/evernight-icon-theme.json",
     "extension/icons/evernight-file.png",
     "extension/icons/evernight-icon.png",
-    "extension/icons/icons/files/html.svg",
+    "extension/icons/icons/files/angular.svg",
     "extension/icons/icons/folders/folder.svg",
     "extension/out/extension.js",
     "extension.vsixmanifest",

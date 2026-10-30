@@ -14,7 +14,7 @@ fn test_cli_versi() {
 
     assert!(output.status.success());
     let stdout = String::from_utf8_lossy(&output.stdout);
-    assert!(stdout.contains("EvernightLanguage v0.1.0"));
+    assert!(stdout.contains(&format!("EvernightLanguage v{}", env!("CARGO_PKG_VERSION"))));
 }
 
 #[test]
@@ -541,4 +541,78 @@ fn test_cli_system_tanpa_aksi() {
     let stderr = String::from_utf8_lossy(&output.stderr);
     assert!(stderr.contains("BAHAYA [ARG]"));
     assert!(stderr.contains("evernight system info"));
+}
+
+#[test]
+fn test_cli_march_help() {
+    let output = Command::new(get_bin())
+        .args(["march", "--help"])
+        .output()
+        .expect("Gagal menjalankan biner");
+
+    assert!(output.status.success());
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    assert!(stdout.contains("evernight march — Web Notebook Interaktif"));
+    assert!(stdout.contains("PENGGUNAAN:"));
+    assert!(stdout.contains("ekspor"));
+}
+
+#[test]
+fn test_cli_march_ekspor_dan_eksekusi() {
+    let temp_dir = std::env::temp_dir().join("eve_test_march");
+    let _ = fs::create_dir_all(&temp_dir);
+    let nb_path = temp_dir.join("test_nb.emlbn");
+    let out_eve = temp_dir.join("hasil_ekspor.eve");
+
+    let raw_emlbn = "{\n\
+  \"march_versi\": \"1.0\",\n\
+  \"bahasa\": \"EvernightLanguage\",\n\
+  \"nama_notebook\": \"Uji Ekspor\",\n\
+  \"waktu_dibuat\": \"2026-10-28T12:00:00Z\",\n\
+  \"waktu_diubah\": \"2026-10-28T12:00:00Z\",\n\
+  \"metadata\": {\n\
+    \"penulis\": \"Satriyo\",\n\
+    \"folder_kerja\": \".\",\n\
+    \"kernel\": { \"nama\": \"evernight\", \"versi\": \"0.1.0\" }\n\
+  },\n\
+  \"sel\": [\n\
+    {\n\
+      \"id\": \"sel_01\",\n\
+      \"tipe\": \"markdown\",\n\
+      \"sumber\": \"# Catatan Uji\\nTesting ekspor notebook\",\n\
+      \"urutan_eksekusi\": null,\n\
+      \"keluaran\": null\n\
+    },\n\
+    {\n\
+      \"id\": \"sel_02\",\n\
+      \"tipe\": \"kode\",\n\
+      \"urutan_eksekusi\": 1,\n\
+      \"sumber\": \"variabel nilai = 50 * 2\\ncetak(\\\"NILAI:\\\", nilai)\",\n\
+      \"keluaran\": null\n\
+    }\n\
+  ]\n\
+}";
+    fs::write(&nb_path, raw_emlbn).unwrap();
+
+    let output_ekspor = Command::new(get_bin())
+        .args(["march", "ekspor", nb_path.to_str().unwrap(), "-o", out_eve.to_str().unwrap()])
+        .output()
+        .expect("Gagal menjalankan perintah ekspor");
+
+    assert!(output_ekspor.status.success());
+    assert!(out_eve.exists());
+
+    // Jalankan skrip .eve hasil ekspor untuk verifikasi eksekusinya
+    let output_run = Command::new(get_bin())
+        .args(["run", out_eve.to_str().unwrap()])
+        .output()
+        .expect("Gagal menjalankan file hasil ekspor");
+
+    assert!(output_run.status.success());
+    let run_stdout = String::from_utf8_lossy(&output_run.stdout);
+    assert!(run_stdout.contains("NILAI:100"));
+
+    let _ = fs::remove_file(nb_path);
+    let _ = fs::remove_file(out_eve);
+    let _ = fs::remove_dir_all(temp_dir);
 }

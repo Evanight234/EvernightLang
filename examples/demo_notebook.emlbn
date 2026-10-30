@@ -1,0 +1,131 @@
+{
+  "march_versi": "1.0",
+  "bahasa": "EvernightLanguage",
+  "nama_notebook": "Eksplorasi Sains Data & ML Siswa",
+  "waktu_dibuat": "2026-10-28T12:00:00Z",
+  "waktu_diubah": "2026-10-28T13:16:26.975Z",
+  "metadata": {
+    "penulis": "Satriyo",
+    "folder_kerja": "examples",
+    "kernel": {
+      "nama": "evernight",
+      "versi": "0.1.0"
+    }
+  },
+  "sel": [
+    {
+      "id": "sel_01",
+      "tipe": "markdown",
+      "urutan_eksekusi": null,
+      "sumber": "# ÃÂÃÂ°ÃÂÃÂÃÂÃÂªÃÂÃÂ March Notebook ÃÂÃÂ¢ÃÂÃÂÃÂÃÂ Eksplorasi Sains Data & ML\nSelamat datang di **March Notebook**, alat bantu interaktif untuk eksplorasi data, komputasi tensor, dan pelatihan model Machine Learning menggunakan sintaksis **EvernightLanguage** dan pustaka terpadu **Matra**.\n\n- **100% Akses Berkas Lokal**: Membaca dan menulis berkas CSV serta bobot model langsung dari harddisk laptop Anda.\n- **Pintasan Keyboard**:\n  - Shift + Enter : Jalankan sel aktif dan pindah ke sel berikutnya.\n  - Ctrl + Enter : Jalankan sel aktif di tempat.\n  - Alt + Enter : Jalankan sel aktif dan sisipkan sel baru di bawahnya.",
+      "keluaran": null
+    },
+    {
+      "id": "sel_02",
+      "tipe": "kode",
+      "urutan_eksekusi": 4,
+      "sumber": "impor \"matra\" sebagai mt\n\ncetak(\"Pustaka Matra berhasil diimpor ke dalam Kernel March!\")",
+      "keluaran": {
+        "tipe": "teks",
+        "konten": "Pustaka Matra berhasil diimpor ke dalam Kernel March!"
+      }
+    },
+    {
+      "id": "sel_03",
+      "tipe": "markdown",
+      "urutan_eksekusi": null,
+      "sumber": "## 1. Pembuatan & Eksplorasi Data Tabular (DataFrame)\nKita membuat DataFrame berisi informasi jam belajar dan nilai ujian siswa.",
+      "keluaran": null
+    },
+    {
+      "id": "sel_04",
+      "tipe": "kode",
+      "urutan_eksekusi": 9,
+      "sumber": "variabel data_siswa = mt.tabel({\n    \"id\": [1, 2, 3, 4, 5],\n    \"nama\": [\"Dewi\", \"Arif\", \"Raka\", \"Siti\", \"Budi\"],\n    \"jam_belajar\": [3.5, 6.0, 4.2, 5.8, 2.0],\n    \"kehadiran\": [85.0, 92.5, 78.0, 95.0, 70.0],\n    \"nilai_ujian\": [78.5, 95.0, 82.0, 91.5, 65.0]\n})\ndata_siswa",
+      "keluaran": {
+        "tipe": "tabel_html",
+        "konten": "",
+        "data_tabel": {
+          "kolom": [
+            "id",
+            "jam_belajar",
+            "kehadiran",
+            "nama",
+            "nilai_ujian"
+          ],
+          "baris": [
+            [
+              "1",
+              "3.5",
+              "85",
+              "Dewi",
+              "78.5"
+            ],
+            [
+              "2",
+              "6",
+              "92.5",
+              "Arif",
+              "95"
+            ],
+            [
+              "3",
+              "4.2",
+              "78",
+              "Raka",
+              "82"
+            ],
+            [
+              "4",
+              "5.8",
+              "95",
+              "Siti",
+              "91.5"
+            ],
+            [
+              "5",
+              "2",
+              "70",
+              "Budi",
+              "65"
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "sel_05",
+      "tipe": "markdown",
+      "urutan_eksekusi": null,
+      "sumber": "## 2. Visualisasi Vektor SVG\nMenampilkan grafik sebar (Scatter Plot) hubungan antara jam belajar dan nilai ujian.",
+      "keluaran": null
+    },
+    {
+      "id": "sel_06",
+      "tipe": "kode",
+      "urutan_eksekusi": 8,
+      "sumber": "mt.grafik.sebar(data_siswa[\"jam_belajar\"], data_siswa[\"nilai_ujian\"])\n    .judul(\"Korelasi Jam Belajar vs Nilai Ujian\")\n    .label_x(\"Jam Belajar per Hari\")\n    .label_y(\"Nilai Ujian\")\n    .warna(\"#00000\")\n\"FUNCTION.md\"",
+      "keluaran": {
+        "tipe": "teks",
+        "konten": "FUNCTION.md"
+      }
+    },
+    {
+      "id": "sel_07",
+      "tipe": "markdown",
+      "urutan_eksekusi": null,
+      "sumber": "## 3. Melatih Model Regresi Linear Machine Learning\nMelakukan pemodelan matematika menggunakan `mt.model.RegresiLinear()`.",
+      "keluaran": null
+    },
+    {
+      "id": "sel_08",
+      "tipe": "kode",
+      "urutan_eksekusi": 7,
+      "sumber": "variabel X = mt.larik([\n    [3.5], [6.0], [4.2], [5.8], [2.0]\n])\nvariabel y = mt.larik([\n    [78.5], [95.0], [82.0], [91.5], [65.0]\n])\n\nvariabel model = mt.model.RegresiLinear()\nmodel.latih(X, y)\n\ncetak(\"Koefisien regresi : \", model.koefisien)\ncetak(\"Intersep regresi  : \", model.intersep)\ncetak(\"Skor R2 Model     : \", model.skor(X, y))",
+      "keluaran": {
+        "tipe": "teks",
+        "konten": "Koefisien regresi : [4.780371697631356]\nIntersep regresi  : 62.96594288802562\nSkor R2 Model     : 0.8730377916225285"
+      }
+    }
+  ]
+}

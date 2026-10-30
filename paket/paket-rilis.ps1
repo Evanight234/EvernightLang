@@ -16,7 +16,8 @@ $Root = Split-Path -Parent $PSScriptRoot
 $NamaPaket = "evernight-$Versi-windows-x64"
 $OutDir = Join-Path $PSScriptRoot $NamaPaket
 $Payload = Join-Path $Root "installer/aset/payload"
-$Vsix = Get-ChildItem (Join-Path $Root "editors/vscode") -Filter "*.vsix" | Select-Object -First 1
+$VsixTarget = Join-Path $Root "editors/vscode/evernight-language-$Versi.vsix"
+$Vsix = if (Test-Path $VsixTarget) { Get-Item $VsixTarget } else { Get-ChildItem (Join-Path $Root "editors/vscode") -Filter "*.vsix" | Select-Object -First 1 }
 
 Write-Host "=== PAket RILIS $NamaPaket ===" -ForegroundColor Cyan
 

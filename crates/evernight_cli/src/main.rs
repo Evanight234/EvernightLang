@@ -7,13 +7,14 @@ use evernight_core::{Lexer, Parser};
 use evernight_vm::{Compiler, Value, Vm};
 
 mod json;
+mod march;
 mod pkg;
 mod printer;
 mod repl;
 
 use printer::{disassemble_chunk, format_error};
 
-const VERSION: &str = "0.1.0";
+const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn print_help() {
     println!("EvernightLanguage CLI (v{})", VERSION);
@@ -28,6 +29,7 @@ fn print_help() {
     println!("    format <berkas.eve>   Rapikan format berkas (indentasi & spasi)");
     println!("    lint <berkas.eve>     Periksa gaya & kerapian kode (aturan WK*)");
     println!("    pkg <subperintah>     Kelola proyek: init | jalankan | daftar");
+    println!("    march [berkas.emlbn]  Buka Web Notebook interaktif March (.emlbn)");
     println!("    system <aksi>         Info instalasi sistem: info\n");
     println!("OPSI FORMAT:");
     println!(
@@ -75,7 +77,7 @@ fn main() {
     // `evernight pkg --bantuan` menampilkan bantuan pkg (bukan bantuan utama).
     let ada_subperintah = matches!(
         raw_args.get(1).map(|s| s.as_str()),
-        Some("run" | "format" | "lint" | "pkg" | "system")
+        Some("run" | "format" | "lint" | "pkg" | "system" | "march")
     );
     if !ada_subperintah {
         for arg in raw_args.iter().skip(1) {
@@ -120,6 +122,11 @@ fn main() {
     // Subcommand `pkg` — package manager minimal (Fase 6D-6)
     if raw_args.len() > 1 && raw_args[1] == "pkg" {
         process::exit(pkg::jalankan(&raw_args[2..]));
+    }
+
+    // Subcommand `march` — Web Notebook interaktif (.emlbn) (Fase 9H)
+    if raw_args.len() > 1 && raw_args[1] == "march" {
+        process::exit(march::jalankan(&raw_args[2..]));
     }
 
     // Subcommand `system` — info instalasi sistem (Fase 6I)

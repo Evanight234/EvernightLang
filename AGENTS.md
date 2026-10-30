@@ -1,15 +1,19 @@
 # AGENTS.md — Proyek Bahasa Pemrograman Indonesia
 
-## ATURAN WAJIB UNTUK OPENCODE
+## ATURAN WAJIB UNTUK OPENCODE / AGENT
+
+> **PUSAT OTAK & MEMORI PROYEK (OBSIDIAN VAULT)**:
+> Seluruh memori, alur berpikir, dan dokumen perencanaan tersimpan di dalam Obsidian Vault:
+> Folder `Evernight-language/00-Otak-Agent/` (terhubung melalui `Evernight-language/PETA-KONSEP.md`).
 
 **Setiap kali menerima prompt baru, WAJIB lakukan ini sebelum menjawab/mengerjakan:**
 
-0. **BACA KONTEKS DULU** — Di sesi baru/sesi hilang, baca `KONTEKS.md` **paling awal** (sebelum file lain) supaya tahu topik yang sedang/sudah dibahas dan tidak ada yang terlewat.
-1. **CEK** — Baca ulang file `RENCANA.md`, `PROGRES.md`, dan `KONSEP.md` di root proyek.
-2. **UPDATE KONTEKS** — Setiap prompt: perbarui bagian "Konteks Aktif" + log di `KONTEKS.md` (topik yang dibahas, keputusan kecil, langkah berikutnya).
-3. **SESUAIKAN** — Pastikan pekerjaan yang diminta user sesuai dengan fase & arah proyek di `RENCANA.md`. Jika user minta sesuatu yang berubah arah, perbarui `RENCANA.md` dulu (dengan konfirmasi user) sebelum mulai.
-4. **CATAT** — Setiap kali menyelesaikan satu task, langsung update `PROGRES.md`: centang task selesai (`[x]`), tambah catatan keputusan penting, tambah tanggal.
-5. **PERBARUI** — Jika ada keputusan desain baru (mis. keyword ditambah/diubah), tulis ke bagian yang relevan di `RENCANA.md`.
+0. **BACA KONTEKS DULU** — Di sesi baru/sesi hilang, baca `Evernight-language/00-Otak-Agent/KONTEKS.md` **paling awal** (sebelum file lain) supaya tahu topik yang sedang/sudah dibahas dan tidak ada yang terlewat.
+1. **CEK** — Baca ulang file `RENCANA.md`, `PROGRES.md`, dan `KONSEP.md` di folder `Evernight-language/00-Otak-Agent/`.
+2. **UPDATE KONTEKS** — Setiap prompt: perbarui bagian "Konteks Aktif" + log di `Evernight-language/00-Otak-Agent/KONTEKS.md` (topik yang dibahas, keputusan kecil, langkah berikutnya).
+3. **SESUAIKAN** — Pastikan pekerjaan yang diminta user sesuai dengan fase & arah proyek di `Evernight-language/00-Otak-Agent/RENCANA.md`. Jika user minta sesuatu yang berubah arah, perbarui `RENCANA.md` dulu (dengan konfirmasi user) sebelum mulai.
+4. **CATAT** — Setiap kali menyelesaikan satu task, langsung update `Evernight-language/00-Otak-Agent/PROGRES.md`: centang task selesai (`[x]`), tambah catatan keputusan penting, tambah tanggal.
+5. **PERBARUI** — Jika ada keputusan desain baru (mis. keyword ditambah/diubah), tulis ke bagian yang relevan di `Evernight-language/00-Otak-Agent/RENCANA.md`.
 
 Jangan pernah mengerjakan tanpa membaca `RENCANA.md` dulu. Jangan pernah lupa mengupdate `PROGRES.md` setelah ada kemajuan.
 
@@ -107,6 +111,16 @@ Bahasa pemrograman baru dengan karakteristik:
 - [ ] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, template issue/PR, peta jalan, galeri komunitas, tantangan pertama
 - [ ] Pengumuman rilis 1.0, survei pengguna, jadwal pemeliharaan
 
+### Fase 9: Ekosistem Sains Data & Machine Learning (Matra)
+- [x] **9A** — `matra.larik` (Tensor & Linear Algebra Engine, broadcasting, linalg, stats)
+- [x] **9B** — `matra.tabel` (DataFrame & CSV Parser)
+- [x] **9C** — `matra.grafik` (Visualisasi SVG mandiri & kurva diagnostik)
+- [x] **9D** — `matra.latih`, `matra.alur` & `matra.uji` (Suite training, cross-validation, SMOTE, Pipeline)
+- [x] **9E** — `matra.model` & `matra.metrik` (Klasifikasi/Regresi/KMeans, evaluasi metrik)
+- [x] **9F** — `matra.syaraf` & `matra.pelatih` (Autograd, Neural Network, optimizers, Pelatih otomatis)
+- [x] **9H** — Web Notebook "March" (Format berkas `.emlbn`, UI mirip Google Colab, akses berkas lokal 100%)
+- [ ] **9G** — Rilis GitHub & integrasi `update evernight system` (auto-update terminal dari GitHub)
+
 ---
 
 ## CONTOH SINTAKSIS TARGET
@@ -134,6 +148,10 @@ PERINGATAN: Baris 8 - Variabel 'x' tidak didefinisikan
 ---
 
 ## KEPUTUSAN PENTING (log)
+
+- 2026-10-28: **Web Notebook ML: "March" & Format `.emlbn`** (keputusan user). Penambahan alat bantu web notebook mirip Google Colab (Dark Mode) khusus ekosistem Evernight & Matra. Format berkas `.emlbn` (*Evernight Machine Learning Notebook*), akses dataset CSV 100% lokal dari harddisk laptop pengguna tanpa ketergantungan cloud, visualisasi tabel DataFrame HTML dan plot SVG vektor, serta runtime stateful interaktif. Spesifikasi lengkap di `MARCH.md` dan subfase 9H di `RENCANA.md`.
+
+- 2026-10-27: **Pustaka Sains Data & Machine Learning: `Matra`** (keputusan user). Visi all-in-one yang merangkum NumPy, Pandas, Matplotlib, Scikit-learn, dan PyTorch ke dalam satu pustaka terpadu berbahasa Indonesia via arsitektur dua lapis (Rust Engine + sintaks `.eve`). Spesifikasi lengkap di `MATRA.md` dan Fase 9 di `RENCANA.md`.
 
 - 2026-09-10: **Nama biner resmi `evernight`** (keputusan user). Asosiasi file Windows: `.eve` → ProGID `EvernightFile`, kolom Type Explorer = **"Evernight files"** (spek di RENCANA Fase 6 Addendum).
 

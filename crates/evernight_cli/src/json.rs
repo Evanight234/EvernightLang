@@ -16,6 +16,7 @@ pub enum Json {
     Objek(Vec<(String, Json)>),
 }
 
+#[allow(dead_code)]
 impl Json {
     /// Ambil nilai berdasarkan kunci (hanya untuk objek).
     pub fn ambil(&self, kunci: &str) -> Option<&Json> {
@@ -32,10 +33,84 @@ impl Json {
         }
     }
 
+    pub fn sebagai_angka(&self) -> Option<f64> {
+        match self {
+            Json::Angka(n) => Some(*n),
+            _ => None,
+        }
+    }
+
+    pub fn sebagai_bolean(&self) -> Option<bool> {
+        match self {
+            Json::Bolean(b) => Some(*b),
+            _ => None,
+        }
+    }
+
     pub fn sebagai_larik(&self) -> Option<&[Json]> {
         match self {
             Json::Larik(v) => Some(v),
             _ => None,
+        }
+    }
+
+    pub fn ambil_teks(&self, kunci: &str) -> Option<&str> {
+        self.ambil(kunci).and_then(|v| v.sebagai_teks())
+    }
+
+    pub fn ambil_angka(&self, kunci: &str) -> Option<f64> {
+        self.ambil(kunci).and_then(|v| v.sebagai_angka())
+    }
+
+    pub fn ambil_bolean(&self, kunci: &str) -> Option<bool> {
+        self.ambil(kunci).and_then(|v| v.sebagai_bolean())
+    }
+
+    pub fn ambil_larik(&self, kunci: &str) -> Option<&[Json]> {
+        self.ambil(kunci).and_then(|v| v.sebagai_larik())
+    }
+
+    /// Serialisasi kompak (tanpa spasi dan baris baru) untuk payload jaringan/API.
+    pub fn tulis_kompak(&self) -> String {
+        let mut keluar = String::new();
+        self.tulis_kompak_internal(&mut keluar);
+        keluar
+    }
+
+    fn tulis_kompak_internal(&self, keluar: &mut String) {
+        match self {
+            Json::Null => keluar.push_str("null"),
+            Json::Bolean(b) => keluar.push_str(if *b { "true" } else { "false" }),
+            Json::Angka(n) => {
+                if n.fract() == 0.0 {
+                    keluar.push_str(&format!("{}", *n as i64));
+                } else {
+                    keluar.push_str(&format!("{}", n));
+                }
+            }
+            Json::Teks(s) => keluar.push_str(&kutip(s)),
+            Json::Larik(v) => {
+                keluar.push('[');
+                for (i, item) in v.iter().enumerate() {
+                    item.tulis_kompak_internal(keluar);
+                    if i + 1 < v.len() {
+                        keluar.push(',');
+                    }
+                }
+                keluar.push(']');
+            }
+            Json::Objek(pasangan) => {
+                keluar.push('{');
+                for (i, (k, v)) in pasangan.iter().enumerate() {
+                    keluar.push_str(&kutip(k));
+                    keluar.push(':');
+                    v.tulis_kompak_internal(keluar);
+                    if i + 1 < pasangan.len() {
+                        keluar.push(',');
+                    }
+                }
+                keluar.push('}');
+            }
         }
     }
 

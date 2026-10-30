@@ -1,0 +1,65 @@
+# Contoh Penggunaan Matra: Tabel Data (DataFrame) & CSV
+impor "matra" sebagai mt
+
+cetak("=== 1. PEMBUATAN TABEL DATA (DATAFRAME) ===")
+variabel nasabah = mt.tabel({
+    "id": [101, 102, 103, 104, 105],
+    "nama": ["Budi Santoso", "Siti Aminah", "Agus Setiawan", "Dewi Lestari", "Eko Prasetyo"],
+    "kota": ["Jakarta", "Bandung", "Jakarta", "Surabaya", "Bandung"],
+    "usia": [28, 34, 45, 29, 38],
+    "skor_kredit": [720, 680, 750, 610, 710],
+    "penghasilan": [8500000, 12000000, 15000000, 7000000, 11000000]
+})
+
+cetak("Data Awal Nasabah:")
+cetak(nasabah)
+cetak("Bentuk Tabel [baris, kolom]:", nasabah.bentuk)
+cetak("Daftar Kolom:", nasabah.kolom)
+
+cetak("\n=== 2. SLICING & OPERASI KOLOM ===")
+cetak("Dua Nasabah Pertama (kepala):")
+cetak(nasabah.kepala(2))
+
+cetak("Memilih Fitur Tertentu (pilih_kolom):")
+variabel fitur_pilihan = nasabah.pilih_kolom(["nama", "kota", "skor_kredit"])
+cetak(fitur_pilihan)
+
+cetak("Membuang Kolom Identitas (kecuali):")
+variabel tanpa_id = nasabah.kecuali(["id"])
+cetak(tanpa_id)
+
+cetak("\n=== 3. PENGURUTAN & FILTERING ===")
+cetak("Urutkan Berdasarkan Penghasilan Menurun:")
+variabel urut_gaji = nasabah.urutkan("penghasilan", salah)
+cetak(urut_gaji.pilih_kolom(["nama", "penghasilan"]))
+
+cetak("\n=== 4. AGREGASI & GROUPBY (kelompokkan) ===")
+cetak("Rata-rata Skor & Penghasilan per Kota:")
+variabel per_kota = nasabah.kelompokkan("kota", "rata_rata")
+cetak(per_kota)
+
+cetak("Jumlah Nasabah per Kota:")
+variabel hitung_kota = nasabah.kelompokkan("kota", "hitung")
+cetak(hitung_kota)
+
+cetak("\n=== 5. RINGKASAN STATISTIK DESKRIPTIF ===")
+variabel ringkasan = nasabah.deskripsi()
+cetak(ringkasan)
+
+cetak("\n=== 6. INTEROPERABILITAS MACHINE LEARNING (ke_larik) ===")
+# Mengambil kolom numerik menjadi matriks 2D kontinu untuk ML
+variabel X = nasabah.ke_larik(["usia", "skor_kredit", "penghasilan"])
+cetak("Matriks Fitur X (MatraArray 2D):")
+cetak(X)
+cetak("Bentuk X:", X.bentuk)
+
+cetak("\n=== 7. I/O FILE CSV MANDIRI ===")
+variabel berkas_csv = "nasabah_demo.csv"
+nasabah.tulis_csv(berkas_csv)
+cetak("Tabel berhasil disimpan ke berkas CSV:", berkas_csv)
+
+variabel data_muat = mt.baca_csv(berkas_csv)
+cetak("Tabel berhasil dibaca kembali dari CSV:")
+cetak(data_muat.kepala(3))
+
+cetak("\n>>> Pengujian Matra Tabel & CSV Selesai & Berhasil! <<<")

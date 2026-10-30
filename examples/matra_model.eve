@@ -1,0 +1,154 @@
+# ==============================================================================
+# CONTOH PEMROGRAMAN EVERNIGHT: PUSTAKA SAINS DATA MATRA (FASE 9E)
+# Submodul: matra.model (ML Klasik) dan matra.metrik (Evaluasi Komprehensif)
+# ==============================================================================
+
+impor "matra" sebagai mt
+
+cetak("======================================================================")
+cetak("       EVERNIGHT MACHINE LEARNING ENGINE: MATRA MODEL & METRIK        ")
+cetak("======================================================================")
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 1. REGRESI LINEAR & EVALUASI REGRESI (MSE, RMSE, MAE, R2-Score)
+# ------------------------------------------------------------------------------
+cetak("=== 1. REGRESI LINEAR (PREDIKSI HARGA RUMAH) ===")
+
+# Fitur X: [Luas Tanah (m2/100), Jumlah Kamar]
+variabel X_rumah = mt.larik([
+    [0.6, 2.0],
+    [0.8, 3.0],
+    [1.0, 3.0],
+    [1.4, 4.0],
+    [1.8, 4.0],
+    [2.2, 5.0]
+])
+
+# Target y: Harga Rumah (ratus juta Rp)
+variabel y_rumah = mt.larik([270.0, 360.0, 400.0, 530.0, 610.0, 740.0])
+
+variabel model_reg = mt.model.regresi_linear(0.05, 1000)
+model_reg.latih(X_rumah, y_rumah)
+
+variabel y_pred_rumah = model_reg.prediksi(X_rumah)
+variabel r2 = mt.metrik.r2_skor(y_rumah, y_pred_rumah)
+variabel mse = mt.metrik.mse(y_rumah, y_pred_rumah)
+variabel rmse = mt.metrik.rmse(y_rumah, y_pred_rumah)
+
+cetak("Koefisien Model :", model_reg.koefisien)
+cetak("Intersep Model  :", model_reg.intersep)
+cetak("Nilai Aktual    :", y_rumah)
+cetak("Hasil Prediksi  :", y_pred_rumah)
+cetak("R2 Score        :", r2)
+cetak("MSE             :", mse)
+cetak("RMSE            :", rmse)
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 2. REGRESI LOGISTIK (KLASIFIKASI KREDIT PINJAMAN)
+# ------------------------------------------------------------------------------
+cetak("=== 2. REGRESI LOGISTIK (KLASIFIKASI KREDIT PINJAMAN) ===")
+
+# X: [Pendapatan/10jt, Rasio Hutang]
+variabel X_kredit = mt.larik([
+    [1.0, 0.8],
+    [1.2, 0.7],
+    [2.0, 0.5],
+    [2.5, 0.3],
+    [3.0, 0.2],
+    [3.5, 0.1]
+])
+
+# y: [0: Ditolak, 1: Diterima]
+variabel y_kredit = mt.larik([0.0, 0.0, 0.0, 1.0, 1.0, 1.0])
+
+variabel logreg = mt.model.regresi_logistik(0.1, 500)
+logreg.latih(X_kredit, y_kredit)
+
+variabel pred_kredit = logreg.prediksi(X_kredit)
+variabel proba_kredit = logreg.prediksi_probabilitas(X_kredit)
+
+cetak("Target Sebenarnya :", y_kredit)
+cetak("Prediksi Kelas    :", pred_kredit)
+cetak("Probabilitas      :", proba_kredit)
+cetak("Akurasi Model     :", mt.metrik.akurasi(y_kredit, pred_kredit))
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 3. K-NEAREST NEIGHBORS (KNN) & MATRIKS KONFUSI
+# ------------------------------------------------------------------------------
+cetak("=== 3. K-NEAREST NEIGHBORS (KNN) & EVALUASI LENGKAP ===")
+
+variabel X_knn = mt.larik([
+    [1.0, 1.0], [1.1, 1.2], [0.9, 0.8],
+    [5.0, 5.0], [5.2, 4.8], [4.9, 5.1]
+])
+variabel y_knn = mt.larik([0.0, 0.0, 0.0, 1.0, 1.0, 1.0])
+
+variabel knn = mt.model.knn(3, "euclidean")
+knn.latih(X_knn, y_knn)
+
+variabel titik_baru = mt.larik([[1.0, 0.9], [5.1, 5.0]])
+variabel hasil_knn = knn.prediksi(titik_baru)
+cetak("Prediksi Titik Baru :", hasil_knn)
+
+variabel pred_semua = knn.prediksi(X_knn)
+cetak("Matriks Konfusi:")
+cetak(mt.metrik.matriks_konfusi(y_knn, pred_semua))
+
+cetak("Laporan Klasifikasi Komprehensif:")
+cetak(mt.metrik.laporan_klasifikasi(y_knn, pred_semua))
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 4. POHON KEPUTUSAN & HUTAN ACAK (RANDOM FOREST)
+# ------------------------------------------------------------------------------
+cetak("=== 4. POHON KEPUTUSAN & HUTAN ACAK ===")
+
+variabel pohon = mt.model.pohon_keputusan(4, 1)
+pohon.latih(X_knn, y_knn)
+cetak("Skor Pohon Keputusan :", pohon.skor(X_knn, y_knn))
+
+variabel hutan = mt.model.hutan_acak(5, 3)
+hutan.latih(X_knn, y_knn)
+cetak("Skor Hutan Acak      :", hutan.skor(X_knn, y_knn))
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 5. K-MEANS CLUSTERING (UNSUPERVISED LEARNING)
+# ------------------------------------------------------------------------------
+cetak("=== 5. K-MEANS CLUSTERING ===")
+
+variabel data_klaster = mt.larik([
+    [1.0, 1.0], [1.2, 0.9], [0.8, 1.1],
+    [8.0, 8.0], [8.2, 7.9], [7.9, 8.1]
+])
+
+variabel km = mt.model.kmeans(2, 50)
+km.latih(data_klaster, mt.larik([]))
+
+cetak("Pusat Klaster (Centroids) :", km.pusat_klaster)
+cetak("Inersia Klaster           :", km.inersia)
+cetak("Label Klaster Prediksi    :", km.prediksi(data_klaster))
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 6. PIPELINE ANTI-DATA LEAKAGE (STANDARISASI + MODEL)
+# ------------------------------------------------------------------------------
+cetak("=== 6. PIPELINE KERJA TERPADU (STANDARISASI + REGRESI) ===")
+
+variabel pipa_ml = mt.alur.pipa([
+    mt.pra.standarisasi(),
+    mt.model.regresi_linear(0.05, 500)
+])
+
+pipa_ml.pasang(X_rumah, y_rumah)
+variabel pred_pipa = pipa_ml.prediksi(X_rumah)
+cetak("Prediksi via Pipeline Terintegrasi :", pred_pipa)
+cetak("R2 Score Pipeline                  :", mt.metrik.r2_skor(y_rumah, pred_pipa))
+
+cetak("")
+cetak("======================================================================")
+cetak("            FASE 9E MATRA MODEL & METRIK BERHASIL TOTAL!              ")
+cetak("======================================================================")

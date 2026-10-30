@@ -1,0 +1,45 @@
+# Contoh Penggunaan Matra: Larik & Aljabar Linier
+impor "matra" sebagai mt
+
+cetak("=== 1. PEMBUATAN LARIK ===")
+variabel v1 = mt.larik([1, 2, 3, 4, 5])
+variabel v2 = mt.rentang(10, 60, 10)
+cetak("Vektor 1:", v1)
+cetak("Vektor 2:", v2)
+
+cetak("\n=== 2. OPERASI VEKTOR & BROADCASTING ===")
+cetak("v1 + v2 =", v1 + v2)
+cetak("v1 * 10 =", v1 * 10)
+cetak("100 - v2 =", 100 - v2)
+
+cetak("\n=== 3. MATRIKS & ALJABAR LINIER ===")
+variabel M = mt.larik([[1, 2], [3, 4]])
+variabel I = mt.identitas(2)
+cetak("Matriks M (2x2):")
+cetak(M)
+cetak("Determinan M:", mt.determinan(M))
+variabel M_inv = mt.invers(M)
+cetak("Invers M:")
+cetak(M_inv)
+cetak("M * M_inv (Seharusnya Identitas):")
+cetak(mt.titik(M, M_inv))
+
+cetak("\n=== 4. STATISTIK ===")
+cetak("Jumlah v1:", v1.jumlah())
+cetak("Rata-rata v1:", v1.rata_rata())
+cetak("Min v1:", v1.min())
+cetak("Max v1:", v1.max())
+cetak("Deviasi Standar v1:", mt.deviasi_standar(v1))
+
+cetak("\n=== 5. PERUBAHAN BENTUK ===")
+variabel deret = mt.rentang(1, 7, 1)
+variabel matriks_2x3 = deret.ubah_bentuk([2, 3])
+cetak("Deret 1D:", deret)
+cetak("Bentuk setelah diubah ke [2, 3]:")
+cetak(matriks_2x3)
+cetak("Transposisi [3, 2]:")
+cetak(matriks_2x3.T)
+cetak("Ratakan kembali ke 1D:")
+cetak(matriks_2x3.ratakan())
+
+cetak("\n>>> Pengujian Matra Larik Selesai & Berhasil! <<<")

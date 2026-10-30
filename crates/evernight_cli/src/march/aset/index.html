@@ -1,0 +1,2464 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>March Notebook | EvernightLanguage</title>
+  <style>
+    /* =========================================================================
+       HALLMARK DESIGN TOKENS & DARK DISCIPLINE
+       ========================================================================= */
+    :root {
+      /* Surface Lightness Ladder (+3% step, dark charcoal, zero muddy gray) */
+      --surface-canvas: #111216;
+      --surface-panel: #16171d;
+      --surface-card: #1c1e24;
+      --surface-hover: #252830;
+      --surface-active: #2e323d;
+      --surface-overlay: rgba(17, 18, 22, 0.78);
+
+      /* Hairline Borders (Dark mode elevation is 1px hairline, not blurry drop shadows) */
+      --border-subtle: #242731;
+      --border-default: #2f3340;
+      --border-hover: #3e4454;
+      --border-strong: #4d5468;
+
+      /* Typography Contrast Hierarchy */
+      --text-primary: #f0f2f5;
+      --text-secondary: #9ba1b0;
+      --text-tertiary: #6b7282;
+      --text-inverse: #111216;
+
+      /* Evernight Brand Accents */
+      --accent: #7f77dd;
+      --accent-hover: #9189e8;
+      --accent-light: #c9b8ff;
+      --accent-dim: rgba(127, 119, 221, 0.16);
+      --accent-glow: rgba(127, 119, 221, 0.28);
+
+      /* Semantic Status Colors */
+      --status-success: #2fbfa8;
+      --status-success-dim: rgba(47, 191, 168, 0.14);
+      --status-warning: #f59e0b;
+      --status-warning-dim: rgba(245, 158, 11, 0.14);
+      --status-error: #ef4444;
+      --status-error-dim: rgba(239, 68, 68, 0.14);
+      --status-error-border: rgba(239, 68, 68, 0.3);
+
+      /* Typography Stack */
+      --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-code: "JetBrains Mono", "Cascadia Code", "Fira Code", Consolas, monospace;
+
+      /* Motion Variables (Hallmark: No transition: all, explicit easing and timing) */
+      --dur-micro: 120ms;
+      --dur-short: 180ms;
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* Focus Ring */
+      --ring-focus: 0 0 0 2px var(--accent);
+    }
+
+    /* =========================================================================
+       BASE & RESET (The Floor: overflow-x clip, antialiasing)
+       ========================================================================= */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      overflow-x: clip;
+      height: 100vh;
+      width: 100vw;
+      background-color: var(--surface-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 13.5px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Focus Visible Standard */
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 1px;
+    }
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
+
+    /* Hallmark: Prefers-reduced-motion fallback */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* =========================================================================
+       ICONS & UTILITIES
+       ========================================================================= */
+    .icon {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+      stroke-width: 1.85;
+      vertical-align: middle;
+    }
+    .icon-sm {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      stroke-width: 1.85;
+    }
+    .icon-xs {
+      width: 12px;
+      height: 12px;
+      flex-shrink: 0;
+      stroke-width: 2;
+    }
+
+    /* =========================================================================
+       HEADER NAVIGATION BAR
+       ========================================================================= */
+    header {
+      background: var(--surface-panel);
+      height: 48px;
+      min-height: 48px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      user-select: none;
+      flex-shrink: 0;
+      z-index: 20;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .march-brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text-primary);
+      text-decoration: none;
+      letter-spacing: -0.2px;
+    }
+
+    /* Brand Monogram Squircle */
+    .brand-badge {
+      background: var(--accent);
+      color: #ffffff;
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: -0.5px;
+      box-shadow: 0 2px 8px var(--accent-dim);
+    }
+
+    .notebook-title-input {
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 5px;
+      color: var(--text-primary);
+      font-size: 13.5px;
+      font-weight: 500;
+      padding: 4px 8px;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  border-color var(--dur-micro) var(--ease-out);
+    }
+    .notebook-title-input:hover {
+      border-color: var(--border-default);
+      background: var(--surface-card);
+    }
+    .notebook-title-input:focus {
+      border-color: var(--accent);
+      background: var(--surface-card);
+      box-shadow: 0 0 0 1px var(--accent-dim);
+    }
+
+    .header-center {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 12px;
+      color: var(--text-tertiary);
+    }
+
+    .save-indicator {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--status-success);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .kernel-status {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--surface-card);
+      padding: 4px 10px;
+      border-radius: 14px;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      border: 1px solid var(--border-subtle);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--status-success);
+    }
+    .status-dot.busy {
+      background: var(--status-warning);
+      animation: pulseBusy 1.2s infinite ease-in-out;
+    }
+    @keyframes pulseBusy {
+      0%, 100% { opacity: 0.4; transform: scale(0.9); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    /* =========================================================================
+       BUTTON STYLES (One primary filled, crisp hairlines, tabular nums)
+       ========================================================================= */
+    .btn {
+      background: var(--surface-card);
+      border: 1px solid var(--border-default);
+      color: var(--text-secondary);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-family: var(--font-ui);
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      user-select: none;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  border-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out),
+                  transform var(--dur-micro) var(--ease-out);
+    }
+    .btn:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
+    .btn:active {
+      background: var(--surface-active);
+      transform: scale(0.98);
+    }
+
+    /* PRIMARY FILLED BUTTON (Only one main call-to-action) */
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      font-weight: 600;
+      box-shadow: 0 2px 6px var(--accent-dim);
+    }
+    .btn-primary:hover {
+      background: var(--accent-hover);
+      border-color: var(--accent-hover);
+      color: #ffffff;
+    }
+    .btn-primary:active {
+      background: var(--accent);
+      transform: scale(0.98);
+    }
+
+    /* =========================================================================
+       TOOLBAR BAR
+       ========================================================================= */
+    .toolbar {
+      background: var(--surface-panel);
+      border-bottom: 1px solid var(--border-subtle);
+      height: 40px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      gap: 8px;
+      user-select: none;
+      flex-shrink: 0;
+    }
+
+    /* =========================================================================
+       MAIN LAYOUT & ACTIVITY RAIL (Colab Style)
+       ========================================================================= */
+    .main-layout {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 88px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ACTIVITY BAR (COLAB LEFT RAIL) */
+    .activity-bar {
+      width: 44px;
+      min-width: 44px;
+      background: var(--surface-panel);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 8px 0;
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .activity-btn {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  border-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out);
+    }
+    .activity-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+    .activity-btn.active {
+      color: var(--accent-light);
+      background: var(--accent-dim);
+      border-color: rgba(127, 119, 221, 0.4);
+    }
+
+    /* LEFT SIDEBAR DRAWER */
+    .sidebar {
+      width: 280px;
+      min-width: 280px;
+      background: var(--surface-panel);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: width var(--dur-short) var(--ease-in-out),
+                  min-width var(--dur-short) var(--ease-in-out),
+                  opacity var(--dur-micro) var(--ease-out);
+      overflow: hidden;
+      white-space: nowrap;
+      z-index: 5;
+    }
+    .sidebar.closed {
+      width: 0 !important;
+      min-width: 0 !important;
+      border-right: none;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .sidebar-header {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      color: var(--text-tertiary);
+      text-transform: uppercase;
+    }
+
+    .sidebar-actions {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+    }
+
+    .sidebar-action-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out);
+    }
+    .sidebar-action-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+    /* FOLDER LOCATION BAR */
+    .folder-bar {
+      padding: 8px 12px;
+      background: var(--surface-card);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .folder-info {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      flex: 1;
+    }
+    .folder-info:hover .folder-text {
+      color: var(--accent-light);
+    }
+
+    .folder-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--text-secondary);
+      font-family: var(--font-code);
+      font-size: 11px;
+      transition: color var(--dur-micro) var(--ease-out);
+    }
+
+    .btn-folder-change {
+      background: var(--surface-panel);
+      border: 1px solid var(--border-default);
+      color: var(--accent-light);
+      font-size: 11px;
+      font-weight: 500;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  border-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out);
+    }
+    .btn-folder-change:hover {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    /* FILE LIST */
+    .file-list {
+      list-style: none;
+      overflow-y: auto;
+      flex: 1;
+      padding: 6px 0;
+    }
+
+    .file-item {
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      cursor: pointer;
+      user-select: none;
+      border-left: 3px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out);
+    }
+    .file-item:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+    .file-item.active {
+      background: var(--accent-dim);
+      border-left-color: var(--accent);
+      color: var(--accent-light);
+      font-weight: 500;
+    }
+
+    .file-name {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-size {
+      font-size: 10.5px;
+      font-family: var(--font-code);
+      color: var(--text-tertiary);
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* =========================================================================
+       WORKSPACE NOTEBOOK AREA
+       ========================================================================= */
+    .notebook-container {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px 140px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      scroll-behavior: smooth;
+    }
+
+    .notebook-cells {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* =========================================================================
+       CELL CARDS (Hallmark Elevation: 1px hairline, lighter surface)
+       ========================================================================= */
+    .cell {
+      background: var(--surface-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      position: relative;
+      transition: border-color var(--dur-micro) var(--ease-out),
+                  background-color var(--dur-micro) var(--ease-out),
+                  box-shadow var(--dur-micro) var(--ease-out);
+    }
+    .cell:hover {
+      border-color: var(--border-default);
+    }
+    .cell:focus-within, .cell.focused {
+      border-color: var(--accent);
+      background: var(--surface-card);
+      box-shadow: 0 0 0 1px var(--accent-dim);
+    }
+
+    .cell-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 12px 2px 12px;
+    }
+
+    .cell-exec-label {
+      font-family: var(--font-code);
+      font-size: 11.5px;
+      color: var(--text-tertiary);
+      width: 36px;
+      font-variant-numeric: tabular-nums;
+      user-select: none;
+    }
+
+    .cell-actions {
+      display: flex;
+      gap: 3px;
+      opacity: 0.25;
+      transition: opacity var(--dur-micro) var(--ease-out);
+    }
+    .cell:hover .cell-actions, .cell:focus-within .cell-actions {
+      opacity: 1;
+    }
+
+    .cell-action-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 3px 5px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out);
+    }
+    .cell-action-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+    /* CELL BODY (INPUT) */
+    .cell-body {
+      display: flex;
+      align-items: flex-start;
+      padding: 2px 12px 12px 12px;
+      gap: 10px;
+    }
+
+    .run-btn-wrapper {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .btn-run {
+      background: var(--surface-panel);
+      border: 1px solid var(--border-default);
+      color: var(--accent-light);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  border-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out),
+                  transform var(--dur-micro) var(--ease-out);
+    }
+    .btn-run:hover {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #ffffff;
+      transform: scale(1.08);
+      box-shadow: 0 2px 8px var(--accent-dim);
+    }
+    .btn-run:active {
+      transform: scale(0.96);
+    }
+    .btn-run.loading {
+      background: var(--status-warning);
+      border-color: var(--status-warning);
+      color: #ffffff;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+
+    .editor-wrapper {
+      flex: 1;
+      position: relative;
+      min-height: 48px;
+      border-radius: 4px;
+    }
+
+    .code-highlight-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      font-family: var(--font-code);
+      font-size: 13.5px;
+      line-height: 1.55;
+      padding: 6px 8px;
+      margin: 0;
+      box-sizing: border-box;
+      white-space: pre;
+      overflow-x: auto;
+      overflow-y: hidden;
+      color: var(--text-primary);
+      tab-size: 4;
+      -moz-tab-size: 4;
+      border: 1px solid transparent;
+      z-index: 1;
+    }
+
+    .cell-editor {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      min-height: 48px;
+      background: transparent !important;
+      border: 1px solid transparent;
+      outline: none;
+      font-family: var(--font-code);
+      font-size: 13.5px;
+      line-height: 1.55;
+      padding: 6px 8px;
+      margin: 0;
+      box-sizing: border-box;
+      resize: none;
+      overflow-y: hidden;
+      white-space: pre;
+      tab-size: 4;
+      -moz-tab-size: 4;
+    }
+    .cell-editor.code-editor {
+      color: transparent !important;
+      caret-color: #f2a65a;
+    }
+    .cell-editor.code-editor::placeholder {
+      color: var(--text-tertiary);
+    }
+    .cell-editor.code-editor::selection {
+      background: rgba(127, 119, 221, 0.45);
+      color: transparent;
+    }
+    .cell-editor.md-editor {
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    /* =========================================================================
+       SYNTAX HIGHLIGHTING (Tema Nusantara Dark: Toska, Batik, Ungu)
+       ========================================================================= */
+    .tok-comment { color: #6a9955; font-style: italic; }
+    .tok-string  { color: #ce9178; }
+    .tok-number  { color: #b5cea8; }
+    .tok-kw-ctrl { color: #c586c0; font-weight: 500; }
+    .tok-kw-decl { color: #4ec9b0; font-weight: 500; }
+    .tok-kw-op   { color: #569cd6; }
+    .tok-kw-lit  { color: #569cd6; font-weight: 500; }
+    .tok-builtin { color: #dcdcaa; }
+    .tok-fn      { color: #dcdcaa; }
+    .tok-op      { color: #d4d4d4; }
+    .tok-punct   { color: #808080; }
+    .tok-ident   { color: #9cdcfe; }
+
+    /* =========================================================================
+       AUTOCOMPLETE INTELLISENSE POPUP (Refined Floating Card)
+       ========================================================================= */
+    .autocomplete-popup {
+      position: fixed;
+      z-index: 1000;
+      display: none;
+      width: 320px;
+      max-height: 240px;
+      background: var(--surface-panel);
+      border: 1px solid var(--border-default);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+      border-radius: 6px;
+      overflow-y: auto;
+      font-family: var(--font-code);
+      font-size: 12px;
+    }
+
+    .ac-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 5px 10px;
+      cursor: pointer;
+      user-select: none;
+      gap: 10px;
+      border-left: 2px solid transparent;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+    .ac-item:hover {
+      background: var(--surface-hover);
+    }
+    .ac-item.selected {
+      background: var(--accent-dim);
+      border-left-color: var(--accent);
+      color: #ffffff;
+    }
+
+    .ac-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ac-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 17px;
+      height: 17px;
+      font-size: 10px;
+      font-weight: 700;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+    .ac-icon-keyword { color: #569cd6; background: rgba(86, 156, 214, 0.16); }
+    .ac-icon-snippet { color: #ce9178; background: rgba(206, 145, 120, 0.16); }
+    .ac-icon-function { color: #dcdcaa; background: rgba(220, 220, 170, 0.16); }
+    .ac-icon-module { color: #4ec9b0; background: rgba(78, 201, 176, 0.16); }
+    .ac-icon-value { color: #4fc1ff; background: rgba(79, 193, 255, 0.16); }
+
+    .ac-label {
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+    .ac-item.selected .ac-label {
+      color: #ffffff;
+    }
+    .ac-detail {
+      color: var(--text-tertiary);
+      font-size: 11px;
+      white-space: nowrap;
+      font-style: italic;
+    }
+    .ac-item.selected .ac-detail {
+      color: var(--accent-light);
+    }
+
+    /* =========================================================================
+       MARKDOWN VIEW
+       ========================================================================= */
+    .markdown-view {
+      padding: 8px 16px 14px 44px;
+      line-height: 1.65;
+      cursor: pointer;
+    }
+    .markdown-view h1 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--text-primary);
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 4px;
+    }
+    .markdown-view h2 {
+      font-size: 16.5px;
+      font-weight: 600;
+      margin-top: 12px;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+    .markdown-view h3 {
+      font-size: 14.5px;
+      font-weight: 600;
+      margin-top: 10px;
+      margin-bottom: 4px;
+      color: var(--text-secondary);
+    }
+    .markdown-view p { margin-bottom: 8px; color: var(--text-secondary); }
+    .markdown-view ul { margin-left: 20px; margin-bottom: 8px; color: var(--text-secondary); }
+    .markdown-view code {
+      background: var(--surface-panel);
+      border: 1px solid var(--border-subtle);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: var(--font-code);
+      font-size: 12px;
+      color: var(--accent-light);
+    }
+
+    /* =========================================================================
+       CELL OUTPUT SECTION
+       ========================================================================= */
+    .cell-output {
+      border-top: 1px solid var(--border-subtle);
+      padding: 12px 16px;
+      font-family: var(--font-code);
+      font-size: 12.5px;
+      background: var(--surface-panel);
+      border-bottom-left-radius: 8px;
+      border-bottom-right-radius: 8px;
+      overflow-x: auto;
+    }
+
+    .output-text {
+      white-space: pre-wrap;
+      color: var(--text-primary);
+      line-height: 1.5;
+    }
+
+    /* Error Styling (Dark Discipline: Tinted box + hairline border) */
+    .output-error {
+      background: var(--status-error-dim);
+      color: #fca5a5;
+      border: 1px solid var(--status-error-border);
+      border-left: 3px solid var(--status-error);
+      padding: 10px 14px;
+      border-radius: 6px;
+      white-space: pre-wrap;
+      line-height: 1.45;
+      font-family: var(--font-code);
+      font-size: 12.5px;
+    }
+
+    /* TABLE DATAFRAME VIEW (Hallmark Clean Style) */
+    .dataframe-table-wrapper {
+      max-height: 380px;
+      overflow: auto;
+      border: 1px solid var(--border-subtle);
+      border-radius: 6px;
+      margin-top: 4px;
+    }
+    .dataframe-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-code);
+      font-size: 12px;
+      text-align: left;
+    }
+    .dataframe-table th {
+      background: var(--surface-card);
+      color: var(--text-secondary);
+      padding: 7px 12px;
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      border-bottom: 1px solid var(--border-default);
+      z-index: 1;
+    }
+    .dataframe-table td {
+      padding: 6px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      font-variant-numeric: tabular-nums;
+    }
+    .dataframe-table tr:nth-child(even) td {
+      background: rgba(255, 255, 255, 0.015);
+    }
+    .dataframe-table tr:hover td {
+      background: var(--surface-hover);
+    }
+    .dataframe-table .idx-col {
+      font-weight: 600;
+      color: var(--text-tertiary);
+      background: var(--surface-panel);
+      width: 44px;
+      text-align: center;
+    }
+    .dataframe-footer {
+      font-size: 11px;
+      color: var(--text-tertiary);
+      margin-top: 6px;
+      display: flex;
+      justify-content: flex-end;
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* SVG PLOT WRAPPER */
+    .svg-plot-wrapper {
+      display: flex;
+      justify-content: center;
+      padding: 12px 0;
+      background: var(--surface-panel);
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+    }
+    .svg-plot-wrapper svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* =========================================================================
+       CELL INSERTION DIVIDER
+       ========================================================================= */
+    .cell-divider {
+      height: 16px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--dur-micro) var(--ease-out);
+    }
+    .cell-divider:hover {
+      opacity: 1;
+    }
+    .divider-line {
+      position: absolute;
+      width: 100%;
+      height: 1px;
+      background: var(--border-subtle);
+      z-index: 0;
+    }
+    .divider-btns {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      gap: 8px;
+    }
+    .divider-btn {
+      background: var(--surface-card);
+      border: 1px solid var(--border-default);
+      color: var(--accent-light);
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-size: 11px;
+      font-weight: 500;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  border-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out);
+    }
+    .divider-btn:hover {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+      color: #ffffff;
+    }
+
+    /* =========================================================================
+       MODAL DIALOG (Folder Picker)
+       ========================================================================= */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: var(--surface-overlay);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      animation: modalFadeIn var(--dur-short) var(--ease-out);
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-default);
+      border-radius: 10px;
+      width: 100%;
+      max-width: 520px;
+      box-shadow: 0 20px 48px -12px rgba(0, 0, 0, 0.7);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalCardScale var(--dur-short) var(--ease-out);
+    }
+    @keyframes modalCardScale {
+      from { transform: scale(0.96); }
+      to { transform: scale(1); }
+    }
+
+    .modal-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface-panel);
+    }
+    .modal-close-btn {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-tertiary);
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--dur-micro) var(--ease-out),
+                  color var(--dur-micro) var(--ease-out);
+    }
+    .modal-close-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+    .modal-body {
+      padding: 18px;
+    }
+    .modal-input {
+      flex: 1;
+      background: var(--surface-panel);
+      border: 1px solid var(--border-default);
+      border-radius: 6px;
+      color: var(--text-primary);
+      font-size: 12.5px;
+      font-family: var(--font-code);
+      padding: 8px 12px;
+      outline: none;
+      transition: border-color var(--dur-micro) var(--ease-out),
+                  box-shadow var(--dur-micro) var(--ease-out);
+    }
+    .modal-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent-dim);
+    }
+
+    .modal-footer {
+      padding: 12px 18px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      background: var(--surface-panel);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================================
+       TOP HEADER
+       ========================================================================= -->
+  <header>
+    <div class="header-left">
+      <div class="march-brand">
+        <div class="brand-badge">M</div>
+        <span>March</span>
+      </div>
+      <input type="text" id="notebook-name" class="notebook-title-input" value="Notebook_March.emlbn" title="Klik untuk mengubah nama berkas notebook" />
+    </div>
+
+    <div class="header-center">
+      <div class="save-indicator">
+        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <span id="save-status">Disimpan ke disk lokal</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="kernel-status">
+        <div class="status-dot" id="status-dot"></div>
+        <span id="status-text">Kernel Siap</span>
+      </div>
+      <button class="btn" id="btn-save" title="Simpan Notebook (Ctrl+S)">
+        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+        <span>Simpan</span>
+      </button>
+      <button class="btn" id="btn-export" title="Ekspor seluruh kode notebook ke skrip .eve mandiri">
+        <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><polyline points="9 15 12 18 15 15"/></svg>
+        <span>Ekspor .eve</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- =========================================================================
+       ACTION TOOLBAR
+       ========================================================================= -->
+  <div class="toolbar">
+    <button class="btn" id="btn-add-code" title="Sisipkan sel kode baru">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>Kode</span>
+    </button>
+    <button class="btn" id="btn-add-text" title="Sisipkan sel teks penjelasan (Markdown)">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 7 4 4 20 4 20 7"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="8" y1="20" x2="16" y2="20"/></svg>
+      <span>Teks</span>
+    </button>
+    <button class="btn btn-primary" id="btn-run-all" title="Jalankan seluruh sel notebook secara berurutan">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 18 12 6 20 6 4"/></svg>
+      <span>Jalankan Semua</span>
+    </button>
+    <button class="btn" id="btn-reset-kernel" title="Muat ulang Kernel VM Evernight">
+      <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+      <span>Muat Ulang Kernel</span>
+    </button>
+  </div>
+
+  <!-- =========================================================================
+       MAIN BODY LAYOUT
+       ========================================================================= -->
+  <div class="main-layout">
+    <!-- ACTIVITY BAR (COLAB LEFT RAIL) -->
+    <aside class="activity-bar">
+      <button class="activity-btn active" id="activity-btn-files" title="Buka / Tutup Panel Berkas Notebook (.emlbn)">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      </button>
+    </aside>
+
+    <!-- LEFT SIDEBAR: FILE EXPLORER (DRAWER) -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span>NOTEBOOK MARCH</span>
+        <div class="sidebar-actions">
+          <button class="sidebar-action-btn" id="btn-new-notebook" title="Buat Notebook Baru">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </button>
+          <button class="sidebar-action-btn" id="btn-refresh-files" title="Segarkan Daftar Berkas">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+          </button>
+          <button class="sidebar-action-btn" id="btn-close-sidebar" title="Tutup Panel Berkas">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- FOLDER LOCATION BAR -->
+      <div class="folder-bar">
+        <div class="folder-info" id="folder-info-btn" title="Klik untuk mengganti folder penyimpanan">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <span class="folder-text" id="display-folder-name">memuat...</span>
+        </div>
+        <button class="btn-folder-change" id="btn-open-folder-modal" title="Pilih / Ganti Folder Penyimpanan">Ganti...</button>
+      </div>
+
+      <ul class="file-list" id="file-list">
+        <li style="padding: 12px 14px; font-size: 12px; color: var(--text-tertiary);">Memuat berkas...</li>
+      </ul>
+    </aside>
+
+    <!-- WORKSPACE NOTEBOOK AREA -->
+    <main class="notebook-container">
+      <div class="notebook-cells" id="cells-container">
+        <!-- Cells rendered dynamically via JavaScript -->
+      </div>
+    </main>
+  </div>
+
+  <!-- =========================================================================
+       MODAL DIALOG: GANTI FOLDER PENYIMPANAN
+       ========================================================================= -->
+  <div class="modal-overlay" id="modal-folder" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          <h3 style="margin: 0; font-size: 14px; font-weight: 600; color: var(--text-primary);">Folder Penyimpanan Notebook March</h3>
+        </div>
+        <button class="modal-close-btn" id="btn-close-modal" title="Tutup">
+          <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size: 13px; color: var(--text-secondary); margin: 0 0 14px 0; line-height: 1.5;">
+          Tentukan direktori folder di laptop Anda tempat berkas notebook <code>.emlbn</code> dibaca dan disimpan secara 100% lokal.
+        </p>
+        
+        <div style="margin-bottom: 12px;">
+          <label style="display: block; font-size: 12px; font-weight: 500; margin-bottom: 6px; color: var(--text-secondary);">
+            Path Direktori Folder:
+          </label>
+          <div style="display: flex; gap: 8px;">
+            <input type="text" id="modal-folder-input" class="modal-input" placeholder="Contoh: D:\MarchProjects" spellcheck="false" />
+            <button class="btn btn-primary" id="btn-browse-folder" style="white-space: nowrap;" title="Buka jendela pemilih folder Windows Explorer">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <span>Telusuri...</span>
+            </button>
+          </div>
+        </div>
+
+        <div style="font-size: 11.5px; color: var(--accent-light); line-height: 1.45; background: var(--accent-dim); padding: 8px 12px; border-radius: 6px;">
+          💡 Tips: Klik tombol <strong>Telusuri...</strong> untuk memilih folder secara visual lewat Windows Explorer, atau ketik alamat folder langsung ke kotak teks.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn" id="btn-cancel-folder">Batal</button>
+        <button class="btn btn-primary" id="btn-apply-folder">Terapkan Folder</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       AUTOCOMPLETE INTELLISENSE POPUP
+       ========================================================================= -->
+  <div id="autocomplete-popup" class="autocomplete-popup"></div>
+
+  <script>
+    // STATE DATA NOTEBOOK
+    let notebookData = {
+      march_versi: "1.0",
+      bahasa: "EvernightLanguage",
+      nama_notebook: "Notebook_March.emlbn",
+      waktu_dibuat: new Date().toISOString(),
+      waktu_diubah: new Date().toISOString(),
+      metadata: {
+        penulis: "Pengguna Evernight",
+        folder_kerja: ".",
+        kernel: { nama: "evernight", versi: "0.2.0" }
+      },
+      sel: []
+    };
+
+    // STATE AUTOCOMPLETE
+    let acState = {
+      visible: false,
+      candidates: [],
+      selectedIndex: 0,
+      activeCellIndex: -1,
+      textarea: null
+    };
+
+    // KAMUS AUTOCOMPLETE (Keywords, Snippets, Builtins, Matra)
+    const AC_ITEMS = [
+      // KATA KUNCI (Keywords)
+      { label: "jika", kind: "keyword", detail: "keyword", insertText: "jika " },
+      { label: "lainnya_jika", kind: "keyword", detail: "keyword", insertText: "lainnya_jika " },
+      { label: "lainnya", kind: "keyword", detail: "keyword", insertText: "lainnya " },
+      { label: "selama", kind: "keyword", detail: "keyword", insertText: "selama " },
+      { label: "untuk", kind: "keyword", detail: "keyword", insertText: "untuk " },
+      { label: "dari", kind: "keyword", detail: "keyword", insertText: "dari " },
+      { label: "sampai", kind: "keyword", detail: "keyword", insertText: "sampai " },
+      { label: "dalam", kind: "keyword", detail: "keyword", insertText: "dalam " },
+      { label: "berhenti", kind: "keyword", detail: "keyword", insertText: "berhenti" },
+      { label: "lanjut", kind: "keyword", detail: "keyword", insertText: "lanjut" },
+      { label: "kembali", kind: "keyword", detail: "keyword", insertText: "kembali " },
+      { label: "fungsi", kind: "keyword", detail: "keyword", insertText: "fungsi " },
+      { label: "variabel", kind: "keyword", detail: "keyword", insertText: "variabel " },
+      { label: "tetap", kind: "keyword", detail: "keyword", insertText: "tetap " },
+      { label: "impor", kind: "keyword", detail: "keyword", insertText: "impor \"" },
+      { label: "sebagai", kind: "keyword", detail: "keyword", insertText: "sebagai " },
+      { label: "hapus", kind: "keyword", detail: "keyword", insertText: "hapus " },
+      { label: "coba", kind: "keyword", detail: "keyword", insertText: "coba " },
+      { label: "tangkap", kind: "keyword", detail: "keyword", insertText: "tangkap " },
+      { label: "akhirnya", kind: "keyword", detail: "keyword", insertText: "akhirnya " },
+      { label: "lempar", kind: "keyword", detail: "keyword", insertText: "lempar(\"" },
+      { label: "pastikan", kind: "keyword", detail: "keyword", insertText: "pastikan(" },
+      { label: "cocok", kind: "keyword", detail: "keyword", insertText: "cocok " },
+      { label: "kasus", kind: "keyword", detail: "keyword", insertText: "kasus " },
+      { label: "bawaan", kind: "keyword", detail: "keyword", insertText: "bawaan " },
+      { label: "dan", kind: "keyword", detail: "operator", insertText: "dan " },
+      { label: "atau", kind: "keyword", detail: "operator", insertText: "atau " },
+      { label: "bukan", kind: "keyword", detail: "operator", insertText: "bukan " },
+      { label: "benar", kind: "value", detail: "bolean", insertText: "benar" },
+      { label: "salah", kind: "value", detail: "bolean", insertText: "salah" },
+      { label: "kosong", kind: "value", detail: "null", insertText: "kosong" },
+
+      // SNIPPETS (Persis VS Code / Antigravity)
+      { label: "jk", prefix: "jk", kind: "snippet", detail: "Jika", insertText: "jika ${1:kondisi} {\n    ${0}\n}" },
+      { label: "jkl", prefix: "jkl", kind: "snippet", detail: "Jika-Lainnya", insertText: "jika ${1:kondisi} {\n    ${2}\n} lainnya {\n    ${0}\n}" },
+      { label: "jklj", prefix: "jklj", kind: "snippet", detail: "Jika-LainnyaJika-Lain...", insertText: "jika ${1:kondisi} {\n    ${2}\n} lainnya_jika ${3:kondisi2} {\n    ${4}\n} lainnya {\n    ${0}\n}" },
+      { label: "fg", prefix: "fg", kind: "snippet", detail: "Fungsi", insertText: "fungsi ${1:nama}(${2:param}) {\n    ${0}\n}" },
+      { label: "fgutama", prefix: "fgutama", kind: "snippet", detail: "Fungsi utama", insertText: "fungsi utama() {\n    ${0}\n}" },
+      { label: "st", prefix: "st", kind: "snippet", detail: "Selama (while)", insertText: "selama ${1:kondisi} {\n    ${0}\n}" },
+      { label: "utk", prefix: "utk", kind: "snippet", detail: "Untuk dari-sampai", insertText: "untuk ${1:i} dari ${2:0} sampai ${3:10} {\n    ${0}\n}" },
+      { label: "utkd", prefix: "utkd", kind: "snippet", detail: "Untuk dalam (for-each)", insertText: "untuk ${1:item} dalam ${2:daftar} {\n    ${0}\n}" },
+      { label: "cb", prefix: "cb", kind: "snippet", detail: "Coba-Tangkap", insertText: "coba {\n    ${1}\n} tangkap (${2:e}) {\n    ${0}\n}" },
+      { label: "cba", prefix: "cba", kind: "snippet", detail: "Coba-Tangkap-Akhirnya", insertText: "coba {\n    ${1}\n} tangkap (${2:e}) {\n    ${3}\n} akhirnya {\n    ${0}\n}" },
+      { label: "ck", prefix: "ck", kind: "snippet", detail: "Cocok (match)", insertText: "cocok ${1:nilai} {\n    kasus ${2:pola} {\n        ${3}\n    }\n    bawaan {\n        ${0}\n    }\n}" },
+      { label: "vr", prefix: "vr", kind: "snippet", detail: "Variabel", insertText: "variabel ${1:nama} = ${0}" },
+      { label: "tp", prefix: "tp", kind: "snippet", detail: "Tetap (konstanta)", insertText: "tetap ${1:NAMA} = ${0}" },
+      { label: "imp", prefix: "imp", kind: "snippet", detail: "Impor", insertText: "impor \"${1:modul}\"" },
+      { label: "impas", prefix: "impas", kind: "snippet", detail: "Impor sebagai", insertText: "impor \"${1:modul}\" sebagai ${2:alias}" },
+      { label: "ct", prefix: "ct", kind: "snippet", detail: "Cetak", insertText: "cetak(${0})" },
+      { label: "km", prefix: "km", kind: "snippet", detail: "Kembali", insertText: "kembali ${0}" },
+      { label: "lm", prefix: "lm", kind: "snippet", detail: "Lempar", insertText: "lempar(\"${0:pesan error}\")" },
+      { label: "ps", prefix: "ps", kind: "snippet", detail: "Pastikan", insertText: "pastikan(${1:kondisi}, \"${0:pesan}\")" },
+      { label: "dft", prefix: "dft", kind: "snippet", detail: "Daftar kosong", insertText: "variabel ${1:nama} = []" },
+      { label: "kms", prefix: "kms", kind: "snippet", detail: "Kamus kosong", insertText: "variabel ${1:nama} = {}" },
+
+      // FUNGSI BAWAAN & MODUL STDLIB
+      { label: "cetak", kind: "function", detail: "builtin konsol", insertText: "cetak(${0})" },
+      { label: "baca", kind: "function", detail: "builtin konsol", insertText: "baca(${0})" },
+      { label: "baca_angka", kind: "function", detail: "builtin konsol", insertText: "baca_angka(${0})" },
+      { label: "bersihkan", kind: "function", detail: "builtin konsol", insertText: "bersihkan()" },
+      { label: "argumen", kind: "function", detail: "builtin CLI", insertText: "argumen()" },
+      { label: "besar", kind: "function", detail: "string", insertText: "besar(${1:teks})" },
+      { label: "kecil", kind: "function", detail: "string", insertText: "kecil(${1:teks})" },
+      { label: "bersih", kind: "function", detail: "string", insertText: "bersih(${1:teks})" },
+      { label: "potong", kind: "function", detail: "string", insertText: "potong(${1:teks}, ${2:awal}, ${3:akhir})" },
+      { label: "pecah", kind: "function", detail: "string", insertText: "pecah(${1:teks}, ${2:pemisah})" },
+      { label: "gabung", kind: "function", detail: "string", insertText: "gabung(${1:daftar}, ${2:pemisah})" },
+      { label: "ganti", kind: "function", detail: "string", insertText: "ganti(${1:teks}, ${2:dari}, ${3:ke})" },
+      { label: "mengandung", kind: "function", detail: "string", insertText: "mengandung(${1:teks}, ${2:sub})" },
+      { label: "format", kind: "function", detail: "string", insertText: "format(${1:pola}, ${2:nilai})" },
+      { label: "akar", kind: "function", detail: "matematika", insertText: "akar(${1:n})" },
+      { label: "pangkat", kind: "function", detail: "matematika", insertText: "pangkat(${1:basis}, ${2:eksponen})" },
+      { label: "mutlak", kind: "function", detail: "matematika", insertText: "mutlak(${1:n})" },
+      { label: "acak_antara", kind: "function", detail: "matematika", insertText: "acak_antara(${1:min}, ${2:max})" },
+      { label: "bulat_bawah", kind: "function", detail: "matematika", insertText: "bulat_bawah(${1:n})" },
+      { label: "bulat_atas", kind: "function", detail: "matematika", insertText: "bulat_atas(${1:n})" },
+      { label: "pembulatan", kind: "function", detail: "matematika", insertText: "pembulatan(${1:n})" },
+      { label: "tambah", kind: "function", detail: "daftar", insertText: "tambah(${1:daftar}, ${2:nilai})" },
+      { label: "sisip", kind: "function", detail: "daftar", insertText: "sisip(${1:daftar}, ${2:indeks}, ${3:nilai})" },
+      { label: "urutkan", kind: "function", detail: "daftar", insertText: "urutkan(${1:daftar})" },
+      { label: "balik", kind: "function", detail: "daftar", insertText: "balik(${1:daftar})" },
+      { label: "jumlah", kind: "function", detail: "daftar", insertText: "jumlah(${1:daftar})" },
+      { label: "rata_rata", kind: "function", detail: "daftar", insertText: "rata_rata(${1:daftar})" },
+      { label: "panjang", kind: "function", detail: "properti", insertText: "panjang" },
+      { label: "peta", kind: "function", detail: "daftar: map", insertText: "peta(${1:daftar}, ${2:fungsi})" },
+      { label: "saring", kind: "function", detail: "daftar: filter", insertText: "saring(${1:daftar}, ${2:fungsi})" },
+      { label: "lipat", kind: "function", detail: "daftar: reduce", insertText: "lipat(${1:daftar}, ${2:fungsi}, ${3:awal})" },
+      { label: "kunci", kind: "function", detail: "kamus", insertText: "kunci(${1:kamus})" },
+      { label: "nilai", kind: "function", detail: "kamus", insertText: "nilai(${1:kamus})" },
+      { label: "ada_kunci", kind: "function", detail: "kamus", insertText: "ada_kunci(${1:kamus}, ${2:kunci})" },
+      { label: "dapatkan", kind: "function", detail: "kamus", insertText: "dapatkan(${1:kamus}, ${2:kunci}, ${3:bawaan})" },
+      { label: "baca_file", kind: "function", detail: "sistem", insertText: "baca_file(${1:path})" },
+      { label: "tulis_file", kind: "function", detail: "sistem", insertText: "tulis_file(${1:path}, ${2:isi})" },
+      { label: "ada_file", kind: "function", detail: "sistem", insertText: "ada_file(${1:path})" },
+      { label: "waktu_sekarang", kind: "function", detail: "sistem", insertText: "waktu_sekarang()" },
+      { label: "tunda", kind: "function", detail: "sistem", insertText: "tunda(${1:ms})" },
+      { label: "adalah_angka", kind: "function", detail: "utilitas", insertText: "adalah_angka(${1:nilai})" },
+      { label: "adalah_teks", kind: "function", detail: "utilitas", insertText: "adalah_teks(${1:nilai})" },
+      { label: "adalah_daftar", kind: "function", detail: "utilitas", insertText: "adalah_daftar(${1:nilai})" },
+      { label: "adalah_kamus", kind: "function", detail: "utilitas", insertText: "adalah_kamus(${1:nilai})" },
+      { label: "salin", kind: "function", detail: "utilitas", insertText: "salin(${1:nilai})" },
+      { label: "angka", kind: "function", detail: "utilitas", insertText: "angka(${1:nilai})" },
+      { label: "teks", kind: "function", detail: "utilitas", insertText: "teks(${1:nilai})" },
+      { label: "ke_boolean", kind: "function", detail: "utilitas", insertText: "ke_boolean(${1:nilai})" },
+
+      // EKOSISTEM SAINS DATA & ML MATRA
+      { label: "matra", kind: "module", detail: "modul ML", insertText: "matra" },
+      { label: "mt", kind: "module", detail: "modul ML (alias)", insertText: "mt" },
+      { label: "mt.larik", kind: "function", detail: "Matra: Tensor / Larik", insertText: "mt.larik(${1:data})" },
+      { label: "mt.tabel", kind: "function", detail: "Matra: DataFrame", insertText: "mt.tabel(${1:data})" },
+      { label: "mt.baca_csv", kind: "function", detail: "Matra: Baca CSV", insertText: "mt.baca_csv(\"${1:berkas.csv}\")" },
+      { label: "mt.grafik", kind: "module", detail: "Matra: Visualisasi SVG", insertText: "mt.grafik" },
+      { label: "mt.latih", kind: "module", detail: "Matra: Split & CV", insertText: "mt.latih" },
+      { label: "mt.alur", kind: "module", detail: "Matra: Pipeline PipaKerja", insertText: "mt.alur" },
+      { label: "mt.model", kind: "module", detail: "Matra: Model ML", insertText: "mt.model" },
+      { label: "mt.metrik", kind: "module", detail: "Matra: Evaluasi Skor", insertText: "mt.metrik" },
+      { label: "mt.syaraf", kind: "module", detail: "Matra: Deep Learning", insertText: "mt.syaraf" },
+      { label: "mt.pelatih", kind: "module", detail: "Matra: Trainer Jaringan", insertText: "mt.pelatih" },
+    ];
+
+    // TOKENIZER & SYNTAX HIGHLIGHTER EVERNIGHT (Tema Nusantara / Dark Discipline)
+    function highlightEveCode(code) {
+      if (!code) return "&nbsp;";
+      const tokenRegex = /(#\[\[[\s\S]*?\]\]|#[^\n]*)|("(?:\\.|[^"\\])*")|(\b\d+(?:\.\d+)?\b)|(\b(?:jika|lainnya_jika|lainnya|selama|untuk|dari|sampai|dalam|berhenti|lanjut|kembali|cocok|kasus|bawaan)\b)|(\b(?:fungsi|variabel|tetap|impor|sebagai|hapus|coba|tangkap|akhirnya|lempar|pastikan)\b)|(\b(?:dan|atau|bukan)\b)|(\b(?:benar|salah|kosong)\b)|(\b(?:mt|matra|cetak|baca|baca_angka|bersihkan|argumen|besar|kecil|bersih|potong|pecah|gabung|ganti|mengandung|format|akar|pangkat|mutlak|acak_antara|bulat_bawah|bulat_atas|pembulatan|tambah|sisip|urutkan|balik|panjang|peta|saring|lipat|kunci|nilai|ada_kunci|dapatkan|baca_file|tulis_file|ada_file|waktu_sekarang|tunda|adalah_angka|adalah_teks|adalah_daftar|adalah_kamus|salin|angka|teks|ke_boolean)\b)|(\b[a-zA-Z_][a-zA-Z0-9_]*(?=\s*\())|([+\-*/%!=<>]=?)|([{}()[\],.:;])|([a-zA-Z_][a-zA-Z0-9_]*)|(\s+)|(.)/g;
+
+      let html = "";
+      let match;
+      while ((match = tokenRegex.exec(code)) !== null) {
+        const [full, comment, string, number, kwCtrl, kwDecl, kwOp, kwLit, builtin, fnCall, op, punct, ident, spaces, other] = match;
+        if (comment) {
+          html += `<span class="tok-comment">${escapeHtml(comment)}</span>`;
+        } else if (string) {
+          html += `<span class="tok-string">${escapeHtml(string)}</span>`;
+        } else if (number) {
+          html += `<span class="tok-number">${escapeHtml(number)}</span>`;
+        } else if (kwCtrl) {
+          html += `<span class="tok-kw-ctrl">${escapeHtml(kwCtrl)}</span>`;
+        } else if (kwDecl) {
+          html += `<span class="tok-kw-decl">${escapeHtml(kwDecl)}</span>`;
+        } else if (kwOp) {
+          html += `<span class="tok-kw-op">${escapeHtml(kwOp)}</span>`;
+        } else if (kwLit) {
+          html += `<span class="tok-kw-lit">${escapeHtml(kwLit)}</span>`;
+        } else if (builtin) {
+          html += `<span class="tok-builtin">${escapeHtml(builtin)}</span>`;
+        } else if (fnCall) {
+          html += `<span class="tok-fn">${escapeHtml(fnCall)}</span>`;
+        } else if (op) {
+          html += `<span class="tok-op">${escapeHtml(op)}</span>`;
+        } else if (punct) {
+          html += `<span class="tok-punct">${escapeHtml(punct)}</span>`;
+        } else if (ident) {
+          html += `<span class="tok-ident">${escapeHtml(ident)}</span>`;
+        } else if (spaces) {
+          html += escapeHtml(spaces);
+        } else if (other) {
+          html += escapeHtml(other);
+        }
+      }
+      if (code.endsWith("\n")) {
+        html += " ";
+      }
+      return html;
+    }
+
+    // FUNGSI AUTOCOMPLETE & POSISI KURSOR
+    function checkAutocomplete(textarea, cellIndex) {
+      const pos = textarea.selectionStart;
+      const textBefore = textarea.value.substring(0, pos);
+      const match = textBefore.match(/([a-zA-Z_][a-zA-Z0-9_]*)$/);
+
+      if (!match) {
+        hideAutocomplete();
+        return;
+      }
+
+      const prefix = match[1];
+      const p = prefix.toLowerCase();
+
+      const candidates = [];
+      for (const item of AC_ITEMS) {
+        let score = 0;
+        const lbl = item.label.toLowerCase();
+        const pfx = (item.prefix || "").toLowerCase();
+
+        if (lbl === p || pfx === p) {
+          score = 100;
+        } else if (lbl.startsWith(p)) {
+          score = 70 + (10 / lbl.length);
+        } else if (pfx.startsWith(p)) {
+          score = 65 + (10 / pfx.length);
+        } else if (lbl.includes(p)) {
+          score = 30 + (5 / lbl.length);
+        }
+
+        if (score > 0) {
+          if (item.kind === "keyword") score += 5;
+          candidates.push({ ...item, score });
+        }
+      }
+
+      candidates.sort((a, b) => b.score - a.score);
+      const topCandidates = candidates.slice(0, 8);
+
+      if (topCandidates.length === 0) {
+        hideAutocomplete();
+        return;
+      }
+
+      acState.visible = true;
+      acState.candidates = topCandidates;
+      acState.selectedIndex = 0;
+      acState.activeCellIndex = cellIndex;
+      acState.textarea = textarea;
+
+      renderAutocompletePopup();
+      const coords = getCaretCoordinates(textarea, pos);
+      positionAutocompletePopup(textarea, coords);
+    }
+
+    function renderAutocompletePopup() {
+      const popup = document.getElementById("autocomplete-popup");
+      if (!popup) return;
+      popup.innerHTML = "";
+      acState.candidates.forEach((cand, idx) => {
+        const itemEl = document.createElement("div");
+        itemEl.className = "ac-item" + (idx === acState.selectedIndex ? " selected" : "");
+
+        let iconClass = "ac-icon-keyword";
+        let iconText = "k";
+        if (cand.kind === "snippet") {
+          iconClass = "ac-icon-snippet";
+          iconText = "⧉";
+        } else if (cand.kind === "function") {
+          iconClass = "ac-icon-function";
+          iconText = "λ";
+        } else if (cand.kind === "module") {
+          iconClass = "ac-icon-module";
+          iconText = "M";
+        } else if (cand.kind === "value") {
+          iconClass = "ac-icon-value";
+          iconText = "v";
+        }
+
+        itemEl.innerHTML = `
+          <div class="ac-item-left">
+            <span class="ac-icon ${iconClass}">${iconText}</span>
+            <span class="ac-label">${escapeHtml(cand.label)}</span>
+          </div>
+          <span class="ac-detail">${escapeHtml(cand.detail || "")}</span>
+        `;
+
+        itemEl.onmousedown = (e) => {
+          e.preventDefault();
+          applyAutocomplete(cand, acState.textarea, acState.activeCellIndex);
+        };
+
+        popup.appendChild(itemEl);
+      });
+      popup.style.display = "block";
+    }
+
+    function updateAcSelection() {
+      const popup = document.getElementById("autocomplete-popup");
+      if (!popup) return;
+      const items = popup.querySelectorAll(".ac-item");
+      items.forEach((it, idx) => {
+        if (idx === acState.selectedIndex) {
+          it.classList.add("selected");
+          it.scrollIntoView({ block: "nearest" });
+        } else {
+          it.classList.remove("selected");
+        }
+      });
+    }
+
+    function hideAutocomplete() {
+      acState.visible = false;
+      acState.candidates = [];
+      const popup = document.getElementById("autocomplete-popup");
+      if (popup) popup.style.display = "none";
+    }
+
+    function applyAutocomplete(item, textarea, cellIndex) {
+      const cursorPos = textarea.selectionStart;
+      const textBefore = textarea.value.substring(0, cursorPos);
+      const match = textBefore.match(/([a-zA-Z_][a-zA-Z0-9_]*)$/);
+      const prefixLen = match ? match[1].length : 0;
+      const startReplace = cursorPos - prefixLen;
+      const textAfter = textarea.value.substring(cursorPos);
+
+      let insert = item.insertText || item.label;
+      let selectOffset = null;
+      let selectLen = 0;
+
+      if (insert.includes("${")) {
+        const phMatch = insert.match(/\$\{\d+:?([^}]*)\}/);
+        if (phMatch) {
+          const phIndex = phMatch.index;
+          const phText = phMatch[1] || "";
+          const cleanInsert = insert.replace(/\$\{\d+:?([^}]*)\}/g, "$1");
+          selectOffset = startReplace + phIndex;
+          selectLen = phText.length;
+          insert = cleanInsert;
+        } else {
+          insert = insert.replace(/\$\{\d+:?([^}]*)\}/g, "$1");
+        }
+      }
+
+      textarea.value = textarea.value.substring(0, startReplace) + insert + textAfter;
+      notebookData.sel[cellIndex].sumber = textarea.value;
+
+      const hl = document.getElementById(`highlight-${notebookData.sel[cellIndex].id}`);
+      if (hl) hl.innerHTML = highlightEveCode(textarea.value);
+      autoResizeTextarea(textarea, hl);
+
+      if (selectOffset !== null) {
+        textarea.selectionStart = selectOffset;
+        textarea.selectionEnd = selectOffset + selectLen;
+      } else {
+        const newPos = startReplace + insert.length;
+        textarea.selectionStart = textarea.selectionEnd = newPos;
+      }
+
+      textarea.focus();
+      hideAutocomplete();
+    }
+
+    function getCaretCoordinates(textarea, position) {
+      let mirror = document.getElementById("ac-caret-mirror");
+      if (!mirror) {
+        mirror = document.createElement("div");
+        mirror.id = "ac-caret-mirror";
+        document.body.appendChild(mirror);
+      }
+      const style = window.getComputedStyle(textarea);
+      mirror.style.position = "fixed";
+      mirror.style.top = "-9999px";
+      mirror.style.left = "-9999px";
+      mirror.style.visibility = "hidden";
+      mirror.style.whiteSpace = "pre";
+      mirror.style.fontFamily = style.fontFamily;
+      mirror.style.fontSize = style.fontSize;
+      mirror.style.lineHeight = style.lineHeight;
+      mirror.style.padding = style.padding;
+      mirror.style.boxSizing = style.boxSizing;
+      mirror.style.tabSize = style.tabSize;
+
+      const textBefore = textarea.value.substring(0, position);
+      mirror.textContent = textBefore;
+      const marker = document.createElement("span");
+      marker.textContent = "|";
+      mirror.appendChild(marker);
+
+      const taRect = textarea.getBoundingClientRect();
+      const markerRect = marker.getBoundingClientRect();
+      const mirrorRect = mirror.getBoundingClientRect();
+
+      const leftOffset = markerRect.left - mirrorRect.left;
+      const topOffset = markerRect.top - mirrorRect.top;
+
+      let left = taRect.left + leftOffset - textarea.scrollLeft;
+      let top = taRect.top + topOffset - textarea.scrollTop;
+      const lineHeight = parseFloat(style.lineHeight) || 20;
+
+      return { top, left, height: lineHeight };
+    }
+
+    function positionAutocompletePopup(textarea, coords) {
+      const popup = document.getElementById("autocomplete-popup");
+      if (!popup) return;
+      const popupHeight = 220;
+      const popupWidth = 320;
+      let top = coords.top + coords.height + 4;
+      let left = coords.left;
+
+      if (top + popupHeight > window.innerHeight) {
+        top = Math.max(10, coords.top - popupHeight - 4);
+      }
+      if (left + popupWidth > window.innerWidth) {
+        left = Math.max(10, window.innerWidth - popupWidth - 16);
+      }
+
+      popup.style.top = `${top}px`;
+      popup.style.left = `${left}px`;
+    }
+
+    let activeCellIndex = 0;
+    const cellsContainer = document.getElementById("cells-container");
+    const notebookNameInput = document.getElementById("notebook-name");
+    const saveStatus = document.getElementById("save-status");
+    const statusDot = document.getElementById("status-dot");
+    const statusText = document.getElementById("status-text");
+    const fileListEl = document.getElementById("file-list");
+    const sidebarEl = document.getElementById("sidebar");
+
+    // INIT NOTEBOOK (Paralel, Non-blocking)
+    async function init() {
+      setupEventListeners();
+      await Promise.all([
+        loadNotebookFromServer(),
+        loadLocalFiles()
+      ]);
+    }
+
+    async function loadNotebookFromServer() {
+      try {
+        const res = await fetch("/api/notebook");
+        if (res.ok) {
+          const data = await res.json();
+          notebookData = data;
+          notebookNameInput.value = notebookData.nama_notebook || "Notebook_March.emlbn";
+          renderAllCells();
+        }
+      } catch (err) {
+        console.error("Gagal memuat notebook:", err);
+      }
+    }
+
+    let currentWorkingFolder = "";
+
+    async function loadLocalFiles() {
+      try {
+        const res = await fetch("/api/berkas");
+        if (res.ok) {
+          const data = await res.json();
+          if (data.folder) {
+            updateFolderDisplay(data.folder);
+          }
+          renderFileList(data.berkas || []);
+        }
+      } catch (err) {
+        console.error("Gagal memuat berkas lokal:", err);
+      }
+    }
+
+    function updateFolderDisplay(folderPath) {
+      currentWorkingFolder = folderPath;
+      const folderTextEl = document.getElementById("display-folder-name");
+      if (folderTextEl) {
+        const cleanPath = folderPath.replace(/\\/g, "/");
+        const parts = cleanPath.split("/").filter(p => p.length > 0);
+        const lastPart = parts.pop() || folderPath;
+        folderTextEl.innerText = lastPart;
+        folderTextEl.parentElement.title = "Folder Aktif: " + folderPath + "\n(Klik untuk mengganti folder)";
+      }
+    }
+
+    function openFolderModal() {
+      const modal = document.getElementById("modal-folder");
+      const input = document.getElementById("modal-folder-input");
+      input.value = currentWorkingFolder;
+      modal.style.display = "flex";
+      setTimeout(() => input.focus(), 50);
+    }
+
+    function closeFolderModal() {
+      document.getElementById("modal-folder").style.display = "none";
+    }
+
+    async function applyFolder(folderPath) {
+      if (!folderPath || !folderPath.trim()) return;
+      setKernelBusy(true);
+      try {
+        const res = await fetch("/api/folder/ganti", {
+          method: "POST",
+          headers: { "Content-Type": "application/json; charset=utf-8" },
+          body: JSON.stringify({ folder: folderPath.trim() })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          updateFolderDisplay(data.folder);
+          renderFileList(data.berkas_data?.berkas || []);
+          closeFolderModal();
+          saveStatus.innerText = "Folder diubah ke: " + data.folder;
+        } else {
+          const err = await res.json();
+          alert("Gagal mengubah folder:\n" + (err.pesan || "Kesalahan tidak diketahui"));
+        }
+      } catch (err) {
+        alert("Gagal mengubah folder: " + err);
+      } finally {
+        setKernelBusy(false);
+      }
+    }
+
+    async function browseNativeFolder() {
+      setKernelBusy(true);
+      try {
+        const res = await fetch("/api/folder/telusuri", {
+          method: "POST",
+          headers: { "Content-Type": "application/json; charset=utf-8" }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.sukses && data.folder) {
+            updateFolderDisplay(data.folder);
+            renderFileList(data.berkas_data?.berkas || []);
+            closeFolderModal();
+            saveStatus.innerText = "Folder aktif: " + data.folder;
+          }
+        }
+      } catch (err) {
+        console.error("Gagal telusuri folder:", err);
+      } finally {
+        setKernelBusy(false);
+      }
+    }
+
+    function renderFileList(files) {
+      fileListEl.innerHTML = "";
+      if (files.length === 0) {
+        fileListEl.innerHTML = `
+          <li style="padding: 16px 14px; font-size: 12px; color: var(--text-tertiary); text-align: center; line-height: 1.5;">
+            Tidak ada berkas .emlbn di folder ini.<br>
+            <button id="link-create-first" class="btn btn-primary" style="margin-top: 10px; font-size: 11px; padding: 4px 10px;">
+              <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Buat Notebook Baru</span>
+            </button>
+          </li>`;
+        const linkCreate = document.getElementById("link-create-first");
+        if (linkCreate) linkCreate.onclick = () => promptCreateNewNotebook();
+        return;
+      }
+
+      files.forEach(f => {
+        const li = document.createElement("li");
+        const isActive = f.nama === notebookData.nama_notebook;
+        li.className = "file-item" + (isActive ? " active" : "");
+        li.innerHTML = `
+          <div class="file-name" title="${f.nama}">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="13" y2="11"/></svg>
+            <span style="overflow: hidden; text-overflow: ellipsis;">${escapeHtml(f.nama)}</span>
+          </div>
+          <span class="file-size">${formatBytes(f.ukuran)}</span>
+        `;
+        li.onclick = () => {
+          if (isActive) return;
+          bukaNotebook(f.nama);
+        };
+        fileListEl.appendChild(li);
+      });
+    }
+
+    async function bukaNotebook(nama) {
+      if (!confirm(`Buka notebook "${nama}"?\nPerubahan pada notebook saat ini yang belum tersimpan akan digantikan.`)) {
+        return;
+      }
+      setKernelBusy(true);
+      try {
+        const res = await fetch("/api/notebook/buka", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nama })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          notebookData = data;
+          notebookNameInput.value = notebookData.nama_notebook || nama;
+          activeCellIndex = 0;
+          renderAllCells();
+          await loadLocalFiles();
+          markSaved();
+        } else {
+          alert("Gagal membuka notebook " + nama);
+        }
+      } catch (err) {
+        alert("Terjadi kesalahan saat membuka notebook: " + err);
+      } finally {
+        setKernelBusy(false);
+      }
+    }
+
+    async function promptCreateNewNotebook() {
+      const nama = prompt("Masukkan nama notebook baru (.emlbn):", "Notebook_Baru.emlbn");
+      if (!nama || !nama.trim()) return;
+      setKernelBusy(true);
+      try {
+        const res = await fetch("/api/notebook/baru", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ nama: nama.trim() })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          notebookData = data;
+          notebookNameInput.value = notebookData.nama_notebook || nama;
+          activeCellIndex = 0;
+          renderAllCells();
+          await loadLocalFiles();
+          markSaved();
+        } else {
+          alert("Gagal membuat notebook baru");
+        }
+      } catch (err) {
+        alert("Terjadi kesalahan saat membuat notebook: " + err);
+      } finally {
+        setKernelBusy(false);
+      }
+    }
+
+    function formatBytes(bytes) {
+      if (!bytes || bytes === 0) return "0 B";
+      const k = 1024;
+      const sizes = ["B", "KB", "MB"];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + " " + sizes[i];
+    }
+
+    function renderAllCells() {
+      cellsContainer.innerHTML = "";
+      notebookData.sel.forEach((cell, index) => {
+        renderCellDivider(index);
+        renderCell(cell, index);
+      });
+      renderCellDivider(notebookData.sel.length);
+    }
+
+    function renderCellDivider(index) {
+      const divider = document.createElement("div");
+      divider.className = "cell-divider";
+      divider.innerHTML = `
+        <div class="divider-line"></div>
+        <div class="divider-btns">
+          <button class="divider-btn" onclick="addCell('kode', ${index})">
+            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Kode</span>
+          </button>
+          <button class="divider-btn" onclick="addCell('markdown', ${index})">
+            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="4 7 4 4 20 4 20 7"/><line x1="12" y1="4" x2="12" y2="20"/><line x1="8" y1="20" x2="16" y2="20"/></svg>
+            <span>Teks</span>
+          </button>
+        </div>
+      `;
+      cellsContainer.appendChild(divider);
+    }
+
+    function renderCell(cell, index) {
+      const cellEl = document.createElement("div");
+      cellEl.className = "cell" + (index === activeCellIndex ? " focused" : "");
+      cellEl.id = `cell-${cell.id}`;
+
+      // TOP BAR
+      const topBar = document.createElement("div");
+      topBar.className = "cell-top-bar";
+      const execLabel = cell.tipe === "kode" 
+        ? `[${cell.urutan_eksekusi !== null && cell.urutan_eksekusi !== undefined ? cell.urutan_eksekusi : " "}]`
+        : "";
+      topBar.innerHTML = `
+        <div class="cell-exec-label">${execLabel}</div>
+        <div class="cell-actions">
+          <button class="cell-action-btn" onclick="moveCell(${index}, -1)" title="Geser ke Atas">
+            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="18 15 12 9 6 15"/></svg>
+          </button>
+          <button class="cell-action-btn" onclick="moveCell(${index}, 1)" title="Geser ke Bawah">
+            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <button class="cell-action-btn" onclick="deleteCell(${index})" title="Hapus Sel">
+            <svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>
+          </button>
+        </div>
+      `;
+      cellEl.appendChild(topBar);
+
+      // CELL CONTENT
+      if (cell.tipe === "markdown") {
+        const mdView = document.createElement("div");
+        mdView.className = "markdown-view";
+        mdView.innerHTML = renderSimpleMarkdown(cell.sumber);
+        mdView.ondblclick = () => switchToMarkdownEditor(cell, mdView, cellEl);
+        cellEl.appendChild(mdView);
+      } else {
+        const bodyEl = document.createElement("div");
+        bodyEl.className = "cell-body";
+
+        // RUN BUTTON (Crisp SVG Play)
+        const runWrapper = document.createElement("div");
+        runWrapper.className = "run-btn-wrapper";
+        runWrapper.innerHTML = `
+          <button class="btn-run" id="run-btn-${cell.id}" title="Jalankan Sel (Shift+Enter)">
+            <svg class="icon-xs" style="margin-left: 1px;" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 19 12 6 20 6 4"/></svg>
+          </button>
+        `;
+        runWrapper.querySelector(".btn-run").onclick = () => runCell(index);
+        bodyEl.appendChild(runWrapper);
+
+        // EDITOR BERLAPIS (DUAL-LAYER: SYNTAX HIGHLIGHTING + NATIVE TEXTAREA)
+        const editorWrapper = document.createElement("div");
+        editorWrapper.className = "editor-wrapper";
+
+        const highlightDiv = document.createElement("div");
+        highlightDiv.className = "code-highlight-layer";
+        highlightDiv.id = `highlight-${cell.id}`;
+        highlightDiv.innerHTML = highlightEveCode(cell.sumber);
+
+        const textarea = document.createElement("textarea");
+        textarea.className = "cell-editor code-editor";
+        textarea.value = cell.sumber;
+        textarea.spellcheck = false;
+        textarea.autocomplete = "off";
+        textarea.autocapitalize = "off";
+        textarea.placeholder = "Ketik kode Evernight di sini...";
+
+        textarea.oninput = () => {
+          cell.sumber = textarea.value;
+          highlightDiv.innerHTML = highlightEveCode(textarea.value);
+          autoResizeTextarea(textarea, highlightDiv);
+          checkAutocomplete(textarea, index);
+        };
+        textarea.onscroll = () => {
+          highlightDiv.scrollLeft = textarea.scrollLeft;
+        };
+        textarea.onfocus = () => {
+          activeCellIndex = index;
+          document.querySelectorAll(".cell").forEach(c => c.classList.remove("focused"));
+          cellEl.classList.add("focused");
+        };
+        textarea.onblur = () => {
+          setTimeout(() => {
+            if (acState.textarea === textarea) {
+              hideAutocomplete();
+            }
+          }, 200);
+        };
+        textarea.onkeydown = (e) => handleEditorKeydown(e, index, textarea);
+
+        editorWrapper.appendChild(highlightDiv);
+        editorWrapper.appendChild(textarea);
+        bodyEl.appendChild(editorWrapper);
+        cellEl.appendChild(bodyEl);
+
+        setTimeout(() => autoResizeTextarea(textarea, highlightDiv), 0);
+      }
+
+      // OUTPUT AREA
+      if (cell.keluaran) {
+        const outEl = document.createElement("div");
+        outEl.className = "cell-output";
+        renderCellOutput(outEl, cell.keluaran);
+        cellEl.appendChild(outEl);
+      }
+
+      cellsContainer.appendChild(cellEl);
+    }
+
+    function renderCellOutput(outEl, out) {
+      if (out.tipe === "error") {
+        outEl.innerHTML = `<div class="output-error">${escapeHtml(out.konten)}</div>`;
+      } else if (out.tipe === "tabel_html" && out.data_tabel) {
+        let preText = out.konten ? `<div class="output-text">${escapeHtml(out.konten)}</div>` : "";
+        let tblHtml = `<div class="dataframe-table-wrapper"><table class="dataframe-table"><thead><tr><th class="idx-col">#</th>`;
+        out.data_tabel.kolom.forEach(k => {
+          tblHtml += `<th>${escapeHtml(k)}</th>`;
+        });
+        tblHtml += `</tr></thead><tbody>`;
+        out.data_tabel.baris.forEach((r, idx) => {
+          tblHtml += `<tr><td class="idx-col">${idx}</td>`;
+          r.forEach(v => {
+            tblHtml += `<td>${escapeHtml(v)}</td>`;
+          });
+          tblHtml += `</tr>`;
+        });
+        tblHtml += `</tbody></table></div>`;
+        tblHtml += `<div class="dataframe-footer">[${out.data_tabel.baris.length} baris × ${out.data_tabel.kolom.length} kolom]</div>`;
+        outEl.innerHTML = preText + tblHtml;
+      } else if (out.tipe === "grafik_svg" && out.svg) {
+        let preText = out.konten ? `<div class="output-text">${escapeHtml(out.konten)}</div>` : "";
+        outEl.innerHTML = preText + `<div class="svg-plot-wrapper">${out.svg}</div>`;
+      } else {
+        outEl.innerHTML = `<div class="output-text">${escapeHtml(out.konten)}</div>`;
+      }
+    }
+
+    function autoResizeTextarea(ta, hl) {
+      ta.style.height = "auto";
+      const h = Math.max(48, ta.scrollHeight) + "px";
+      ta.style.height = h;
+      if (hl) {
+        hl.style.height = h;
+      } else {
+        const parent = ta.parentElement;
+        if (parent) {
+          const sisterHl = parent.querySelector(".code-highlight-layer");
+          if (sisterHl) sisterHl.style.height = h;
+        }
+      }
+    }
+
+    function handleEditorKeydown(e, index, textarea) {
+      // Navigasi Autocomplete Popup
+      if (acState.visible && acState.candidates.length > 0) {
+        if (e.key === "ArrowDown") {
+          e.preventDefault();
+          acState.selectedIndex = (acState.selectedIndex + 1) % acState.candidates.length;
+          updateAcSelection();
+          return;
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          acState.selectedIndex = (acState.selectedIndex - 1 + acState.candidates.length) % acState.candidates.length;
+          updateAcSelection();
+          return;
+        } else if (e.key === "Enter" || e.key === "Tab") {
+          e.preventDefault();
+          applyAutocomplete(acState.candidates[acState.selectedIndex], textarea, index);
+          return;
+        } else if (e.key === "Escape") {
+          e.preventDefault();
+          hideAutocomplete();
+          return;
+        }
+      }
+
+      if (e.key === "Enter" && e.shiftKey) {
+        e.preventDefault();
+        hideAutocomplete();
+        runCell(index, true); // run and advance
+      } else if (e.key === "Enter" && e.ctrlKey) {
+        e.preventDefault();
+        hideAutocomplete();
+        runCell(index, false); // run in place
+      } else if (e.key === "Enter" && e.altKey) {
+        e.preventDefault();
+        hideAutocomplete();
+        runCell(index, false);
+        addCell("kode", index + 1);
+      } else if (e.key === "Tab") {
+        e.preventDefault();
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        textarea.value = textarea.value.substring(0, start) + "    " + textarea.value.substring(end);
+        textarea.selectionStart = textarea.selectionEnd = start + 4;
+        notebookData.sel[index].sumber = textarea.value;
+        const hl = document.getElementById(`highlight-${notebookData.sel[index].id}`);
+        if (hl) hl.innerHTML = highlightEveCode(textarea.value);
+        autoResizeTextarea(textarea, hl);
+        checkAutocomplete(textarea, index);
+      }
+    }
+
+    async function runCell(index, advanceToNext = false) {
+      const cell = notebookData.sel[index];
+      if (cell.tipe !== "kode") return;
+
+      const runBtn = document.getElementById(`run-btn-${cell.id}`);
+      if (runBtn) {
+        runBtn.classList.add("loading");
+        runBtn.innerHTML = `<svg class="icon-xs" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>`;
+      }
+      setKernelBusy(true);
+
+      try {
+        const res = await fetch("/api/sel/jalankan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: cell.id, kode: cell.sumber })
+        });
+
+        if (res.ok) {
+          const hasil = await res.json();
+          cell.urutan_eksekusi = hasil.urutan;
+          cell.keluaran = hasil.keluaran;
+          renderAllCells();
+          markSaved();
+
+          if (advanceToNext) {
+            if (index + 1 < notebookData.sel.length) {
+              focusCell(index + 1);
+            } else {
+              addCell("kode", index + 1);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Gagal menjalankan sel:", err);
+      } finally {
+        setKernelBusy(false);
+      }
+    }
+
+    async function runAllCells() {
+      for (let i = 0; i < notebookData.sel.length; i++) {
+        if (notebookData.sel[i].tipe === "kode") {
+          await runCell(i, false);
+        }
+      }
+    }
+
+    function addCell(tipe, index) {
+      const id = "sel_" + Date.now().toString(36) + Math.random().toString(36).substr(2, 4);
+      const newCell = {
+        id,
+        tipe,
+        urutan_eksekusi: null,
+        sumber: tipe === "kode" ? "" : "Ketik catatan penjelasan di sini...",
+        keluaran: null
+      };
+
+      notebookData.sel.splice(index, 0, newCell);
+      activeCellIndex = index;
+      renderAllCells();
+      focusCell(index);
+      saveNotebook();
+    }
+
+    function deleteCell(index) {
+      if (notebookData.sel.length <= 1) return;
+      notebookData.sel.splice(index, 1);
+      activeCellIndex = Math.max(0, index - 1);
+      renderAllCells();
+      saveNotebook();
+    }
+
+    function moveCell(index, direction) {
+      const targetIndex = index + direction;
+      if (targetIndex < 0 || targetIndex >= notebookData.sel.length) return;
+      const temp = notebookData.sel[index];
+      notebookData.sel[index] = notebookData.sel[targetIndex];
+      notebookData.sel[targetIndex] = temp;
+      activeCellIndex = targetIndex;
+      renderAllCells();
+      focusCell(targetIndex);
+      saveNotebook();
+    }
+
+    function focusCell(index) {
+      activeCellIndex = index;
+      const cell = notebookData.sel[index];
+      if (!cell) return;
+      setTimeout(() => {
+        const el = document.getElementById(`cell-${cell.id}`);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          const ta = el.querySelector("textarea");
+          if (ta) ta.focus();
+        }
+      }, 50);
+    }
+
+    async function saveNotebook() {
+      notebookData.nama_notebook = notebookNameInput.value.trim() || "Notebook_March.emlbn";
+      notebookData.waktu_diubah = new Date().toISOString();
+      saveStatus.innerText = "Menyimpan...";
+
+      try {
+        const res = await fetch("/api/simpan", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(notebookData)
+        });
+        if (res.ok) {
+          markSaved();
+        }
+      } catch (err) {
+        saveStatus.innerText = "Gagal menyimpan!";
+      }
+    }
+
+    function markSaved() {
+      saveStatus.innerText = "Disimpan ke disk lokal";
+      setTimeout(() => {
+        saveStatus.innerText = "Disimpan ke disk lokal";
+      }, 2000);
+    }
+
+    async function resetKernel() {
+      if (!confirm("Muat ulang kernel VM Evernight? Variabel di memori akan dibersihkan.")) return;
+      setKernelBusy(true);
+      try {
+        const res = await fetch("/api/kernel/reset", { method: "POST" });
+        if (res.ok) {
+          notebookData.sel.forEach(c => {
+            if (c.tipe === "kode") c.urutan_eksekusi = null;
+          });
+          renderAllCells();
+          saveNotebook();
+        }
+      } catch (err) {
+        console.error("Gagal reset kernel:", err);
+      } finally {
+        setKernelBusy(false);
+      }
+    }
+
+    async function exportToEve() {
+      window.open("/api/ekspor", "_blank");
+    }
+
+    function setKernelBusy(busy) {
+      if (busy) {
+        statusDot.className = "status-dot busy";
+        statusText.innerText = "Mengeksekusi...";
+      } else {
+        statusDot.className = "status-dot";
+        statusText.innerText = "Kernel Siap";
+      }
+    }
+
+    function setupEventListeners() {
+      document.getElementById("btn-add-code").onclick = () => addCell("kode", notebookData.sel.length);
+      document.getElementById("btn-add-text").onclick = () => addCell("markdown", notebookData.sel.length);
+      document.getElementById("btn-run-all").onclick = runAllCells;
+      document.getElementById("btn-reset-kernel").onclick = resetKernel;
+      document.getElementById("btn-save").onclick = saveNotebook;
+      document.getElementById("btn-export").onclick = exportToEve;
+      notebookNameInput.onchange = saveNotebook;
+
+      const btnNewNb = document.getElementById("btn-new-notebook");
+      if (btnNewNb) btnNewNb.onclick = promptCreateNewNotebook;
+
+      const btnRefresh = document.getElementById("btn-refresh-files");
+      if (btnRefresh) btnRefresh.onclick = loadLocalFiles;
+
+      // Activity Bar & Sidebar Toggle
+      const activityBtnFiles = document.getElementById("activity-btn-files");
+      const btnCloseSidebar = document.getElementById("btn-close-sidebar");
+
+      function toggleSidebar() {
+        sidebarEl.classList.toggle("closed");
+        if (sidebarEl.classList.contains("closed")) {
+          activityBtnFiles.classList.remove("active");
+        } else {
+          activityBtnFiles.classList.add("active");
+        }
+      }
+
+      if (activityBtnFiles) activityBtnFiles.onclick = toggleSidebar;
+      if (btnCloseSidebar) btnCloseSidebar.onclick = toggleSidebar;
+
+      // Folder change handlers
+      const btnOpenFolder = document.getElementById("btn-open-folder-modal");
+      if (btnOpenFolder) btnOpenFolder.onclick = openFolderModal;
+      const folderInfoBtn = document.getElementById("folder-info-btn");
+      if (folderInfoBtn) folderInfoBtn.onclick = openFolderModal;
+
+      const btnCloseModal = document.getElementById("btn-close-modal");
+      if (btnCloseModal) btnCloseModal.onclick = closeFolderModal;
+      const btnCancelFolder = document.getElementById("btn-cancel-folder");
+      if (btnCancelFolder) btnCancelFolder.onclick = closeFolderModal;
+
+      const btnApplyFolder = document.getElementById("btn-apply-folder");
+      if (btnApplyFolder) btnApplyFolder.onclick = () => {
+        const val = document.getElementById("modal-folder-input").value;
+        applyFolder(val);
+      };
+
+      const btnBrowseFolder = document.getElementById("btn-browse-folder");
+      if (btnBrowseFolder) btnBrowseFolder.onclick = browseNativeFolder;
+
+      const modalFolderInput = document.getElementById("modal-folder-input");
+      if (modalFolderInput) {
+        modalFolderInput.onkeydown = (e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            applyFolder(modalFolderInput.value);
+          } else if (e.key === "Escape") {
+            closeFolderModal();
+          }
+        };
+      }
+
+      window.onkeydown = (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === "s") {
+          e.preventDefault();
+          saveNotebook();
+        } else if (e.key === "Escape") {
+          closeFolderModal();
+        }
+      };
+
+      // Tutup autocomplete saat klik di luar popup
+      document.addEventListener("mousedown", (e) => {
+        const popup = document.getElementById("autocomplete-popup");
+        if (popup && !popup.contains(e.target)) {
+          hideAutocomplete();
+        }
+      });
+
+      // Tutup autocomplete saat scroll halaman atau resize
+      const nbContainer = document.querySelector(".notebook-container");
+      if (nbContainer) {
+        nbContainer.addEventListener("scroll", () => {
+          hideAutocomplete();
+        });
+      }
+      window.addEventListener("resize", () => {
+        hideAutocomplete();
+      });
+    }
+
+    function renderSimpleMarkdown(md) {
+      if (!md) return "<em>(Kosong)</em>";
+      let lines = md.split("\n");
+      let html = "";
+      for (let l of lines) {
+        let trimmed = l.trim();
+        if (trimmed.startsWith("### ")) {
+          html += `<h3>${formatInlineMarkdown(trimmed.substring(4))}</h3>`;
+        } else if (trimmed.startsWith("## ")) {
+          html += `<h2>${formatInlineMarkdown(trimmed.substring(3))}</h2>`;
+        } else if (trimmed.startsWith("# ")) {
+          html += `<h1>${formatInlineMarkdown(trimmed.substring(2))}</h1>`;
+        } else if (trimmed.startsWith("- ")) {
+          html += `<ul><li>${formatInlineMarkdown(trimmed.substring(2))}</li></ul>`;
+        } else if (trimmed.length > 0) {
+          html += `<p>${formatInlineMarkdown(trimmed)}</p>`;
+        }
+      }
+      return html || "<em>(Klik dua kali untuk mengedit teks)</em>";
+    }
+
+    function formatInlineMarkdown(text) {
+      let escaped = escapeHtml(text);
+      // Code backticks `code`
+      escaped = escaped.replace(/`([^`]+)`/g, "<code>$1</code>");
+      // Bold **text**
+      escaped = escaped.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+      // Italic *text*
+      escaped = escaped.replace(/\*([^*]+)\*/g, "<em>$1</em>");
+      return escaped;
+    }
+
+    function switchToMarkdownEditor(cell, mdView, cellEl) {
+      mdView.style.display = "none";
+      const ta = document.createElement("textarea");
+      ta.className = "cell-editor md-editor";
+      ta.style.padding = "8px 16px 14px 44px";
+      ta.value = cell.sumber;
+      ta.spellcheck = false;
+      ta.onblur = () => {
+        cell.sumber = ta.value;
+        renderAllCells();
+        saveNotebook();
+      };
+      cellEl.appendChild(ta);
+      ta.focus();
+      autoResizeTextarea(ta);
+    }
+
+    function escapeHtml(str) {
+      if (!str) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>

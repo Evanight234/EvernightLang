@@ -6,15 +6,7 @@ const docs = defineCollection({
     base: '../',
     pattern: [
       'docs/**/*.md',
-      'KEYWORD.md',
-      'TIPE.md',
-      'FUNCTION.md',
-      'ERROR.md',
-      'STDLIB.md',
-      'GRAMMAR.md',
-      'ARRAY.md',
-      // Varian EN paralel di root (KEYWORD.en.md, dst) — difilter dari rute di [...slug].astro.
-      '*.en.md',
+      'Evernight-language/01-Spesifikasi-Bahasa/*.md',
     ],
   }),
   schema: z.object({

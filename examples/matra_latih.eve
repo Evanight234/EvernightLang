@@ -1,0 +1,146 @@
+# ==============================================================================
+# CONTOH EVERNIGHT: PUSTAKA MATRA - SUITE DATA TRAINING, PIPELINE & TESTING
+# ==============================================================================
+
+impor "matra" sebagai mt
+
+cetak("======================================================================")
+cetak("       EVERNIGHT LANG - DEMO MATRA: SUITE TRAINING & TESTING (9D)     ")
+cetak("======================================================================")
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 1. PRAPEMROSESAN KATEGORI (LABEL ENCODER)
+# ------------------------------------------------------------------------------
+cetak("=== 1. ENKODING LABEL KATEGORI ===")
+variabel status_risiko = ["rendah", "sedang", "tinggi", "rendah", "tinggi", "sedang"]
+variabel encoder = mt.pra.PengekodLabel()
+
+variabel id_numerik = encoder.sesuaikan_transformasi(status_risiko)
+cetak("Label asli      : ", status_risiko)
+cetak("ID numerik hasil: ", id_numerik.ke_daftar())
+
+variabel label_balik = encoder.invers_transformasi(id_numerik)
+cetak("Pulih ke teks   : ", label_balik)
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 2. PRAPEMROSESAN FITUR NUMERIK (STANDARISASI & MIN-MAX)
+# ------------------------------------------------------------------------------
+cetak("=== 2. SKALISASI FITUR (STANDARISASI & MIN-MAX) ===")
+# Data matriks 4 sampel x 2 fitur: [Usia, Pendapatan Juta]
+variabel data_fitur = mt.matriks([
+    [22.0, 5.0],
+    [35.0, 15.0],
+    [48.0, 25.0],
+    [60.0, 40.0]
+])
+cetak("Matriks Fitur Asli (4x2):")
+cetak(data_fitur)
+
+# Standarisasi (Z-score: Mean 0, Std 1)
+variabel z_scaler = mt.pra.Standarisasi()
+z_scaler.sesuaikan(data_fitur)
+variabel data_z = z_scaler.transformasi(data_fitur)
+cetak("\nHasil Standarisasi (Z-score):")
+cetak(data_z)
+
+# Min-Max Scaler [0.0, 1.0]
+variabel mm_scaler = mt.pra.PenskalaMinMaks(0.0, 1.0)
+variabel data_norm = mm_scaler.sesuaikan_transformasi(data_fitur)
+cetak("\nHasil Penskala Min-Maks [0.0, 1.0]:")
+cetak(data_norm)
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 3. PENYEIMBANGAN KELAS MINORITAS (SMOTE)
+# ------------------------------------------------------------------------------
+cetak("=== 3. PENYEIMBANGAN DATASET MINORITAS (SMOTE) ===")
+# Misal data deteksi fraud: 6 transaksi normal (kelas 0) dan 2 fraud (kelas 1)
+variabel X_tak_seimbang = mt.matriks([
+    [10.0, 100.0], [12.0, 110.0], [11.0, 105.0],
+    [10.5, 102.0], [11.5, 108.0], [12.5, 112.0],
+    [95.0, 950.0], [98.0, 980.0]
+])
+variabel y_tak_seimbang = [0, 0, 0, 0, 0, 0, 1, 1]
+
+cetak("Sampel awal: 6 Kelas Normal (0) dan 2 Kelas Fraud (1)")
+variabel hasil_smote = mt.seimbang.SMOTE(X_tak_seimbang, y_tak_seimbang, 1, 1.0, 42)
+variabel X_seimbang = hasil_smote[0]
+variabel y_seimbang = hasil_smote[1]
+
+cetak("Bentuk X setelah SMOTE: ", X_seimbang.bentuk)
+cetak("Jumlah label target y : ", y_seimbang.panjang)
+cetak("Matriks X Seimbang:")
+cetak(X_seimbang)
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 4. PEMBAGIAN DATA LATIH & UJI BERSTRATA (PISAH DATA)
+# ------------------------------------------------------------------------------
+cetak("=== 4. PEMBAGIAN DATA LATIH & UJI (STRATIFIKASI) ===")
+# Membagi 80% Latih dan 20% Uji
+variabel split = mt.pisah_data(X_seimbang, y_seimbang, 0.25, 42, benar)
+variabel X_latih = split[0]
+variabel X_uji = split[1]
+variabel y_latih = split[2]
+variabel y_uji = split[3]
+
+cetak("Data Latih (X): ", X_latih.bentuk, " | Target (y): ", y_latih.panjang)
+cetak("Data Uji   (X): ", X_uji.bentuk, " | Target (y): ", y_uji.panjang)
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 5. PIPELINE ALUR KERJA ANTI-LEAKAGE
+# ------------------------------------------------------------------------------
+cetak("=== 5. PIPELINE ALUR KERJA (PIPAKERJA) ===")
+variabel pipa = mt.alur.PipaKerja([
+    ["scaler", mt.pra.Standarisasi()]
+])
+
+# Melatih pipeline HANYA pada data latih (tanpa kebocoran data uji!)
+pipa.latih(X_latih)
+
+# Transformasi data uji menggunakan parameter latih
+variabel X_uji_pipa = pipa.transformasi(X_uji)
+cetak("Data uji berhasil ditransformasi via PipaKerja tanpa data leakage!")
+cetak("Bentuk data uji hasil pipa: ", X_uji_pipa.bentuk)
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 6. PENGUJIAN DIAGNOSTIK: DATA LEAKAGE & DATA DRIFT
+# ------------------------------------------------------------------------------
+cetak("=== 6. PENGUJIAN DIAGNOSTIK INTEGRITAS DATA ===")
+
+# A. Uji Kebocoran Data (Data Leakage)
+variabel cek_bocor = mt.uji.cek_kebocoran(X_latih, X_uji)
+cetak("Ada data bocor?         : ", cek_bocor.ada_kebocoran)
+cetak("Jumlah sampel terduplikasi: ", cek_bocor.jumlah_kebocoran)
+
+# B. Uji Pergeseran Distribusi (Data Drift)
+# Simulasikan data produksi masa depan yang mengalami lonjakan ekstrem
+variabel X_produksi_geser = mt.matriks([
+    [500.0, 5000.0],
+    [600.0, 6000.0],
+    [700.0, 7000.0]
+])
+variabel cek_drift = mt.uji.cek_pergeseran(X_latih, X_produksi_geser, 0.25)
+cetak("Ada pergeseran data?    : ", cek_drift.ada_pergeseran)
+cetak("Indeks kolom bergeser   : ", cek_drift.kolom_bergeser)
+cetak("")
+
+# ------------------------------------------------------------------------------
+# 7. PENYETELAN HYPERPARAMETER OTOMATIS (GRID SEARCH)
+# ------------------------------------------------------------------------------
+cetak("=== 7. PENYETELAN HYPERPARAMETER (PENCARIAN KISI) ===")
+variabel kisi = mt.tala.PencarianKisi({
+    "kecepatan_belajar": [0.001, 0.01, 0.1],
+    "kedalaman_pohon": [3, 5],
+    "jumlah_estimator": [50, 100]
+})
+
+cetak("Total kombinasi parameter yang dibangun: ", kisi.jumlah)
+cetak("Contoh kombinasi ke-1: ", kisi.kombinasi[0])
+cetak("Contoh kombinasi ke-2: ", kisi.kombinasi[1])
+cetak("")
+cetak("Semua modul latih, seimbang, pra, alur, uji, dan tala berjalan sempurna!")

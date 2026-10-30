@@ -1,0 +1,21 @@
+EvernightLanguage 0.2.0 - Rilis Ekosistem Sains Data & ML Matra
+===============================================================
+- Pustaka All-in-One Matra:
+  * matra.larik: Tensor numerik, vektorisasi, aljabar linier, invers, transposisi
+  * matra.tabel: DataFrame columnar, pembaca & penulis CSV, slicing, agregasi grup
+  * matra.grafik: Visualisasi vektor SVG & ASCII terminal (garis, sebar, batang, hist)
+  * matra.latih & matra.alur: Pembagian data berstratifikasi, K-Fold, SMOTE, PipaKerja
+  * matra.model & matra.metrik: Regresi Linear/Logistik, KNN, Pohon Keputusan,
+    Hutan Acak, KMeans, akurasi, presisi, recall, f1, ROC, laporan klasifikasi
+  * matra.syaraf & matra.pelatih: Autograd engine analitik, lapisan Linear & Dropout,
+    aktivasi Relu/Sigmoid/Tanh/Softmax, optimizer SGD & Adam, serialisasi .matra
+- Web Notebook Interaktif March:
+  * Perintah CLI baru: evernight march [berkas.emlbn] [--port 8888]
+  * Ekspor notebook ke skrip mandiri: evernight march ekspor [berkas.emlbn]
+  * Format berkas .emlbn (Evernight Machine Learning Notebook)
+  * Akses dataset CSV 100% lokal dari laptop tanpa cloud
+  * Antarmuka Google Colab Dark Mode berbasis standar desain Hallmark v2.0
+  * Editor kode berlapis (dual-layer) dengan syntax highlighting tema Nusantara
+  * Autocomplete floating popup IntelliSense presisi kursor navigasi keyboard
+  * Render tabel DataFrame interaktif dan plot grafik SVG responsif
+- Peningkatan performa VM, penanganan timeout soket non-blocking, dan pengujian menyeluruh

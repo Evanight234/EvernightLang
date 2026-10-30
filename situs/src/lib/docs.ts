@@ -11,8 +11,11 @@ const petaSlug: Record<string, string> = {
 };
 
 export function slugDari(id: string): string {
-  const idb = id.toLowerCase();
-  if (idb.startsWith('docs/')) return idb.slice(5);
+  let idb = id.toLowerCase().replace(/\\/g, '/');
+  if (idb.startsWith('docs/')) idb = idb.slice(5);
+  if (idb.startsWith('evernight-language/01-spesifikasi-bahasa/')) {
+    idb = idb.slice('evernight-language/01-spesifikasi-bahasa/'.length);
+  }
   return petaSlug[idb] ?? idb;
 }
 

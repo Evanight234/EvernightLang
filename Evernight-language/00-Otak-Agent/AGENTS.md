@@ -1,0 +1,160 @@
+# AGENTS.md — Proyek Bahasa Pemrograman Indonesia
+
+## ATURAN WAJIB UNTUK OPENCODE / AGENT
+
+> **PUSAT OTAK & MEMORI PROYEK (OBSIDIAN VAULT)**:
+> Seluruh memori, alur berpikir, dan dokumen perencanaan tersimpan di dalam Obsidian Vault:
+> Folder `Evernight-language/00-Otak-Agent/` (terhubung melalui `Evernight-language/PETA-KONSEP.md`).
+
+**Setiap kali menerima prompt baru, WAJIB lakukan ini sebelum menjawab/mengerjakan:**
+
+0. **BACA KONTEKS DULU** — Di sesi baru/sesi hilang, baca `Evernight-language/00-Otak-Agent/KONTEKS.md` **paling awal** (sebelum file lain) supaya tahu topik yang sedang/sudah dibahas dan tidak ada yang terlewat.
+1. **CEK** — Baca ulang file `RENCANA.md`, `PROGRES.md`, dan `KONSEP.md` di folder `Evernight-language/00-Otak-Agent/`.
+2. **UPDATE KONTEKS** — Setiap prompt: perbarui bagian "Konteks Aktif" + log di `Evernight-language/00-Otak-Agent/KONTEKS.md` (topik yang dibahas, keputusan kecil, langkah berikutnya).
+3. **SESUAIKAN** — Pastikan pekerjaan yang diminta user sesuai dengan fase & arah proyek di `Evernight-language/00-Otak-Agent/RENCANA.md`. Jika user minta sesuatu yang berubah arah, perbarui `RENCANA.md` dulu (dengan konfirmasi user) sebelum mulai.
+4. **CATAT** — Setiap kali menyelesaikan satu task, langsung update `Evernight-language/00-Otak-Agent/PROGRES.md`: centang task selesai (`[x]`), tambah catatan keputusan penting, tambah tanggal.
+5. **PERBARUI** — Jika ada keputusan desain baru (mis. keyword ditambah/diubah), tulis ke bagian yang relevan di `Evernight-language/00-Otak-Agent/RENCANA.md`.
+
+Jangan pernah mengerjakan tanpa membaca `RENCANA.md` dulu. Jangan pernah lupa mengupdate `PROGRES.md` setelah ada kemajuan.
+
+---
+
+## RINGKASAN PROYEK
+
+Bahasa pemrograman baru dengan karakteristik:
+
+| Aspek | Keputusan |
+|-------|-----------|
+| Tujuan | Se-mudah Python, se-cepat C++, se-multifungsi JavaScript |
+| Sintaksis | Mirip Python, tapi **keyword Bahasa Indonesia** |
+| Paradigma | Fungsional + OOP (detail di `KONSEP.md`) |
+| Tipe | Dinamis (seperti Python/JS) |
+| Eksekusi | Compiler bytecode + VM |
+| Implementasi | Rust murni + TypeScript (khusus ekstensi editor) |
+| Error | Error code + pesan BAHAYA/PERINGATAN dalam Bahasa Indonesia |
+| Nama bahasa | **EvernightLanguage** (file: `.eve`) |
+| Biner / CLI | `evernight` (berkas `.eve`); package manager `ever pkg` (Fase 6) |
+| Asosiasi file | `.eve` → **"Evernight files"** di Windows Explorer (ProgID `EvernightFile`, installer Fase 6) |
+| Manajemen memori | ARC (Automatic Reference Counting) — dipilih karena sederhana & modern |
+
+---
+
+## RENCANA.md — Fase-Fase
+
+### Fase 1: Desain Bahasa
+- [x] Definisikan keyword Bahasa Indonesia (jika/lainnya/selama/untuk/kembali/cetak/benar/salah/kosong/fungsi/variabel/tetap/_/hapus)
+- [x] Buat grammar formal (BNF/EBNF)
+- [x] Desain tipe data
+- [x] Desain sistem error (BAHAYA/PERINGATAN dalam Bahasa Indonesia)
+- [x] Desain standard library
+
+### Fase 2: Implementasi Inti
+- [x] Setup proyek Rust (Cargo Workspace)
+- [x] Lexer (tokenizer)
+- [x] Parser (AST generator)
+- [x] AST node types
+- [x] Bytecode compiler (AST → bytecode)
+- [x] VM (bytecode executor)
+- [x] Environment (scope variabel)
+- [x] Runtime objects
+- [x] Error handling system
+- [x] Implementasi murni Rust — C dibatalkan permanen
+
+### Fase 3: Standard Library + Identitas Visual
+- [x] Modul konsol, string, matematika, daftar, kamus, sistem, utilitas (7 modul, sinkron `STDLIB.md`)
+- [x] Sistem `impor` lintas berkas (lazy-load, cache, deteksi circular)
+- [x] Kode error per modul + unit test tiap modul — sinkron `ERROR.md`, 58/58 test hijau
+- [x] Brief & spesifikasi logo resmi (`LOGO.md` — user yang desain)
+- [x] Desain logo oleh user → review → finalisasi (badge gaya JS + huruf E, `assets/logo/`, user setujui)
+- [x] Icon file `.eve` (16/32/48/256px + `.ico`)
+- [x] Brand kit mini (warna brand, slogan, font, lisensi) — final `BRAND.md` (slogan user 2026-09-10)
+
+### Fase 4: REPL & CLI + Highlighting Editor
+- [x] REPL interaktif + CLI runner (termasuk `evernight run`) + argumen program + error terminal berwarna
+- [x] Pemetaan token→scope + TextMate grammar (`evernight.tmLanguage.json` dari `token.rs`)
+- [x] Tema warna unik Indonesia "Nusantara" (`TEMA.md`, palet terang/gelap)
+- [x] Ekstensi VS Code + snippet + snapshot test — satu `.vsix` untuk **keluarga VS Code** (VS Code/Cursor/Windsurf/VSCodium; Antigravity dicek saat eksekusi) + icon theme `.eve`
+
+### Fase 5: Testing & Kualitas Internal
+- [x] Unit test per-modul + integration/golden test di semua crate
+- [x] Fuzz test parser + benchmark baseline
+- [x] `CHANGELOG.md` + versi semantik + laporan cakupan test
+
+### Fase 6: Tooling Lanjutan & Distribusi Sistem
+- [x] Static CompletionProvider (VS Code) — autocomplete statis ~60 item
+- [x] Paket ekstensi `.vsix` (6A) — publisher **Satriyo**, lisensi **MIT**, terpasang & terverifikasi di **Antigravity IDE**
+- [x] Distribusi compiler mandiri (6B) — biner statis 1.74 MB, paket `paket/evernight-0.1.0-windows-x64/` + ZIP, `install.ps1`/`uninstall.ps1`, PATH otomatis, asosiasi `.eve` terverifikasi
+- [x] Integrasi otomatis ekstensi (6C) — deteksi 6 editor keluarga VS Code, konfirmasi interaktif, `-TanpaEkstensi`/`-TanpaKonfirmasi`, uninstall menawarkan pencopotan
+- [x] **Installer GUI (6F)** — `EvernightLanguage-0.1.0-Setup.exe` (egui/Rust, **bukan** Inno Setup), window **1000x640**, **satu box per halaman** (isi box hanya judul+keterangan), **pemilih folder native (rfd) + tombol Telusuri**, **tanpa CMD** (`windows_subsystem` + `CREATE_NO_WINDOW`), pilihan per-user/per-machine (UAC), wizard 6 halaman, panel maskot 28%, animasi mikro, `uninstall.exe` bersih
+- [x] Mode debug (6D-1) — `--debug` trace instruksi bytecode ke stderr
+- [x] Profiler mini (6D-2) — `--waktu` frekuensi opcode + waktu eksekusi
+- [x] Formatter (6D-3) — `evernight format` + `--cek` (komentar dipertahankan; idempoten)
+- [x] Linter (6D-4) — `evernight lint` + 7 aturan `WK*` baru
+- [x] Package manager (6D-6) — `evernight pkg init | jalankan | daftar`
+- [x] CI & rilis biner (6E) — GitHub Actions + `SHA256SUMS.txt`
+- [x] **6G — Tema Ikon Lengkap** — 352 SVG Symbols, tema 98.686 B, label IconStyles, vsix 1.264.065 B
+- [x] **6H — Sistem Uninstaller** — 3 tahap wizard (Konfirmasi/Menghapus/Selesai), checkbox ekstensi di luar box, `pasang::copot(hapus_ekstensi)`, navigasi back/forward, progress+log nyata, `kill evernight system` (CMD + PowerShell profile function dengan alias override)
+- [x] **6I — Sistem Updater CLI** — `update evernight system` (terminal saja, tanpa GUI), folder `version/` GitHub + `catatan-<versi>.txt`, pesan zhongk verbatim, `--cek` dry-run, `evernight system info`
+- [ ] Language Server dasar (`evernight-lsp`) — **dipindah ke Fase 7**
+- [ ] Publish `crates.io` + repositori GitHub (remote + push) + optimasi performa runtime
+
+### Fase 7: Stabilisasi & Rilis 1.0
+- [ ] Audit keamanan dasar (akses file, sandbox)
+- [ ] Stabilisasi versi bytecode (kompatibilitas antar-rilis) + kriteria "selesai" rilis 1.0
+- [x] **7E — Desain visual final installer** (grafis wizard bermerek Nusantara, UX hak akses, uji di komputer bersih) — **FINAL** (desain 6F final, tidak ada perubahan visual)
+- [x] **7F — Paket Rilis Per-Versi** — skrip `paket-rilis.ps1`, paket `evernight-<versi>-windows-x64/` isi lengkap (exe, kill, update, vsix, docs, LICENSE) + ZIP + SHA256, sumber updater 6I
+- [x] **Language Server dasar** (`evernight-lsp`) — biner JSON-RPC stdio, hover/diagnostic/goto-definition/completion, zero async deps
+
+### Fase 8: Dokumentasi Publik, Website & Komunitas
+- [ ] README utama publik + referensi stdlib (panduan sintaks ✓ `docs/panduan/`, tutorial ✓ `docs/tutorial/01-09`, contoh ✓ `examples/` + `docs/contoh.md`)
+- [ ] Website resmi — **situs Astro lokal ✓** (`situs/`, build 30 halaman, 2026-09-25; **i18n EN**: chrome menyeluruh + isi 25 halaman tutorial/panduan/Reference via `.en.md` render ganda, 2026-09-27; Memulai tetap ID); sisa: deploy **Vercel** (ganti GH Pages) + playground WASM + publish ekstensi VS Code ke Marketplace
+- [ ] `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`, template issue/PR, peta jalan, galeri komunitas, tantangan pertama
+- [ ] Pengumuman rilis 1.0, survei pengguna, jadwal pemeliharaan
+
+### Fase 9: Ekosistem Sains Data & Machine Learning (Matra)
+- [x] **9A** — `matra.larik` (Tensor & Linear Algebra Engine, broadcasting, linalg, stats)
+- [x] **9B** — `matra.tabel` (DataFrame & CSV Parser)
+- [x] **9C** — `matra.grafik` (Visualisasi SVG mandiri & kurva diagnostik)
+- [x] **9D** — `matra.latih`, `matra.alur` & `matra.uji` (Suite training, cross-validation, SMOTE, Pipeline)
+- [x] **9E** — `matra.model` & `matra.metrik` (Klasifikasi/Regresi/KMeans, evaluasi metrik)
+- [x] **9F** — `matra.syaraf` & `matra.pelatih` (Autograd, Neural Network, optimizers, Pelatih otomatis)
+- [x] **9H** — Web Notebook "March" (Format berkas `.emlbn`, UI mirip Google Colab, akses berkas lokal 100%)
+- [ ] **9G** — Rilis GitHub & integrasi `update evernight system` (auto-update terminal dari GitHub)
+
+---
+
+## CONTOH SINTAKSIS TARGET
+
+```
+fungsi faktorial(n) {
+    jika n == 0 {
+        kembali 1
+    } lainnya {
+        kembali n * faktorial(n - 1)
+    }
+}
+
+fungsi utama() {
+    cetak("Hasil: ", faktorial(5))
+}
+```
+
+Pesan error:
+```
+BAHAYA: Baris 5 - Pembagian dengan nol!
+PERINGATAN: Baris 8 - Variabel 'x' tidak didefinisikan
+```
+
+---
+
+## KEPUTUSAN PENTING (log)
+
+- 2026-10-28: **Web Notebook ML: "March" & Format `.emlbn`** (keputusan user). Penambahan alat bantu web notebook mirip Google Colab (Dark Mode) khusus ekosistem Evernight & Matra. Format berkas `.emlbn` (*Evernight Machine Learning Notebook*), akses dataset CSV 100% lokal dari harddisk laptop pengguna tanpa ketergantungan cloud, visualisasi tabel DataFrame HTML dan plot SVG vektor, serta runtime stateful interaktif. Spesifikasi lengkap di `MARCH.md` dan subfase 9H di `RENCANA.md`.
+
+- 2026-10-27: **Pustaka Sains Data & Machine Learning: `Matra`** (keputusan user). Visi all-in-one yang merangkum NumPy, Pandas, Matplotlib, Scikit-learn, dan PyTorch ke dalam satu pustaka terpadu berbahasa Indonesia via arsitektur dua lapis (Rust Engine + sintaks `.eve`). Spesifikasi lengkap di `MATRA.md` dan Fase 9 di `RENCANA.md`.
+
+- 2026-09-10: **Nama biner resmi `evernight`** (keputusan user). Asosiasi file Windows: `.eve` → ProGID `EvernightFile`, kolom Type Explorer = **"Evernight files"** (spek di RENCANA Fase 6 Addendum).
+
+- 2026-09-07: Proyek dimulai. Fase 1 di awal. Struktur awal: Cargo.toml + src/ (masih kosong).
+- 2026-09-07: Model eksekusi final: **compiler bytecode + VM** (`.eve` → AST → bytecode → VM).
+- 2026-09-10: **Rencana diperluas dari 5 menjadi 7 fase.** Fase 3 + Identitas Visual (logo, icon `.eve`, brand kit); Fase 4 + Highlighting Editor (tema "Nusantara", grammar TextMate dari `token.rs`, ekstensi VS Code); Fase 6 & 7 baru (Tooling/Distribusi, Komunitas/Rilis). File MD baru: `LOGO.md`, `TEMA.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`.

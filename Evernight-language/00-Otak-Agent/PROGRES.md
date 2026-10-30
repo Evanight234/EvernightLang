@@ -136,7 +136,199 @@
 - [ ] Survei pengguna pertama
 - [ ] Jadwal pemeliharaan pasca-1.0
 
+### Fase 9: Ekosistem Sains Data & Machine Learning: Matra
+- [x] **9A — `matra.larik`**: Tipe buffer array/tensor homogen di Rust VM (`MatraArray`, `Value::Larik`), vektorisasi operasi aljabar linier, broadcasting skalar/vektor, dot product 1D/2D, transposisi `.T`, invers matriks Gauss-Jordan, determinan, statistik (`jumlah`, `rata_rata`, `min`, `max`, `median`, `varian`, `deviasi_standar`), manipulasi bentuk (`ubah_bentuk`, `ratakan`, `gabung`), matematika elemen (`akar`, `mutlak`, `sin`, `cos`, `tan`, `exp`, `log`), mutasi indeks `a[i] = x`, konversi `ke_daftar()`. Teruji 7/7 test integrasi hijau + contoh `examples/matra_larik.eve` jalan sempurna.
+- [x] **9B — `matra.tabel`**: Struktur data columnar `MatraTabel` (DataFrame), pembaca & penulis CSV zero-dependency, pemfilteran baris/kolom, penanganan nilai kosong (`isi_kosong`/`buang_kosong`), agregasi grup (`kelompokkan`), ringkasan statistik `deskripsi()`, konversi matriks kontinu `ke_larik` untuk ML, dan penampil tabel ASCII berbingkai. Teruji 8/8 test integrasi hijau + contoh `examples/matra_tabel.eve` jalan sempurna.
+- [x] **9C — `matra.grafik`**: Generator grafik SVG mandiri, kurva diagnostik training (Learning Curve, ROC), & penampil grafik ASCII di terminal. Zero-dependency murni Rust. Method chaining lengkap (`.judul()`, `.label_x()`, `.label_y()`, `.warna()`, `.simpan_svg()`, `.tampil()`). Teruji 7/7 test integrasi di `test_matra_grafik.rs` dan skrip contoh `examples/matra_grafik.eve`.
+- [x] **9D — `matra.latih`, `matra.alur` & `matra.uji`**: Suite data training & testing (pemisahan berstratifikasi, cross-validation, SMOTE, Pipeline anti data-leakage, deteksi data drift, tuning hyperparameter Bayesian TalaBayes)
+- [x] **9E — `matra.model` & `matra.metrik`**: Model ML klasik komprehensif zero-dependency (`RegresiLinear`, `RegresiLogistik`, `KNNKlasifikasi`, `KNNRegresi`, `PohonKeputusan`, `HutanAcak`, `KMeans`), integrasi runtime `Value::Model` dengan method chaining (`latih`, `prediksi`, `prediksi_probabilitas`, `skor`), integrasi pipeline anti-kebocoran data `PipaKerja` (`pipa.prediksi(X)`), dan suite evaluasi metrik lengkap (`akurasi`, `presisi`, `recall`, `f1_skor`, `matriks_konfusi`, `laporan_klasifikasi`, `mse`, `rmse`, `mae`, `r2_skor`, `mape`). Teruji 7/7 test integrasi di `test_matra_model.rs` (total 37/37 unit test Matra lulus 100%), seluruh workspace hijau, biner release diperbarui, dan percontohan `examples/matra_model.eve` dieksekusi sukses.
+- [x] **9F — `matra.syaraf` & `matra.pelatih`**: Autograd engine & diferensiasi analitik, lapisan neural network (`Linear` Kaiming init, `Dropout` inverted regularisasi), aktivasi non-linear (`Relu`, `Sigmoid`, `Tanh`, `Softmax`), optimizer adaptif (`Adam`, `SGD` momentum), fungsi kerugian (`KerugianMSE`, `KerugianBCE`, `KerugianKategori`), serialisasi bobot berkas `.matra` (`.simpan()` dan `.muat()`), dan orkestrator `Pelatih` otomatis (mini-batch SGD shuffling, logging interaktif, callback `BerhentiAwal`, `SimpanTerbaik` checkpointing, dan `PencatatRiwayat` JSON export). Teruji 7/7 test di `test_matra_syaraf.rs` (44/44 test Matra 100% hijau), biner release diperbarui, dan percontohan `examples/matra_syaraf.eve` teruji sukses.
+- [x] **9H — Web Notebook `March` (Format `.emlbn`)**: Web tools notebook sains data & ML mirip Google Colab (Dark Mode), format berkas `.emlbn`, akses dataset/CSV 100% lokal dari harddisk laptop pengguna tanpa upload cloud, tabel DataFrame HTML interaktif, rendering grafik SVG, kernel stateful `Vm::run_incremental`, server HTTP lokal mandiri Rust, SPA Vanilla Modern Web embedded, dan subcommand CLI `evernight march`. Teruji 18 unit test, 30 CLI integration test, percontohan `examples/demo_notebook.emlbn` terverifikasi sukses.
+- [ ] **9G — `update evernight system` & Rilis GitHub**: Bump versi semantik, kompilasi biner rilis mandiri, sinkronisasi berkas `version/version` & `version/catatan-<versi>.txt`, push rilis ke GitHub, dan verifikasi eksekusi `update evernight system` dari terminal CMD / local `C:\` untuk auto-update biner sistem tanpa installer manual.
+
 ## Log Aktivitas
+
+- **2026-10-30 (Revisi Desain Antarmuka Web Notebook March Berdasarkan Standar Hallmark v2.0)**:
+  - **Prinsip "The Floor" & Dark Discipline**:
+    - Menerapkan skala tangga elevasi permukaan dark mode bersih (`--surface-canvas: #111216`, `--surface-panel: #16171d`, `--surface-card: #1c1e24`, `--surface-hover: #252830`) tanpa warna abu-abu keruh atau drop shadow buram ("Elevation is lightness or a 1px hairline ring").
+    - Menghilangkan seluruh `transition: all` dan menggantikannya dengan transisi properti terarah dan eksplisit (`background-color`, `border-color`, `color`, `transform`) dengan variabel waktu mikro (`--dur-micro: 120ms`, `--dur-short: 180ms`, `--ease-out: cubic-bezier(0.16, 1, 0.3, 1)`).
+    - Menerapkan `html, body { overflow-x: clip; }` untuk mencegah layout drift atau scrollbar horizontal liar.
+    - Menerapkan ring fokus keyboard standar `:focus-visible` (`2px solid var(--accent); outline-offset: 1px`).
+    - Menambahkan blok fallback `@media (prefers-reduced-motion: reduce)` yang mematikan durasi animasi jika diaktifkan di OS pengguna.
+  - **Penggantian Seluruh Emoji dengan Ikon SVG Inline**:
+    - Sesuai aturan Hallmark "Never emojis as icons", seluruh emoji mentah (`📁`, `📂`, `🪐`, `⟳`, `▶`, `🗑`, `↑`, `↓`, `🔍`, `💾`, `📄`, `+`, `◀`) digantikan dengan ikon SVG inline modern beresolusi tajam dan terukur rapi.
+    - Mengganti gradien badge oranye/merah generik dengan monogram squircle ungu resmi Evernight `#7f77dd` ("M").
+  - **Penyempurnaan Kartu Sel & Hirarki Tombol**:
+    - Hanya satu primary filled button di tampilan utama: "Jalankan Semua" (Run All), tombol lainnya menggunakan gaya outline hairline sekunder.
+    - Nomor eksekusi sel `[1]`, ukuran berkas, dan indikator waktu menggunakan `font-variant-numeric: tabular-nums` agar tidak bergeser saat nilai berubah.
+    - Tombol jalankan sel `▶` didesain bulat minimalis dengan efek hover lembut dan animasi loading berputar saat eksekusi.
+    - Format pesan galat `BAHAYA [KODE]` / `PERINGATAN [KODE]` didesain dengan kotak latar ber-tint halus merah dan border 1px tajam.
+  - **Verifikasi Pengujian & Biner Rilis**:
+    - Seluruh unit & integration test `evernight_cli` (18 unit + 30 cli + 12 error codes + 1 golden test) lulus 100%.
+    - Biner release `target/release/evernight.exe` terkompilasi sukses (7.1s).
+    - Pengujian live HTTP server March pada port 8889 mengonfirmasi seluruh rute (`/`, `/api/notebook`, `/api/berkas`) mengembalikan status 200 OK secara instan.
+    - Repositori eksternal `Nutlope/hallmark` tetap bersih dan tidak disentuh sama sekali.
+
+- **2026-10-30 (Syntax Highlighting Tema Nusantara/Colab & Autocomplete IntelliSense di Web Notebook March)**:
+  - **Editor Berlapis (Dual-Layer Code Mirroring)**:
+    - Merancang antarmuka editor sel kode March dengan dua lapis: layer background `.code-highlight-layer` yang menampilkan token kode berwarna (komentar hijau miring `#6a9955`, string oranye `#ce9178`, angka mint `#b5cea8`, keyword kontrol ungu `#c586c0`, deklarasi teal `#4ec9b0`, fungsi/builtin kuning `#dcdcaa`, operator & kurung), dan layer foreground textarea transparan (`color: transparent; caret-color: #f2a65a; spellcheck="false"`) yang mempertahankan kursor native, pemilihan teks, undo/redo (`Ctrl+Z`), copy/paste, dan menghilangkan garis keriting merah browser.
+    - Sinkronisasi scroll horizontal/vertikal dan auto-resize otomatis antara textarea dan highlight layer.
+  - **Autocomplete & IntelliSense Melayang (`#autocomplete-popup`)**:
+    - Kalkulasi presisi koordinat kursor berbasis mirror element sehingga popup muncul tepat di bawah huruf/kata yang sedang diketik.
+    - Menghadirkan kamus lengkap token: kata kunci (`jika`, `selama`, `untuk`, `fungsi`, `variabel`, `kembali`, dll.), snippets (`jk`, `jkl`, `jklj`, `fg`, `fgutama`, `st`, `utk`, `cb`, dll.), builtins, dan ekosistem `Matra` (`mt.larik`, `mt.tabel`, `mt.baca_csv`, dll.).
+    - Scoring cerdas: saat pengguna mengetik `j`, popup menyarankan urutan presisi seperti di Antigravity IDE: `jika` (keyword), `jk` (Jika snippet), `jkl` (Jika-Lainnya), `jklj` (Jika-LainnyaJika-Lain...), dan `lainnya_jika`.
+    - Navigasi keyboard interaktif penuh: panah `ArrowDown`/`ArrowUp` untuk memindahkan pilihan, `Enter`/`Tab` untuk menerapkan saran dengan penggantian placeholder cerdas (otomatis memilih parameter input pertama), dan `Escape` untuk menutup popup.
+  - **Pengujian & Biner Rilis**:
+    - 18 unit tests dan 30 CLI integration tests lulus 100%.
+    - Biner rilis `target\release\evernight.exe` berhasil dikompilasi (5.6 detik) dan diverifikasi melalui live HTTP mock test.
+
+- **2026-10-29 (Perbaikan Panel Drawer Colab & Fitur Pemilihan Folder March `.emlbn`)**:
+  - **Arsitektur Panel Activity Bar (Colab Style)**:
+    - Merombak bilah sisi kiri March menjadi 2 lapis terpisah: **Activity Bar** (rel vertikal selebar 44px dengan tombol ikon `📁`) dan **Sidebar Drawer** (panel berkas selebar 280px).
+    - Memperbaiki bug di mana ikon folder dan tombol-tombol aksi sebelumnya tetap menggantung dan saling bertumpuk saat panel ditutup. Kini saat drawer ditutup, seluruh drawer tertutup mulus (`width: 0`), dan ikon `📁` tetap rapi di Activity Bar sebagai pengontrol buka/tutup. Tombol `◀` di header drawer juga disediakan untuk menutup drawer secara instan.
+  - **Fitur Pemilihan Folder Penyimpanan (`.emlbn`)**:
+    - Backend `crates/evernight_cli/src/march/server.rs`: Menambahkan endpoint `POST /api/folder/ganti` (mengganti direktori penyimpanan aktif dan memindai ulang) serta `POST /api/folder/telusuri` (membuka jendela native Windows FolderBrowserDialog via PowerShell secara visual).
+    - Frontend `crates/evernight_cli/src/march/aset/index.html`: Bilah folder di bawah header menampilkan nama folder aktif dan tombol `Ganti...` yang memunculkan modal dialog elegan (lengkap dengan tombol `🔍 Telusuri...` dan kotak teks input path).
+    - CLI `crates/evernight_cli/src/march/mod.rs`: Menambahkan dukungan argumen `--folder <DIR>` dan pendeteksian otomatis jika argumen posisi pertama merupakan direktori folder.
+  - **Perbaikan Encoding Teks UTF-8**:
+    - Menambahkan `charset=utf-8` ke seluruh respon HTTP JSON server March untuk mengeliminasi potensi mojibake teks/simbol pada sistem Windows.
+    - Memperbaiki berkas `examples/demo_notebook.emlbn` ke format UTF-8 bersih.
+
+- **2026-10-28 (Migrasi Dokumentasi ke Obsidian Vault `Evernight-language` & Filter Berkas March `.emlbn`)**:
+  - **Peningkatan Web Notebook March**:
+    - Backend `crates/evernight_cli/src/march/server.rs`: Filter fungsi `pindai_berkas_lokal` diperketat sehingga hanya menyaring dan menyajikan berkas berakhiran `.emlbn`. Menambahkan handler rute `POST /api/notebook/buka` (membuka berkas notebook yang dipilih) dan `POST /api/notebook/baru` (membuat berkas notebook baru secara dinamis).
+    - Frontend `crates/evernight_cli/src/march/aset/index.html`: Bilah kiri "NOTEBOOK MARCH (.emlbn)" kini menampilkan berkas `.emlbn` secara bersih dengan status aktif highlight ungu, tombol "+ Buat Notebook Baru", tombol "⟳ Segarkan", dan aksi klik buka notebook interaktif dengan konfirmasi.
+    - Pengujian: 18/18 unit test & 30/30 CLI tests lulus, biner release mandiri teroptimasi `target\release\evernight.exe` berhasil diperbarui.
+  - **Migrasi Vault Obsidian (`Evernight-language`)**:
+    - Memindahkan 33 file Markdown ke dalam direktori tematik di vault Obsidian:
+      - `00-Otak-Agent/`: `KONTEKS.md`, `RENCANA.md`, `PROGRES.md`, `KONSEP.md`, `AGENTS.md`.
+      - `01-Spesifikasi-Bahasa/`: `KEYWORD.md`, `TIPE.md`, `FUNCTION.md`, `ARRAY.md`, `ERROR.md`, `GRAMMAR.md`, `STDLIB.md`, `LIFECYCLE.md` (+ versi `.en.md`).
+      - `02-Ekosistem-Matra-March/`: `MATRA.md`, `MARCH.md`.
+      - `03-Identitas-Visual/`: `BRAND.md`, `LOGO.md`, `TEMA.md`.
+      - `04-Proyek-Distribusi/`: `WEB.md`, `STRUKTUR.md`, `TESTING.md`, `KRITERIA_RILIS_1_0.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`.
+      - `05-Tutorial-Panduan/`: salinan lengkap materi ajar tutorial & panduan.
+    - Membuat berkas Map of Content (MOC) `PETA-KONSEP.md` dengan tautan dua arah (*bidirectional wikilinks* `[[...]]`) agar Graph View di Obsidian membentuk jaringan pengetahuan terhubung otomatis.
+  - **Sinkronisasi Dependensi**:
+    - `AGENTS.md` (root & vault) diperbarui agar instruksi AI mengarahkan pembacaan/penulisan memori ke `Evernight-language/00-Otak-Agent/`.
+    - `situs/src/content.config.ts` dan `situs/src/lib/docs.ts` diperbarui untuk membaca spesifikasi dari `Evernight-language/01-Spesifikasi-Bahasa/` dan `docs/`. Build situs statis Astro terverifikasi 100% sukses (31 halaman terbangun tanpa peringatan/kesalahan).
+
+- **2026-10-28 (Fase 9H SELESAI: Web Notebook Interaktif "March" Format Berkas `.emlbn`)**: Implementasi murni Rust (zero external dependencies) untuk subsistem web notebook data science & machine learning interaktif terpadu di biner compiler `evernight`.
+  - Subsistem March (`crates/evernight_cli/src/march/`):
+    - Format Berkas & Serializer (`notebook.rs`): Struktur `MarchNotebook`, `MarchCell`, `MarchOutput`, parser & serializer JSON zero-dependency, pembaca & penyimpan berkas `.emlbn`, serta utilitas `ekspor_ke_eve()` untuk mengonversi seluruh sel kode notebook menjadi berkas skrip executable `.eve`.
+    - Driver Kernel VM Stateful (`kernel.rs`): Mempertahankan session `Vm::run_incremental()` tetap hidup di RAM sehingga variabel, dataset tabel, dan model machine learning dari sel-sel sebelumnya tetap aktif untuk sel berikutnya. Tangkapan luaran kaya: deteksi otomatis `Value::Tabel` menjadi representasi tabel DataFrame HTML Colab, `Value::Grafik` menjadi plot vektor SVG resolusi tinggi, output teks konsol `cetak`, dan format banner kesalahan merah `BAHAYA [KODE]` dengan nomor baris dan posisi kolom. Transformasi otomatis ekspresi penutup sel menjadi pengembalian nilai (`ReturnStatement`) untuk menampilkan luaran interaktif ala Colab/Jupyter.
+    - Server HTTP TCP Mandiri (`server.rs`): Server web lokal ringan berbasis `std::net::TcpListener` murni (tanpa framework pihak ketiga) yang melayani REST API (`/api/status`, `/api/berkas`, `/api/notebook`, `/api/sel/jalankan`, `/api/simpan`, `/api/kernel/reset`, `/api/ekspor`) dan menyajikan dokumen web SPA. Fitur *Local File Bridge* memindai folder laptop lokal pengguna secara langsung (file CSV, EVE, EMLBN, SVG, MATRA, gambar).
+    - Antarmuka SPA Vanilla Modern Web (`aset/index.html`): Desain pixel-perfect Google Colab Dark Mode terpadu dalam satu berkas HTML/CSS/JS (disematkan via `include_str!`): header bar Colab, judul notebook editable, indikator autosave disk lokal, pill RAM/Kernel, panel kiri penjelajah berkas lokal (klik CSV otomatis menyisipkan kode `mt.baca_csv`), editor sel multi-baris dengan auto-resize, tombol Run bulat `▶` beranimasi putar saat dieksekusi, pintasan keyboard (`Shift+Enter`, `Ctrl+Enter`, `Alt+Enter`, `Tab`), tabel DataFrame responsif (header abu-abu tebal, zebra striping, scroll horizontal/vertikal, info dimensi baris x kolom), dan rendering plot SVG tajam.
+    - Integrasi CLI Runner (`main.rs` & `march/mod.rs`): Subcommand `evernight march [berkas.emlbn] [--port <PORT>] [--tanpa-browser]` dan `evernight march ekspor <berkas.emlbn> [-o target.eve]`, lengkap dengan peluncur otomatis browser default Windows (`rundll32 url.dll,FileProtocolHandler`).
+  - Pengujian & Verifikasi:
+    - 18/18 unit test biner di `crates/evernight_cli/src/main.rs` lulus 100%.
+    - 30/30 CLI integration tests di `crates/evernight_cli/tests/cli_tests.rs` lulus 100% (termasuk `test_cli_march_help` dan `test_cli_march_ekspor_dan_eksekusi`).
+    - 44/44 test suite Matra dan seluruh test suite workspace tetap 100% hijau (0 gagal).
+    - Berkas percontohan `examples/demo_notebook.emlbn` dibuat, diekspor ke `examples/demo_notebook.eve`, dan dieksekusi sukses dengan exit code 0.
+    - Biner release mandiri teroptimasi diperbarui di `target\release\evernight.exe`.
+
+- **2026-10-28 (Fase 9F SELESAI: Deep Learning, Autograd Engine, Jaringan Syaraf Tiruan & Otomatisasi Training `matra.syaraf` & `matra.pelatih`)**: Implementasi murni Rust zero-dependency untuk suite Deep Learning, lapisan neural network, optimizer, fungsi rugi, dan orkestrasi pelatihan otomatis berfitur callback di level VM.
+  - Modul Jaringan Syaraf (`matra.syaraf` / `crates/evernight_vm/src/matra/syaraf.rs`):
+    - Struktur & Tipe: `Parameter` (pembawa bobot dan vektor gradien analitik dengan `.nol_gradien()`), `MatraLapisan` (lapisan abstraksi maju dan mundur), `MatraJaringan` (wadah model MLP sekuensial).
+    - Lapisan Jaringan: `Linear(in_features, out_features, bias)` dengan inisialisasi Kaiming/He, propagasi maju `maju()` dan kalkulasi gradien bobot/bias analitik pada `mundur()`; `Dropout(rasio)` (inverted dropout berskala otomatis `1/(1-p)` dengan pelacakan mode latih vs evaluasi).
+    - Fungsi Aktivasi: `Relu`, `Sigmoid`, `Tanh`, `Softmax` (numerically stable dengan pengurangan nilai maksimum untuk mencegah overflow floating-point) lengkap dengan turunan analitik masing-masing.
+    - Fungsi Kerugian: `KerugianMSE` (Mean Squared Error), `KerugianBCE` (Binary Cross-Entropy dengan clamping epsilon), dan `KerugianKategori` (Categorical Cross-Entropy) dengan kalkulasi nilai rugi skalar dan turunan gradien terhadap keluaran jaringan.
+    - Pengoptimal Bobot: `SGD` (Stochastic Gradient Descent dengan momentum) dan `Adam` (Adaptive Moment Estimation dengan koreksi bias pada rata-rata bergerak momen pertama dan kedua).
+    - Serialisasi Bobot Model: Metode `.simpan(path)` dan `.muat(path)` dengan format teks presisi 16 digit `.matra` untuk persistensi model bebas dependensi pihak ketiga.
+  - Modul Pelatih & Callback (`matra.pelatih` / `crates/evernight_vm/src/matra/pelatih.rs`):
+    - `Pelatih`: Orkestrator mini-batch SGD dengan pengacakan LCG per epoch, evaluasi metrik pada dataset validasi secara periodik, pencetakan progres terminal interaktif, dan eksekusi event callback.
+    - Callbacks: `BerhentiAwal` (Early Stopping dengan kesabaran/patience dan toleransi delta), `SimpanTerbaik` (Model Checkpointing penyimpanan otomatis model berbobot optimal), dan `PencatatRiwayat` (pencatat metrik rugi/akurasi tiap epoch dengan ekspor format JSON).
+  - Tipe `Value` Baru di VM: `Value::ModelSyaraf`, `Value::Lapisan`, `Value::FungsiKerugian`, `Value::Pengoptimal`, `Value::Pelatih`, dan `Value::Callback`.
+  - Keamanan Sandbox Terintegrasi: Resolusi path direktori program otomatis pada penyimpanan/pemuatan model dan callback di `vm.rs` melalui `resolve_sandbox`.
+  - Verifikasi: 7/7 unit test di `crates/evernight_vm/tests/test_matra_syaraf.rs` lulus 100% (total 44/44 unit test suite Matra lulus), seluruh workspace tests hijau, biner release `target\release\evernight.exe` diperbarui, dan percontohan `examples/matra_syaraf.eve` dieksekusi sukses.
+
+- **2026-10-28 (Fase 9E SELESAI: Model Machine Learning Klasik & Metrik Evaluasi Komprehensif `matra.model` & `matra.metrik`)**: Implementasi murni Rust zero-dependency untuk suite algoritma ML klasik dan evaluasi metrik diagnostik komprehensif di level VM.
+  - Modul Model ML Klasik (`matra.model` / `crates/evernight_vm/src/matra/model.rs`):
+    - `RegresiLinear`: Estimasi OLS closed-form & gradient descent; properti `.koefisien`, `.intersep`; metode `.latih(X, y)`, `.prediksi(X)`, `.skor(X, y)` ($R^2$).
+    - `RegresiLogistik`: Multi-kelas One-vs-Rest (OvR) sigmoid activation gradient descent; metode `.prediksi(X)`, `.prediksi_probabilitas(X)` (distribusi probabilitas per sampel), `.skor(X, y)` (akurasi).
+    - `KNNKlasifikasi` & `KNNRegresi`: K-Nearest Neighbors dengan dukungan metrik jarak Euclidean dan Manhattan; klasifikasi berbasis majority voting dan regresi berbasis target averaging.
+    - `PohonKeputusan`: Pohon keputusan CART rekursif mandiri (Gini Impurity untuk klasifikasi, Variance Reduction untuk regresi) dengan batasan kedalaman maksimum dan minimum sampel split.
+    - `HutanAcak`: Bagging ensemble pohon keputusan dengan bootstrap sampling teracak untuk meningkatkan ketahanan terhadap overfitting.
+    - `KMeans`: Algoritma clustering unsupervised Lloyd iteration; properti `.pusat_klaster` (centroid matriks), `.inersia` (within-cluster sum of squares); metode `.prediksi(X)`.
+  - Modul Metrik Evaluasi (`matra.metrik` / `crates/evernight_vm/src/matra/metrik.rs`):
+    - Metrik Klasifikasi: `akurasi`, `presisi`, `recall`, `f1_skor`, `matriks_konfusi` (2D Larik), dan `laporan_klasifikasi` (tabel ASCII ringkasan presisi, recall, f1-skor, dan dukungan per kelas).
+    - Metrik Regresi: `mse` (Mean Squared Error), `rmse` (Root Mean Squared Error), `mae` (Mean Absolute Error), `r2_skor` (Koefisien Determinasi $R^2$), dan `mape` (Mean Absolute Percentage Error).
+  - Tipe `Value` baru di VM (`crates/evernight_vm/src/value.rs`): `Value::Model(Rc<RefCell<MatraModel>>)`.
+  - Integrasi Pipeline Alur Kerja: `PipaKerja` di `crates/evernight_vm/src/matra/alur.rs` kini mendukung penempatan `Value::Model` di ujung pipeline untuk alur kerja end-to-end tanpa kebocoran data (`pipa.prediksi(X)`).
+  - Fleksibilitas Argumen Pipeline: Memperbolehkan inisialisasi pipeline langsung dengan daftar objek `[scaler, model]` tanpa keharusan membuat pasangan nama.
+  - Verifikasi: 7/7 unit test di `crates/evernight_vm/tests/test_matra_model.rs` lulus 100% (total 37/37 unit test Matra lulus), seluruh workspace tests hijau, biner release `target\release\evernight.exe` diperbarui, dan percontohan `examples/matra_model.eve` dieksekusi sukses.
+
+- **2026-10-28 (Fase 9D SELESAI: Suite Training, Preprocessing, Pipeline & Diagnostic Testing `matra.latih`, `matra.seimbang`, `matra.pra`, `matra.alur`, `matra.uji`, `matra.tala`)**: Implementasi murni Rust zero-dependency untuk suite persiapan data, transformasi, penyeimbangan data minoritas, dan pipeline anti-leakage di level VM.
+  - Modul Prapemrosesan (`matra.pra` / `crates/evernight_vm/src/matra/pra.rs`):
+    - `Standarisasi`: Menghitung mean dan standar deviasi per fitur; `.sesuaikan(X)`, `.transformasi(X)`, `.invers_transformasi(X)`.
+    - `PenskalaMinMaks`: Normalisasi min-maks fitur ke rentang terarah `[bawah, atas]`; `.sesuaikan_transformasi(X)`.
+    - `PengekodLabel`: Mengonversi daftar string kategori menjadi indeks numerik kontinu (`0, 1, 2...`) dan decoding invers kembali ke teks asli.
+  - Modul Pembagian Data (`matra.latih` / `crates/evernight_vm/src/matra/latih.rs`):
+    - `pisah_data(X, y, rasio_uji, acak?, stratifikasi?)`: Pemisahan data latih & uji yang mendukung input `MatraArray`, `MatraTabel`, dan `Daftar` dengan opsi stratifikasi proporsional per-kelas target dan generator acak LCG deterministik.
+    - `KLipat`: Generator fold silang K-Fold deterministik / teracak untuk validasi model tanpa bias urutan.
+  - Modul Penyeimbang Minoritas (`matra.seimbang` / `crates/evernight_vm/src/matra/seimbang.rs`):
+    - `SMOTE`: Synthetic Minority Over-sampling Technique berbasis interpolasi jarak Euclidean tetangga terdekat (k-NN) untuk menyeimbangkan kelas data minoritas.
+  - Modul Pipeline Alur Kerja (`matra.alur` / `crates/evernight_vm/src/matra/alur.rs`):
+    - `PipaKerja`: Merangkai tahapan prapemrosesan dan transformer secara berurutan; menjamin fitting parameter hanya terjadi pada data latih dan diterapkan ke data uji tanpa data leakage.
+  - Modul Pengujian Diagnostik Integritas Data (`matra.uji` / `crates/evernight_vm/src/matra/uji.rs`):
+    - `cek_kebocoran(X_latih, X_uji)`: Memindai duplikasi baris persis antara data latih dan data uji untuk mendeteksi data leakage.
+    - `cek_pergeseran(X_latih, X_uji, ambang?)`: Mendeteksi Data Drift (pergeseran distribusi statistik antar kolom fitur) menggunakan metrik selisih mean terstandarisasi.
+  - Modul Penyetelan Hyperparameter (`matra.tala` / `crates/evernight_vm/src/matra/tala.rs`):
+    - `PencarianKisi` (Grid Search): Generator kombinasi Cartesian Product dari ruang parameter uji.
+    - `TalaBayes`: Tuner adaptif hyperparameter dengan strategi eksploitasi-eksplorasi (UCB-style).
+  - Tipe `Value` baru di VM (`crates/evernight_vm/src/value.rs`): `Value::Transformer(Rc<RefCell<MatraTransformer>>)` dan `Value::Pipa(Rc<RefCell<PipaKerja>>)`.
+  - Verifikasi: 8/8 test di `crates/evernight_vm/tests/test_matra_latih.rs` lulus 100%, seluruh unit/integration tests di semua crate workspace tetap 100% hijau, biner release diperbarui (`target\release\evernight.exe`), dan contoh terpadu `examples/matra_latih.eve` sukses dieksekusi tanpa error.
+
+- **2026-10-28 (Perencanaan & Spesifikasi Web Notebook "March" format `.emlbn`)**: User menetapkan penambahan web tools mirip Google Colab untuk eksplorasi dan pelatihan model Machine Learning EvernightLanguage bernama **March** dengan format berkas **`.emlbn`** (*Evernight Machine Learning Notebook*).
+  - Tampilan visual selaras dengan **Google Colab (Dark Mode)**: tombol eksekusi bulat `▶` di kiri sel, tombol aksi sel melayang di kanan atas (pindah atas, pindah bawah, edit, hapus), tombol hover `+ Kode` dan `+ Teks` di batas antar-sel.
+  - Akses berkas **100% lokal**: membaca berkas data CSV dan dataset langsung dari folder harddisk lokal pengguna melalui local server bridge tanpa perlu mengunggah ke server cloud terisolasi.
+  - Format `.emlbn` dirancang berbasis JSON terstruktur yang menyimpan riwayat sel, urutan eksekusi, dan keluaran visual (tabel HTML interaktif dan plot SVG vektor).
+  - Ditulis dokumen spesifikasi resmi `MARCH.md`, ditambahkan subfase 9H di `RENCANA.md`, serta disinkronkan ke `AGENTS.md`, `PROGRES.md`, dan `KONTEKS.md`.
+
+- **2026-10-27 (Fase 9C SELESAI: Mesin Visualisasi & Diagnostik Vektor SVG + Terminal ASCII `matra.grafik`)**: Implementasi murni Rust zero-dependency untuk pembuatan visualisasi data vektor beresolusi tinggi (Scalable Vector Graphics) dan tampilan grafik konsol berbasis ASCII/Unicode.
+  - Struktur inti `MatraPlot` (`crates/evernight_vm/src/matra/grafik.rs`): menyimpan konfigurasi visual (`judul`, `label_x`, `label_y`, `warna`, `warna_latar`, `grid`, `lebar`, `tinggi`) dan buffer data serbaguna.
+  - Tipe `Value` baru di VM (`crates/evernight_vm/src/value.rs`): `Value::Grafik(Rc<RefCell<MatraPlot>>)`.
+  - 5 Jenis Visualisasi yang Didukung:
+    1. Grafik Garis (`mt.grafik.garis` / `mt.garis`): kurva pelatihan loss/akurasi, interpolasi koordinat, titik data `*`, dan garis lintasan `•`.
+    2. Grafik Sebar (`mt.grafik.sebar` / `mt.sebar`): scatter plot 2D korelasi fitur dengan circle bergradien dan opasitas.
+    3. Diagram Batang (`mt.grafik.batang` / `mt.batang`): bar chart kategori dengan batang proporsional solid `█` di terminal dan `<rect rx="4">` di SVG.
+    4. Histogram Frekuensi (`mt.grafik.histogram` / `mt.histogram`): pengelompokan otomatis rentang nilai (`bin_count`) dan visualisasi distribusi frekuensi.
+    5. Matriks Konfusi (`mt.grafik.matriks_konfusi` / `mt.matriks_konfusi`): heatmap diagnostik model evaluasi klasifikasi dengan grid sel bergradien intensitas warna dan label kelas.
+  - Integrasi VM bytecode & Method Chaining (`crates/evernight_vm/src/vm.rs`):
+    - Semua method setter (`.judul()`, `.label_x()`, `.label_y()`, `.warna()`, `.warna_latar()`, `.grid()`, `.ukuran()`, `.simpan_svg()`, `.tampil()`) mem-push kembali instance `Value::Grafik` ke VM stack sehingga mendukung method chaining berkelanjutan.
+    - Properti `.ke_svg()` / `.svg` menghasilkan string XML SVG mandiri tanpa dependensi luar.
+    - Metode `.simpan_svg(path)` / `.simpan(path)` menulis berkas SVG ke disk dengan proteksi sandbox sistem.
+    - Metode `.tampil()` / `.render()` merender representasi ASCII grafik langsung ke terminal konsol atau buffer output capture.
+  - Verifikasi: 7/7 unit & integration tests di `crates/evernight_vm/tests/test_matra_grafik.rs` lulus 100%, seluruh test suite workspace (core, vm, fmt, lint, cli, lsp) tetap 100% hijau, biner release diperbarui (`target\release\evernight.exe`), dan skrip contoh `examples/matra_grafik.eve` teruji sukses menghasilkan output terminal yang rapi dan 5 berkas SVG mandiri.
+
+- **2026-10-27 (Fase 9B SELESAI: Mesin DataFrame & CSV Parser `matra.tabel`)**: Implementasi murni Rust zero-dependency untuk struktur tabular columnar `MatraTabel` dan tipe runtime `Value::Tabel`.
+  - Struktur columnar (`crates/evernight_vm/src/matra/tabel.rs`): `nama_kolom: Vec<String>` dan `kolom: Vec<Vec<Value>>` untuk performa agregasi dan slicing instan tanpa overhead boxing baris.
+  - Tipe `Value` baru di VM (`crates/evernight_vm/src/value.rs`): `Value::Tabel(Rc<RefCell<MatraTabel>>)`.
+  - Integrasi VM bytecode (`crates/evernight_vm/src/vm.rs`):
+    - Pengambilan kolom numerik otomatis dikonversi menjadi `Value::Larik` untuk langsung mendukung aljabar linier/vektorisasi.
+    - Pengambilan baris `df[i]` atau `df.baris(i)` mengembalikan kamus `{ "kolom": nilai }`.
+    - Mutasi kolom via dot/index assignment: `df["baru"] = [...]` atau `df.baru = [...]`.
+    - Properti: `.bentuk`, `.kolom`, `.panjang`, `.jumlah_baris`, `.jumlah_kolom`.
+    - Slicing & Kolom: `.kepala(n)`, `.ekor(n)`, `.pilih_kolom([...])`, `.kecuali([...])`, `.ganti_nama_kolom({...})`.
+    - Pengurutan & Filter: `.urutkan(kolom, menaik)` dan `.saring([mask_boolean])`.
+    - Penanganan Nilai Hilang: `.ada_kosong()`, `.buang_kosong()`, `.isi_kosong(skalar)`, dan `.isi_kosong(kamus_pemetaan)`.
+    - Agregasi & Statistik: `.kelompokkan(kolom, operasi)` ("rata_rata", "jumlah", "min", "max", "hitung") dan ringkasan lengkap `.deskripsi()`.
+    - Interoperabilitas Machine Learning: `.ke_larik([fitur...])` mengonversi fitur tabel menjadi matriks 2D kontinu `MatraArray` siap latih; `.ke_daftar()` mengonversi ke daftar rekaman.
+    - I/O CSV Cepat: fungsi `mt.baca_csv(path, pemisah?)` dan metode `df.tulis_csv(path, pemisah?)` yang terintegrasi sandbox program.
+    - Visualisasi: implementasi formatter display tabel ASCII berbingkai (`┌─┬─┐`, `│ │ │`, `├─┼─┤`, `└─┴─┘`) dengan deteksi lebar dinamis dan elipsis tengah bila data > 10 baris.
+  - Verifikasi: 8/8 test integrasi di `crates/evernight_vm/tests/test_matra_tabel.rs` lulus 100%, seluruh test suite workspace (core, vm, fmt, lint, cli) tetap 100% hijau, dan contoh nyata `examples/matra_tabel.eve` teruji sempurna dengan output presisi.
+
+- **2026-10-27 (perencanaan subfase 9G: Rilis & Auto-Update via GitHub `update evernight system`)**: Menambahkan subfase penutup 9G pada Fase 9 sesuai permintaan user. Subfase ini memastikan bahwa setelah seluruh ekosistem Matra selesai, versi rilis baru diunggah ke GitHub sehingga user dari direktori mana pun di Windows (CMD / PowerShell di `C:\`) cukup menjalankan satu perintah `update evernight system` untuk memperbarui biner sistem secara otomatis.
+
+- **2026-10-27 (Fase 9A SELESAI: Engine Tensor & Aljabar Linier `matra.larik`)**: Implementasi murni Rust tanpa dependensi eksternal (zero-dependency) untuk pustaka data science & machine learning `Matra`.
+  - Struktur inti `MatraArray` (`crates/evernight_vm/src/matra/larik.rs`): buffer kontinu 1D `Vec<f64>` dengan metadata `bentuk: Vec<usize>`.
+  - Tipe `Value` baru di VM (`crates/evernight_vm/src/value.rs`): `Value::Larik(Rc<RefCell<MatraArray>>)`.
+  - Integrasi VM bytecode (`crates/evernight_vm/src/vm.rs`): Operator aritmatika (`+`, `-`, `*`, `/`, `**`, `-` unary) mendukung vektorisasi array-array dan broadcasting skalar-vektor dua arah (kiri & kanan); indexing `arr[i]` dan mutasi `arr[i] = val`; properti `.bentuk`, `.panjang`, `.ukuran`, `.dimensi`, `.T`.
+  - Konstruktor array: `mt.larik`, `mt.nol`, `mt.satu`, `mt.penuh`, `mt.rentang`, `mt.spasi_linear`, `mt.identitas`, `mt.acak`.
+  - Aljabar Linier & Statistik: perkalian titik (Dot product `mt.titik` 1D·1D, 2D·1D, 2D·2D), transposisi (`.T` & `.transposisi()`), determinan (`mt.determinan`), invers matriks Gauss-Jordan (`mt.invers`), agregasi statistik dengan dukungan pemotongan sumbu baris/kolom (`sumbu: 0`, `sumbu: 1`).
+  - Impor native: `impor "matra" sebagai mt` ter-resolve otomatis di level VM namespace.
+  - Verifikasi: 7/7 unit & integration tests di `crates/evernight_vm/tests/test_matra_larik.rs` lulus 100%, seluruh unit test workspace (core, vm, fmt, lint, cli) tetap hijau, dan skrip CLI nyata `examples/matra_larik.eve` teruji sukses.
+
+- **2026-10-27 (perancangan Fase 9 — Pustaka Terpadu Matra: Suite Training & Testing)**: User memperluas cakupan Matra untuk menyertakan seluruh alur kerja data training dan data testing profesional (menggabungkan konsep Scikit-Learn `model_selection`/`pipeline`, Optuna, Imbalanced-learn, Yellowbrick, Deepchecks, dan PyTorch Lightning). Dokumen `MATRA.md`, `RENCANA.md`, dan `PROGRES.md` diperbarui dengan spesifikasi teknis dan alur kode contoh. Belum ada kode implementasi (tahap perencanaan arsitektur).
 
 - **2026-09-27 (isi artikel EN Reference)**: Perintah user: bagian Reference belum EN → question tool: **Reference only (9 halaman)** + file EN **sibling di root**; Memulai tetap ID. Eksekusi: tulis 9 file `*.en.md` (7 root + `docs/cli`/`docs/contoh`); `content.config.ts` glob +`'*.en.md'`; aturan: heading struktur identik, blok kode/EBNF/tabel pesan error byte-identik, deskripsi tabel & prosa diterjemah, tanpa em dash (13 em dash `STDLIB.en.md` → `:` di luar fence). Checker `cek-en.js` diperluas (glob root + `docs/` root + cek em dash) → **OK: 25 pasangan identik**. Verifikasi: build **30 halaman** 0 warning (rute EN tak bertambah, dual-render), dist 9 halaman Rujukan `isi-en hidden` + prose EN (25 total), 0 rute bocor, spot-check frasa EN per halaman ok, `cek-eve-run` 16/16, `cek-output-tutorial` 9/9.
 

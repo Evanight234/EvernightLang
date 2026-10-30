@@ -2,7 +2,7 @@
   "name": "evernight-language",
   "displayName": "EvernightLanguage",
   "description": "Bahasa pemrograman Indonesia: syntax highlighting, tema Nusantara, snippet, dan autocomplete.",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "Satriyo",
   "author": {
     "name": "Satriyo"
