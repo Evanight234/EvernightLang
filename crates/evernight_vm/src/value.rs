@@ -1,5 +1,8 @@
 use crate::bytecode::Chunk;
-use crate::matra::{MatraArray, MatraCallback, MatraJaringan, MatraLapisan, MatraLoss, MatraModel, MatraOptimizer, MatraPelatih, MatraPlot, MatraTabel, MatraTransformer, PipaKerja};
+use crate::matra::{
+    MatraArray, MatraCallback, MatraJaringan, MatraLapisan, MatraLoss, MatraModel, MatraOptimizer,
+    MatraPelatih, MatraPlot, MatraTabel, MatraTransformer, PipaKerja,
+};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fmt;
@@ -149,26 +152,36 @@ impl PartialEq for Value {
             (Value::Larik(a), Value::Larik(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
             (Value::Tabel(a), Value::Tabel(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
             (Value::Grafik(a), Value::Grafik(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
-            (Value::Transformer(a), Value::Transformer(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
+            (Value::Transformer(a), Value::Transformer(b)) => {
+                Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow()
+            }
             (Value::Pipa(a), Value::Pipa(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
             (Value::Model(a), Value::Model(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
-            (Value::ModelSyaraf(a), Value::ModelSyaraf(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
-            (Value::Lapisan(a), Value::Lapisan(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
-            (Value::FungsiKerugian(a), Value::FungsiKerugian(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
-            (Value::Pengoptimal(a), Value::Pengoptimal(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
-            (Value::Pelatih(a), Value::Pelatih(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
-            (Value::Callback(a), Value::Callback(b)) => Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow(),
+            (Value::ModelSyaraf(a), Value::ModelSyaraf(b)) => {
+                Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow()
+            }
+            (Value::Lapisan(a), Value::Lapisan(b)) => {
+                Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow()
+            }
+            (Value::FungsiKerugian(a), Value::FungsiKerugian(b)) => {
+                Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow()
+            }
+            (Value::Pengoptimal(a), Value::Pengoptimal(b)) => {
+                Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow()
+            }
+            (Value::Pelatih(a), Value::Pelatih(b)) => {
+                Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow()
+            }
+            (Value::Callback(a), Value::Callback(b)) => {
+                Rc::ptr_eq(a, b) || *a.borrow() == *b.borrow()
+            }
             (Value::FungsiAsli { id: a, .. }, Value::FungsiAsli { id: b, .. }) => a == b,
             (
                 Value::MetodeAsli {
-                    id: a,
-                    target: t1,
-                    ..
+                    id: a, target: t1, ..
                 },
                 Value::MetodeAsli {
-                    id: b,
-                    target: t2,
-                    ..
+                    id: b, target: t2, ..
                 },
             ) => a == b && t1 == t2,
             _ => false,

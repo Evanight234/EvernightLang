@@ -19,7 +19,10 @@ impl BatchRng {
     }
 
     fn next_u64(&mut self) -> u64 {
-        self.state = self.state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+        self.state = self
+            .state
+            .wrapping_mul(6364136223846793005)
+            .wrapping_add(1442695040888963407);
         self.state
     }
 
@@ -62,17 +65,28 @@ pub struct MatraCallback {
 }
 
 impl MatraCallback {
-    pub fn berhenti_awal(pantau: Option<&str>, kesabaran: Option<usize>, min_delta: Option<f64>, mode: Option<&str>) -> Self {
+    pub fn berhenti_awal(
+        pantau: Option<&str>,
+        kesabaran: Option<usize>,
+        min_delta: Option<f64>,
+        mode: Option<&str>,
+    ) -> Self {
         let p = pantau.unwrap_or("rugi_val").to_string();
-        let m = mode.unwrap_or_else(|| {
-            if p.contains("akurasi") || p.contains("f1") || p.contains("skor") {
-                "maks"
-            } else {
-                "min"
-            }
-        }).to_string();
+        let m = mode
+            .unwrap_or_else(|| {
+                if p.contains("akurasi") || p.contains("f1") || p.contains("skor") {
+                    "maks"
+                } else {
+                    "min"
+                }
+            })
+            .to_string();
 
-        let initial_terbaik = if m == "maks" { f64::NEG_INFINITY } else { f64::INFINITY };
+        let initial_terbaik = if m == "maks" {
+            f64::NEG_INFINITY
+        } else {
+            f64::INFINITY
+        };
 
         Self {
             jenis: JenisCallback::BerhentiAwal {
@@ -89,15 +103,21 @@ impl MatraCallback {
 
     pub fn simpan_terbaik(berkas: &str, pantau: Option<&str>, mode: Option<&str>) -> Self {
         let p = pantau.unwrap_or("akurasi_val").to_string();
-        let m = mode.unwrap_or_else(|| {
-            if p.contains("akurasi") || p.contains("f1") || p.contains("skor") {
-                "maks"
-            } else {
-                "min"
-            }
-        }).to_string();
+        let m = mode
+            .unwrap_or_else(|| {
+                if p.contains("akurasi") || p.contains("f1") || p.contains("skor") {
+                    "maks"
+                } else {
+                    "min"
+                }
+            })
+            .to_string();
 
-        let initial_terbaik = if m == "maks" { f64::NEG_INFINITY } else { f64::INFINITY };
+        let initial_terbaik = if m == "maks" {
+            f64::NEG_INFINITY
+        } else {
+            f64::INFINITY
+        };
 
         Self {
             jenis: JenisCallback::SimpanTerbaik {
@@ -126,7 +146,15 @@ impl MatraCallback {
         model: &mut MatraJaringan,
     ) -> Result<bool, String> {
         match &mut self.jenis {
-            JenisCallback::BerhentiAwal { pantau, kesabaran, min_delta, mode, terbaik, hitung, berhenti } => {
+            JenisCallback::BerhentiAwal {
+                pantau,
+                kesabaran,
+                min_delta,
+                mode,
+                terbaik,
+                hitung,
+                berhenti,
+            } => {
                 let nilai_sekarang = match metrik.get(pantau) {
                     Some(v) => *v,
                     None => return Ok(false),
@@ -155,7 +183,12 @@ impl MatraCallback {
                 Ok(false)
             }
 
-            JenisCallback::SimpanTerbaik { berkas, pantau, mode, terbaik } => {
+            JenisCallback::SimpanTerbaik {
+                berkas,
+                pantau,
+                mode,
+                terbaik,
+            } => {
                 let nilai_sekarang = match metrik.get(pantau) {
                     Some(v) => *v,
                     None => return Ok(false),
@@ -310,7 +343,11 @@ impl MatraPelatih {
                 start_idx = end_idx;
             }
 
-            let avg_train_loss = if total_batches > 0 { total_loss / (total_batches as f64) } else { 0.0 };
+            let avg_train_loss = if total_batches > 0 {
+                total_loss / (total_batches as f64)
+            } else {
+                0.0
+            };
 
             // 3. Evaluasi metrik latih & validasi
             let mut metrik_epoch = HashMap::new();
@@ -344,9 +381,19 @@ impl MatraPelatih {
 
             // Tampilkan kemajuan konsol setiap 5 putaran atau putaran akhir
             if epoch % 5 == 0 || epoch == 1 || epoch == putaran {
-                let mut status = format!("Putaran [{}/{}] | Rugi: {:.4} | Akurasi: {:.2}%", epoch, putaran, avg_train_loss, train_acc * 100.0);
+                let mut status = format!(
+                    "Putaran [{}/{}] | Rugi: {:.4} | Akurasi: {:.2}%",
+                    epoch,
+                    putaran,
+                    avg_train_loss,
+                    train_acc * 100.0
+                );
                 if let (Some(vl), Some(va)) = (val_loss_opt, val_acc_opt) {
-                    status.push_str(&format!(" | Rugi Val: {:.4} | Akurasi Val: {:.2}%", vl, va * 100.0));
+                    status.push_str(&format!(
+                        " | Rugi Val: {:.4} | Akurasi Val: {:.2}%",
+                        vl,
+                        va * 100.0
+                    ));
                 }
                 println!("{}", status);
             }

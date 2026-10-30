@@ -4,7 +4,10 @@ const HOVER_INFO: &[(&str, &str)] = &[
     ("fungsi", "Deklarasi fungsi: `fungsi nama(param) { ... }`"),
     ("variabel", "Deklarasi variabel: `variabel x = nilai`"),
     ("tetap", "Konstanta: `tetap PI = 3.14`"),
-    ("jika", "Percabangan: `jika kondisi { ... } lainnya { ... }`"),
+    (
+        "jika",
+        "Percabangan: `jika kondisi { ... } lainnya { ... }`",
+    ),
     ("lainnya", "Blok else: `jika ... { } lainnya { }`"),
     ("selama", "Loop: `selama kondisi { ... }`"),
     ("untuk", "Loop range: `untuk i dari 1 sampai 10 { ... }`"),
@@ -32,7 +35,10 @@ const HOVER_INFO: &[(&str, &str)] = &[
     ("pecah", "Split: `pecah(teks, delimiter)` → daftar"),
     ("gabung", "Join: `gabung(daftar, delimiter)` → teks"),
     ("ganti", "Replace: `ganti(teks, lama, baru)`"),
-    ("mengandung", "Contains: `mengandung(teks, substring)` → bolean"),
+    (
+        "mengandung",
+        "Contains: `mengandung(teks, substring)` → bolean",
+    ),
     ("urutkan", "Sort: `urutkan(daftar)` → daftar terurut"),
     ("jumlah", "Sum: `jumlah(daftar)` → angka"),
     ("rata2", "Average: `rata2(daftar)` → angka"),
@@ -40,7 +46,10 @@ const HOVER_INFO: &[(&str, &str)] = &[
     ("salin", "Deep copy: `salin(x)` → salinan"),
     ("ke_teks", "Konversi ke teks: `ke_teks(42)` → \"42\""),
     ("ke_angka", "Konversi ke angka: `ke_angka(\"42\")` → 42"),
-    ("waktu_sekarang", "Timestamp millis: `waktu_sekarang()` → angka"),
+    (
+        "waktu_sekarang",
+        "Timestamp millis: `waktu_sekarang()` → angka",
+    ),
     ("tunda", "Sleep: `tunda(millis)`"),
     ("baca_file", "Baca file: `baca_file(\"path\")` → teks"),
     ("tulis_file", "Tulis file: `tulis_file(\"path\", \"isi\")`"),
@@ -56,8 +65,12 @@ pub fn hover(text: &str, line: usize, col: usize) -> Option<Value> {
     let before = &current_line[..safe_col];
     let after = &current_line[safe_col..];
 
-    let word_start = before.rfind(|c: char| !c.is_alphanumeric() && c != '_').map_or(0, |i| i + 1);
-    let word_end = after.find(|c: char| !c.is_alphanumeric() && c != '_').unwrap_or(after.len());
+    let word_start = before
+        .rfind(|c: char| !c.is_alphanumeric() && c != '_')
+        .map_or(0, |i| i + 1);
+    let word_end = after
+        .find(|c: char| !c.is_alphanumeric() && c != '_')
+        .unwrap_or(after.len());
     let word = &current_line[word_start..safe_col + word_end];
 
     if word.is_empty() {

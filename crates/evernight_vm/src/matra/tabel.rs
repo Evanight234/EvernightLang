@@ -79,7 +79,12 @@ impl MatraTabel {
             let data_kolom: Vec<Value> = match v {
                 Value::Daftar(d) => d.borrow().clone(),
                 Value::Larik(l) => l.borrow().data.iter().map(|n| Value::Angka(*n)).collect(),
-                _ => return Err(format!("Data untuk kolom '{}' harus berupa daftar atau larik", k)),
+                _ => {
+                    return Err(format!(
+                        "Data untuk kolom '{}' harus berupa daftar atau larik",
+                        k
+                    ))
+                }
             };
 
             if let Some(expected) = n_baris {
@@ -151,7 +156,13 @@ impl MatraTabel {
         if larik.bentuk.len() == 1 {
             let _n_baris = larik.data.len();
             let col_name = nama_kolom
-                .and_then(|mut nk| if !nk.is_empty() { Some(nk.remove(0)) } else { None })
+                .and_then(|mut nk| {
+                    if !nk.is_empty() {
+                        Some(nk.remove(0))
+                    } else {
+                        None
+                    }
+                })
                 .unwrap_or_else(|| "k0".to_string());
 
             let col_data: Vec<Value> = larik.data.iter().map(|&n| Value::Angka(n)).collect();
@@ -247,7 +258,11 @@ impl MatraTabel {
     }
 
     /// Menambahkan kolom baru atau menimpa kolom lama dengan nama yang sama.
-    pub fn tambah_atau_ganti_kolom(&mut self, nama: String, data: Vec<Value>) -> Result<(), String> {
+    pub fn tambah_atau_ganti_kolom(
+        &mut self,
+        nama: String,
+        data: Vec<Value>,
+    ) -> Result<(), String> {
         let n_baris = self.jumlah_baris();
         if self.kolom.is_empty() {
             self.nama_kolom.push(nama);
@@ -314,7 +329,11 @@ impl MatraTabel {
     pub fn ambil_baris(&self, r: usize) -> Result<HashMap<String, Value>, String> {
         let n_baris = self.jumlah_baris();
         if r >= n_baris {
-            return Err(format!("Indeks baris {} di luar batas [0..{}]", r, n_baris.saturating_sub(1)));
+            return Err(format!(
+                "Indeks baris {} di luar batas [0..{}]",
+                r,
+                n_baris.saturating_sub(1)
+            ));
         }
 
         let mut row_map = HashMap::with_capacity(self.nama_kolom.len());
@@ -394,7 +413,9 @@ impl MatraTabel {
             let va = &ref_col[a];
             let vb = &ref_col[b];
             let cmp = match (va, vb) {
-                (Value::Angka(x), Value::Angka(y)) => x.partial_cmp(y).unwrap_or(std::cmp::Ordering::Equal),
+                (Value::Angka(x), Value::Angka(y)) => {
+                    x.partial_cmp(y).unwrap_or(std::cmp::Ordering::Equal)
+                }
                 (Value::Teks(x), Value::Teks(y)) => x.cmp(y),
                 (Value::Bolean(x), Value::Bolean(y)) => x.cmp(y),
                 (Value::Kosong, Value::Kosong) => std::cmp::Ordering::Equal,
@@ -486,7 +507,8 @@ impl MatraTabel {
             baris_valid.push(valid);
         }
 
-        self.saring_dengan_mask(&baris_valid).unwrap_or_else(|_| self.clone())
+        self.saring_dengan_mask(&baris_valid)
+            .unwrap_or_else(|_| self.clone())
     }
 
     /// Mengisi seluruh sel kosong dengan nilai pengganti skalar.
@@ -516,7 +538,8 @@ impl MatraTabel {
             let pengganti = pemetaan.get(nama);
             let mut filled = Vec::with_capacity(self.kolom[c_idx].len());
             for v in &self.kolom[c_idx] {
-                let is_kosong = matches!(v, Value::Kosong) || matches!(v, Value::Angka(n) if n.is_nan());
+                let is_kosong =
+                    matches!(v, Value::Kosong) || matches!(v, Value::Angka(n) if n.is_nan());
                 if is_kosong {
                     if let Some(sub) = pengganti {
                         filled.push(sub.clone());
@@ -552,7 +575,10 @@ impl MatraTabel {
                     }
                 }
                 if num_cols.is_empty() {
-                    return Err("Tidak ada kolom numerik yang ditemukan untuk dikonversi ke Larik".to_string());
+                    return Err(
+                        "Tidak ada kolom numerik yang ditemukan untuk dikonversi ke Larik"
+                            .to_string(),
+                    );
                 }
                 num_cols
             }
@@ -652,7 +678,11 @@ impl MatraTabel {
     }
 
     /// Agregasi data dengan pengelompokan (GroupBy).
-    pub fn kelompokkan_dan_agregasi(&self, kolom_grup: &str, operasi: &str) -> Result<Self, String> {
+    pub fn kelompokkan_dan_agregasi(
+        &self,
+        kolom_grup: &str,
+        operasi: &str,
+    ) -> Result<Self, String> {
         let g_idx = self
             .indeks_kolom(kolom_grup)
             .ok_or_else(|| format!("Kolom pengelompokan '{}' tidak ditemukan", kolom_grup))?;
@@ -673,7 +703,10 @@ impl MatraTabel {
         grup_keys.sort();
 
         let mut res_nama_kolom = vec![kolom_grup.to_string()];
-        let mut res_kolom = vec![grup_keys.iter().map(|k| Value::Teks(k.clone())).collect::<Vec<Value>>()];
+        let mut res_kolom = vec![grup_keys
+            .iter()
+            .map(|k| Value::Teks(k.clone()))
+            .collect::<Vec<Value>>()];
 
         for (c_idx, name) in self.nama_kolom.iter().enumerate() {
             if c_idx == g_idx {
@@ -681,7 +714,9 @@ impl MatraTabel {
             }
 
             // Cek apakah numerik
-            let is_num = self.kolom[c_idx].iter().any(|v| matches!(v, Value::Angka(_)));
+            let is_num = self.kolom[c_idx]
+                .iter()
+                .any(|v| matches!(v, Value::Angka(_)));
             if !is_num && operasi != "hitung" && operasi != "count" {
                 continue;
             }
@@ -779,7 +814,9 @@ impl MatraTabel {
                 }
                 baris_sekarang.push(field_sekarang.trim().to_string());
                 field_sekarang.clear();
-                if !baris_sekarang.is_empty() && !(baris_sekarang.len() == 1 && baris_sekarang[0].is_empty()) {
+                if !baris_sekarang.is_empty()
+                    && !(baris_sekarang.len() == 1 && baris_sekarang[0].is_empty())
+                {
                     baris_data.push(std::mem::take(&mut baris_sekarang));
                 }
             } else {
@@ -790,7 +827,9 @@ impl MatraTabel {
 
         if !field_sekarang.is_empty() || !baris_sekarang.is_empty() {
             baris_sekarang.push(field_sekarang.trim().to_string());
-            if !baris_sekarang.is_empty() && !(baris_sekarang.len() == 1 && baris_sekarang[0].is_empty()) {
+            if !baris_sekarang.is_empty()
+                && !(baris_sekarang.len() == 1 && baris_sekarang[0].is_empty())
+            {
                 baris_data.push(baris_sekarang);
             }
         }
@@ -808,11 +847,19 @@ impl MatraTabel {
         for row in baris_data {
             for c_idx in 0..n_kolom {
                 let text_val = row.get(c_idx).map(|s| s.as_str()).unwrap_or("");
-                let value = if text_val.is_empty() || text_val == "NA" || text_val == "null" || text_val == "kosong" {
+                let value = if text_val.is_empty()
+                    || text_val == "NA"
+                    || text_val == "null"
+                    || text_val == "kosong"
+                {
                     Value::Kosong
-                } else if text_val.eq_ignore_ascii_case("benar") || text_val.eq_ignore_ascii_case("true") {
+                } else if text_val.eq_ignore_ascii_case("benar")
+                    || text_val.eq_ignore_ascii_case("true")
+                {
                     Value::Bolean(true)
-                } else if text_val.eq_ignore_ascii_case("salah") || text_val.eq_ignore_ascii_case("false") {
+                } else if text_val.eq_ignore_ascii_case("salah")
+                    || text_val.eq_ignore_ascii_case("false")
+                {
                     Value::Bolean(false)
                 } else if let Ok(num) = text_val.parse::<f64>() {
                     Value::Angka(num)
@@ -849,7 +896,13 @@ impl MatraTabel {
                 }
                 let val_str = match &self.kolom[c][r] {
                     Value::Kosong => String::new(),
-                    Value::Bolean(b) => if *b { "benar".to_string() } else { "salah".to_string() },
+                    Value::Bolean(b) => {
+                        if *b {
+                            "benar".to_string()
+                        } else {
+                            "salah".to_string()
+                        }
+                    }
                     Value::Angka(n) => n.to_string(),
                     Value::Teks(s) => s.clone(),
                     other => other.to_string(),
@@ -863,7 +916,11 @@ impl MatraTabel {
     }
 
     fn escape_csv_field(field: &str, sep: char) -> String {
-        if field.contains(sep) || field.contains('"') || field.contains('\n') || field.contains('\r') {
+        if field.contains(sep)
+            || field.contains('"')
+            || field.contains('\n')
+            || field.contains('\r')
+        {
             let escaped = field.replace('"', "\"\"");
             format!("\"{}\"", escaped)
         } else {

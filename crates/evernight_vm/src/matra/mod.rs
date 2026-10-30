@@ -16,11 +16,12 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 
+use crate::value::Value;
 pub use alur::PipaKerja;
 pub use grafik::{JenisPlot, MatraPlot};
 pub use larik::MatraArray;
-pub use model::{JenisModel, MatraModel};
 pub use latih::{pisah_data, KLipat};
+pub use model::{JenisModel, MatraModel};
 pub use pelatih::MatraCallback;
 pub use pelatih::MatraPelatih;
 pub use pra::{JenisTransformer, MatraTransformer};
@@ -29,7 +30,6 @@ pub use syaraf::{MatraJaringan, MatraLapisan, MatraLoss, MatraOptimizer, Paramet
 pub use tabel::MatraTabel;
 pub use tala::{PencarianKisi, TalaBayes};
 pub use uji::{cek_kebocoran, cek_pergeseran};
-use crate::value::Value;
 
 // ID fungsi asli Matra (1000+)
 pub const MATRA_FN_LARIK: u16 = 1000;
@@ -574,8 +574,14 @@ pub fn buat_modul_matra() -> Value {
     latih_map.insert("LipatanBerlapis".to_string(), fn_klipat.clone());
     latih_map.insert("validasi_silang".to_string(), fn_validasi_silang.clone());
     latih_map.insert("cross_val_score".to_string(), fn_validasi_silang.clone());
-    map.insert("latih".to_string(), Value::Kamus(Rc::new(RefCell::new(latih_map.clone()))));
-    map.insert("modul_latih".to_string(), Value::Kamus(Rc::new(RefCell::new(latih_map))));
+    map.insert(
+        "latih".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(latih_map.clone()))),
+    );
+    map.insert(
+        "modul_latih".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(latih_map))),
+    );
 
     // Fungsi penyeimbang data (matra.seimbang)
     let fn_smote = Value::FungsiAsli {
@@ -588,8 +594,14 @@ pub fn buat_modul_matra() -> Value {
     let mut seimbang_map = HashMap::new();
     seimbang_map.insert("SMOTE".to_string(), fn_smote.clone());
     seimbang_map.insert("smote".to_string(), fn_smote.clone());
-    map.insert("seimbang".to_string(), Value::Kamus(Rc::new(RefCell::new(seimbang_map.clone()))));
-    map.insert("modul_seimbang".to_string(), Value::Kamus(Rc::new(RefCell::new(seimbang_map))));
+    map.insert(
+        "seimbang".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(seimbang_map.clone()))),
+    );
+    map.insert(
+        "modul_seimbang".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(seimbang_map))),
+    );
 
     // Fungsi prapemrosesan data (matra.pra)
     let fn_standarisasi = Value::FungsiAsli {
@@ -623,8 +635,14 @@ pub fn buat_modul_matra() -> Value {
     pra_map.insert("PengekodLabel".to_string(), fn_pengekod_label.clone());
     pra_map.insert("pengekod_label".to_string(), fn_pengekod_label.clone());
     pra_map.insert("LabelEncoder".to_string(), fn_pengekod_label.clone());
-    map.insert("pra".to_string(), Value::Kamus(Rc::new(RefCell::new(pra_map.clone()))));
-    map.insert("modul_pra".to_string(), Value::Kamus(Rc::new(RefCell::new(pra_map))));
+    map.insert(
+        "pra".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(pra_map.clone()))),
+    );
+    map.insert(
+        "modul_pra".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(pra_map))),
+    );
 
     // Pipeline alur kerja (matra.alur)
     let fn_pipa = Value::FungsiAsli {
@@ -641,8 +659,14 @@ pub fn buat_modul_matra() -> Value {
     alur_map.insert("pipa".to_string(), fn_pipa.clone());
     alur_map.insert("Pipeline".to_string(), fn_pipa.clone());
     alur_map.insert("pipeline".to_string(), fn_pipa.clone());
-    map.insert("alur".to_string(), Value::Kamus(Rc::new(RefCell::new(alur_map.clone()))));
-    map.insert("modul_alur".to_string(), Value::Kamus(Rc::new(RefCell::new(alur_map))));
+    map.insert(
+        "alur".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(alur_map.clone()))),
+    );
+    map.insert(
+        "modul_alur".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(alur_map))),
+    );
 
     // Pengujian diagnostik & integritas data (matra.uji)
     let fn_kebocoran = Value::FungsiAsli {
@@ -662,8 +686,14 @@ pub fn buat_modul_matra() -> Value {
     uji_map.insert("cek_leakage".to_string(), fn_kebocoran.clone());
     uji_map.insert("cek_pergeseran".to_string(), fn_pergeseran.clone());
     uji_map.insert("cek_drift".to_string(), fn_pergeseran.clone());
-    map.insert("uji".to_string(), Value::Kamus(Rc::new(RefCell::new(uji_map.clone()))));
-    map.insert("modul_uji".to_string(), Value::Kamus(Rc::new(RefCell::new(uji_map))));
+    map.insert(
+        "uji".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(uji_map.clone()))),
+    );
+    map.insert(
+        "modul_uji".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(uji_map))),
+    );
 
     // Penyetelan hyperparameter (matra.tala)
     let fn_kisi = Value::FungsiAsli {
@@ -683,8 +713,14 @@ pub fn buat_modul_matra() -> Value {
     tala_map.insert("GridSearchCV".to_string(), fn_kisi.clone());
     tala_map.insert("TalaBayes".to_string(), fn_bayes.clone());
     tala_map.insert("Optuna".to_string(), fn_bayes.clone());
-    map.insert("tala".to_string(), Value::Kamus(Rc::new(RefCell::new(tala_map.clone()))));
-    map.insert("modul_tala".to_string(), Value::Kamus(Rc::new(RefCell::new(tala_map))));
+    map.insert(
+        "tala".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(tala_map.clone()))),
+    );
+    map.insert(
+        "modul_tala".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(tala_map))),
+    );
 
     // =========================================================================
     // FASE 9E: MODEL MACHINE LEARNING KLASIK & METRIK EVALUASI
@@ -764,8 +800,14 @@ pub fn buat_modul_matra() -> Value {
     model_map.insert("random_forest".to_string(), fn_hutan);
     model_map.insert("KMeans".to_string(), fn_kmeans.clone());
     model_map.insert("kmeans".to_string(), fn_kmeans);
-    map.insert("model".to_string(), Value::Kamus(Rc::new(RefCell::new(model_map.clone()))));
-    map.insert("modul_model".to_string(), Value::Kamus(Rc::new(RefCell::new(model_map))));
+    map.insert(
+        "model".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(model_map.clone()))),
+    );
+    map.insert(
+        "modul_model".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(model_map))),
+    );
 
     // Fungsi-fungsi metrik evaluasi (matra.metrik)
     let fn_akurasi = Value::FungsiAsli {
@@ -842,26 +884,68 @@ pub fn buat_modul_matra() -> Value {
     metrik_map.insert("r2_skor".to_string(), fn_r2.clone());
     metrik_map.insert("r2_score".to_string(), fn_r2);
     metrik_map.insert("mape".to_string(), fn_mape.clone());
-    map.insert("metrik".to_string(), Value::Kamus(Rc::new(RefCell::new(metrik_map.clone()))));
-    map.insert("modul_metrik".to_string(), Value::Kamus(Rc::new(RefCell::new(metrik_map))));
+    map.insert(
+        "metrik".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(metrik_map.clone()))),
+    );
+    map.insert(
+        "modul_metrik".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(metrik_map))),
+    );
 
     // =========================================================================
     // FASE 9F: DEEP LEARNING (matra.syaraf) & AUTOMATED TRAINING (matra.pelatih)
     // =========================================================================
 
     // Fungsi-fungsi Jaringan Syaraf
-    let fn_linear = Value::FungsiAsli { name: "Linear".to_string(), id: MATRA_FN_LINEAR };
-    let fn_relu = Value::FungsiAsli { name: "Relu".to_string(), id: MATRA_FN_RELU };
-    let fn_sigmoid = Value::FungsiAsli { name: "Sigmoid".to_string(), id: MATRA_FN_SIGMOID };
-    let fn_tanh = Value::FungsiAsli { name: "Tanh".to_string(), id: MATRA_FN_TANH };
-    let fn_softmax = Value::FungsiAsli { name: "Softmax".to_string(), id: MATRA_FN_SOFTMAX };
-    let fn_dropout = Value::FungsiAsli { name: "Dropout".to_string(), id: MATRA_FN_DROPOUT };
-    let fn_model_syaraf = Value::FungsiAsli { name: "ModelSyaraf".to_string(), id: MATRA_FN_MODEL_SYARAF };
-    let fn_loss_mse = Value::FungsiAsli { name: "KerugianMSE".to_string(), id: MATRA_FN_LOSS_MSE };
-    let fn_loss_bce = Value::FungsiAsli { name: "KerugianBCE".to_string(), id: MATRA_FN_LOSS_BCE };
-    let fn_loss_ce = Value::FungsiAsli { name: "KerugianKategori".to_string(), id: MATRA_FN_LOSS_CROSS_ENTROPY };
-    let fn_sgd = Value::FungsiAsli { name: "SGD".to_string(), id: MATRA_FN_OPTIM_SGD };
-    let fn_adam = Value::FungsiAsli { name: "Adam".to_string(), id: MATRA_FN_OPTIM_ADAM };
+    let fn_linear = Value::FungsiAsli {
+        name: "Linear".to_string(),
+        id: MATRA_FN_LINEAR,
+    };
+    let fn_relu = Value::FungsiAsli {
+        name: "Relu".to_string(),
+        id: MATRA_FN_RELU,
+    };
+    let fn_sigmoid = Value::FungsiAsli {
+        name: "Sigmoid".to_string(),
+        id: MATRA_FN_SIGMOID,
+    };
+    let fn_tanh = Value::FungsiAsli {
+        name: "Tanh".to_string(),
+        id: MATRA_FN_TANH,
+    };
+    let fn_softmax = Value::FungsiAsli {
+        name: "Softmax".to_string(),
+        id: MATRA_FN_SOFTMAX,
+    };
+    let fn_dropout = Value::FungsiAsli {
+        name: "Dropout".to_string(),
+        id: MATRA_FN_DROPOUT,
+    };
+    let fn_model_syaraf = Value::FungsiAsli {
+        name: "ModelSyaraf".to_string(),
+        id: MATRA_FN_MODEL_SYARAF,
+    };
+    let fn_loss_mse = Value::FungsiAsli {
+        name: "KerugianMSE".to_string(),
+        id: MATRA_FN_LOSS_MSE,
+    };
+    let fn_loss_bce = Value::FungsiAsli {
+        name: "KerugianBCE".to_string(),
+        id: MATRA_FN_LOSS_BCE,
+    };
+    let fn_loss_ce = Value::FungsiAsli {
+        name: "KerugianKategori".to_string(),
+        id: MATRA_FN_LOSS_CROSS_ENTROPY,
+    };
+    let fn_sgd = Value::FungsiAsli {
+        name: "SGD".to_string(),
+        id: MATRA_FN_OPTIM_SGD,
+    };
+    let fn_adam = Value::FungsiAsli {
+        name: "Adam".to_string(),
+        id: MATRA_FN_OPTIM_ADAM,
+    };
 
     let mut syaraf_map = HashMap::new();
     syaraf_map.insert("Linear".to_string(), fn_linear.clone());
@@ -892,14 +976,32 @@ pub fn buat_modul_matra() -> Value {
     syaraf_map.insert("Adam".to_string(), fn_adam.clone());
     syaraf_map.insert("adam".to_string(), fn_adam);
 
-    map.insert("syaraf".to_string(), Value::Kamus(Rc::new(RefCell::new(syaraf_map.clone()))));
-    map.insert("modul_syaraf".to_string(), Value::Kamus(Rc::new(RefCell::new(syaraf_map))));
+    map.insert(
+        "syaraf".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(syaraf_map.clone()))),
+    );
+    map.insert(
+        "modul_syaraf".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(syaraf_map))),
+    );
 
     // Fungsi-fungsi Pelatih Otomatis
-    let fn_pelatih = Value::FungsiAsli { name: "Pelatih".to_string(), id: MATRA_FN_PELATIH };
-    let fn_cb_stop = Value::FungsiAsli { name: "BerhentiAwal".to_string(), id: MATRA_FN_CB_BERHENTI_AWAL };
-    let fn_cb_save = Value::FungsiAsli { name: "SimpanTerbaik".to_string(), id: MATRA_FN_CB_SIMPAN_TERBAIK };
-    let fn_cb_log = Value::FungsiAsli { name: "PencatatRiwayat".to_string(), id: MATRA_FN_CB_PENCATAT_RIWAYAT };
+    let fn_pelatih = Value::FungsiAsli {
+        name: "Pelatih".to_string(),
+        id: MATRA_FN_PELATIH,
+    };
+    let fn_cb_stop = Value::FungsiAsli {
+        name: "BerhentiAwal".to_string(),
+        id: MATRA_FN_CB_BERHENTI_AWAL,
+    };
+    let fn_cb_save = Value::FungsiAsli {
+        name: "SimpanTerbaik".to_string(),
+        id: MATRA_FN_CB_SIMPAN_TERBAIK,
+    };
+    let fn_cb_log = Value::FungsiAsli {
+        name: "PencatatRiwayat".to_string(),
+        id: MATRA_FN_CB_PENCATAT_RIWAYAT,
+    };
 
     let mut pelatih_map = HashMap::new();
     pelatih_map.insert("Pelatih".to_string(), fn_pelatih.clone());
@@ -913,8 +1015,14 @@ pub fn buat_modul_matra() -> Value {
     pelatih_map.insert("PencatatRiwayat".to_string(), fn_cb_log.clone());
     pelatih_map.insert("pencatat_riwayat".to_string(), fn_cb_log);
 
-    map.insert("pelatih".to_string(), Value::Kamus(Rc::new(RefCell::new(pelatih_map.clone()))));
-    map.insert("modul_pelatih".to_string(), Value::Kamus(Rc::new(RefCell::new(pelatih_map))));
+    map.insert(
+        "pelatih".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(pelatih_map.clone()))),
+    );
+    map.insert(
+        "modul_pelatih".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(pelatih_map))),
+    );
 
     Value::Kamus(Rc::new(RefCell::new(map)))
 }

@@ -40,7 +40,9 @@ fn test_aktivasi_dan_derivatif() {
     let out_sig = sig.maju(&x_zero, false).unwrap();
     assert!((out_sig.data[0] - 0.5).abs() < 1e-6);
 
-    let grad_sig_in = sig.mundur(&MatraArray::dari_vektor_2d(vec![1.0], 1, 1)).unwrap();
+    let grad_sig_in = sig
+        .mundur(&MatraArray::dari_vektor_2d(vec![1.0], 1, 1))
+        .unwrap();
     assert!((grad_sig_in.data[0] - 0.25).abs() < 1e-6); // s*(1-s) = 0.5*0.5 = 0.25
 
     // 3. Tanh
@@ -121,7 +123,12 @@ fn test_pengoptimal_adam_dan_sgd() {
         loss_fn.hitung(&pred, &y).unwrap()
     };
 
-    assert!(final_loss < initial_loss, "Loss harus menurun setelah optimasi Adam (awal: {}, akhir: {})", initial_loss, final_loss);
+    assert!(
+        final_loss < initial_loss,
+        "Loss harus menurun setelah optimasi Adam (awal: {}, akhir: {})",
+        initial_loss,
+        final_loss
+    );
 }
 
 #[test]
@@ -131,12 +138,7 @@ fn test_pelatih_xor_mlp_training() {
     // [0, 1] -> 1
     // [1, 0] -> 1
     // [1, 1] -> 0
-    let x = MatraArray::dari_vektor_2d(vec![
-        0.0, 0.0,
-        0.0, 1.0,
-        1.0, 0.0,
-        1.0, 1.0,
-    ], 4, 2);
+    let x = MatraArray::dari_vektor_2d(vec![0.0, 0.0, 0.0, 1.0, 1.0, 0.0, 1.0, 1.0], 4, 2);
 
     let y = MatraArray::dari_vektor_2d(vec![0.0, 1.0, 1.0, 0.0], 4, 1);
 
@@ -148,10 +150,20 @@ fn test_pelatih_xor_mlp_training() {
         MatraLapisan::sigmoid(),
     ])));
 
-    let optim = Rc::new(RefCell::new(MatraOptimizer::adam(model.clone(), 0.08, None, None)));
+    let optim = Rc::new(RefCell::new(MatraOptimizer::adam(
+        model.clone(),
+        0.08,
+        None,
+        None,
+    )));
     let loss = MatraLoss::bce();
 
-    let mut pelatih = MatraPelatih::new(model.clone(), optim, loss, Some(vec!["akurasi".to_string()]));
+    let mut pelatih = MatraPelatih::new(
+        model.clone(),
+        optim,
+        loss,
+        Some(vec!["akurasi".to_string()]),
+    );
 
     // Latih selama 150 putaran
     let riwayat = pelatih.latih(&x, &y, 150, 4, None, None).unwrap();
@@ -161,8 +173,15 @@ fn test_pelatih_xor_mlp_training() {
     let akurasi = *eval_res.get("akurasi").unwrap();
     let rugi_akhir = *eval_res.get("rugi").unwrap();
 
-    assert!(rugi_akhir < 0.2, "Rugi akhir harus rendah (didapat {})", rugi_akhir);
-    assert_eq!(akurasi, 1.0, "Model MLP harus menyelesaikan XOR dengan akurasi 100%");
+    assert!(
+        rugi_akhir < 0.2,
+        "Rugi akhir harus rendah (didapat {})",
+        rugi_akhir
+    );
+    assert_eq!(
+        akurasi, 1.0,
+        "Model MLP harus menyelesaikan XOR dengan akurasi 100%"
+    );
 }
 
 #[test]
@@ -177,18 +196,35 @@ fn test_callback_berhenti_awal_dan_simpan_model() {
         MatraLapisan::sigmoid(),
     ])));
 
-    let optim = Rc::new(RefCell::new(MatraOptimizer::adam(model.clone(), 0.01, None, None)));
+    let optim = Rc::new(RefCell::new(MatraOptimizer::adam(
+        model.clone(),
+        0.01,
+        None,
+        None,
+    )));
     let mut pelatih = MatraPelatih::new(model.clone(), optim, MatraLoss::bce(), None);
 
     let model_path = "model_terbaik_test.matra";
-    pelatih.pasang_callback(Rc::new(RefCell::new(MatraCallback::simpan_terbaik(model_path, Some("akurasi"), Some("maks")))));
-    pelatih.pasang_callback(Rc::new(RefCell::new(MatraCallback::berhenti_awal(Some("rugi"), Some(3), Some(0.0001), Some("min")))));
+    pelatih.pasang_callback(Rc::new(RefCell::new(MatraCallback::simpan_terbaik(
+        model_path,
+        Some("akurasi"),
+        Some("maks"),
+    ))));
+    pelatih.pasang_callback(Rc::new(RefCell::new(MatraCallback::berhenti_awal(
+        Some("rugi"),
+        Some(3),
+        Some(0.0001),
+        Some("min"),
+    ))));
 
     let riwayat = pelatih.latih(&x, &y, 50, 2, None, None).unwrap();
     let putaran_selesai = riwayat.get("putaran").unwrap().len();
 
     // Pastikan berkas model tersimpan dan dapat dimuat kembali
-    assert!(std::path::Path::new(model_path).exists(), "Berkas model checkpoint harus terbentuk");
+    assert!(
+        std::path::Path::new(model_path).exists(),
+        "Berkas model checkpoint harus terbentuk"
+    );
 
     let mut model_baru = MatraJaringan::new(vec![
         MatraLapisan::linear(2, 4, None),
@@ -207,7 +243,12 @@ fn test_callback_berhenti_awal_dan_simpan_model() {
     let pred_muat = model_baru.prediksi(&x).unwrap();
 
     for (p1, p2) in pred_asli.data.iter().zip(pred_muat.data.iter()) {
-        assert!((p1 - p2).abs() < 1e-5, "Prediksi model yang dimuat harus identik dengan model tersimpan (p1: {}, p2: {})", p1, p2);
+        assert!(
+            (p1 - p2).abs() < 1e-5,
+            "Prediksi model yang dimuat harus identik dengan model tersimpan (p1: {}, p2: {})",
+            p1,
+            p2
+        );
     }
 
     // Bersihkan berkas uji

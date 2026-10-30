@@ -1,6 +1,6 @@
 use crate::matra::larik::MatraArray;
 use crate::matra::latih::AcakLcg;
-use std::collections::{HashMap, BTreeSet};
+use std::collections::{BTreeSet, HashMap};
 
 /// Node pohon keputusan untuk klasifikasi atau regresi
 #[derive(Debug, Clone, PartialEq)]
@@ -254,9 +254,14 @@ impl MatraModel {
                 laju_belajar,
                 iterasi,
             } => {
-                let targets = y.ok_or_else(|| "RegresiLinear membutuhkan label target y".to_string())?;
+                let targets =
+                    y.ok_or_else(|| "RegresiLinear membutuhkan label target y".to_string())?;
                 if targets.len() != rows {
-                    return Err(format!("Ukuran X ({}) dan y ({}) tidak cocok", rows, targets.len()));
+                    return Err(format!(
+                        "Ukuran X ({}) dan y ({}) tidak cocok",
+                        rows,
+                        targets.len()
+                    ));
                 }
 
                 // Inisialisasi bobot dan intersep nol
@@ -298,9 +303,14 @@ impl MatraModel {
                 laju_belajar,
                 iterasi,
             } => {
-                let targets = y.ok_or_else(|| "RegresiLogistik membutuhkan label target y".to_string())?;
+                let targets =
+                    y.ok_or_else(|| "RegresiLogistik membutuhkan label target y".to_string())?;
                 if targets.len() != rows {
-                    return Err(format!("Ukuran X ({}) dan y ({}) tidak cocok", rows, targets.len()));
+                    return Err(format!(
+                        "Ukuran X ({}) dan y ({}) tidak cocok",
+                        rows,
+                        targets.len()
+                    ));
                 }
 
                 let mut set_kelas = BTreeSet::new();
@@ -336,7 +346,11 @@ impl MatraModel {
                             }
                             // Sigmoid
                             let p = 1.0 / (1.0 + (-z).exp());
-                            let y_true = if (targets[r] - target_k).abs() < 1e-6 { 1.0 } else { 0.0 };
+                            let y_true = if (targets[r] - target_k).abs() < 1e-6 {
+                                1.0
+                            } else {
+                                0.0
+                            };
                             let err = p - y_true;
 
                             grad_b += err;
@@ -365,7 +379,11 @@ impl MatraModel {
             } => {
                 let targets = y.ok_or_else(|| "KNN membutuhkan label target y".to_string())?;
                 if targets.len() != rows {
-                    return Err(format!("Ukuran X ({}) dan y ({}) tidak cocok", rows, targets.len()));
+                    return Err(format!(
+                        "Ukuran X ({}) dan y ({}) tidak cocok",
+                        rows,
+                        targets.len()
+                    ));
                 }
 
                 *data_x = x.data.clone();
@@ -380,9 +398,14 @@ impl MatraModel {
                 min_sampel_pisah,
                 is_klasifikasi,
             } => {
-                let targets = y.ok_or_else(|| "PohonKeputusan membutuhkan label target y".to_string())?;
+                let targets =
+                    y.ok_or_else(|| "PohonKeputusan membutuhkan label target y".to_string())?;
                 if targets.len() != rows {
-                    return Err(format!("Ukuran X ({}) dan y ({}) tidak cocok", rows, targets.len()));
+                    return Err(format!(
+                        "Ukuran X ({}) dan y ({}) tidak cocok",
+                        rows,
+                        targets.len()
+                    ));
                 }
 
                 let indices: Vec<usize> = (0..rows).collect();
@@ -405,9 +428,14 @@ impl MatraModel {
                 seed,
                 is_klasifikasi,
             } => {
-                let targets = y.ok_or_else(|| "HutanAcak membutuhkan label target y".to_string())?;
+                let targets =
+                    y.ok_or_else(|| "HutanAcak membutuhkan label target y".to_string())?;
                 if targets.len() != rows {
-                    return Err(format!("Ukuran X ({}) dan y ({}) tidak cocok", rows, targets.len()));
+                    return Err(format!(
+                        "Ukuran X ({}) dan y ({}) tidak cocok",
+                        rows,
+                        targets.len()
+                    ));
                 }
 
                 let mut rng = AcakLcg::new(*seed);
@@ -442,7 +470,10 @@ impl MatraModel {
                 seed,
             } => {
                 if *k > rows {
-                    return Err(format!("Jumlah klaster k ({}) lebih besar dari jumlah sampel ({})", k, rows));
+                    return Err(format!(
+                        "Jumlah klaster k ({}) lebih besar dari jumlah sampel ({})",
+                        k, rows
+                    ));
                 }
 
                 let mut rng = AcakLcg::new(*seed);
@@ -543,7 +574,10 @@ impl MatraModel {
     /// Memprediksi target untuk data masukan baru X
     pub fn prediksi(&self, x: &MatraArray) -> Result<MatraArray, String> {
         if !self.fitted {
-            return Err(format!("Model '{}' belum dilatih. Panggil .latih(X, y) terlebih dahulu.", self.nama));
+            return Err(format!(
+                "Model '{}' belum dilatih. Panggil .latih(X, y) terlebih dahulu.",
+                self.nama
+            ));
         }
         if x.bentuk.len() != 2 {
             return Err("Matriks X untuk prediksi harus 2 dimensi".to_string());
@@ -552,7 +586,9 @@ impl MatraModel {
         let cols = x.bentuk[1];
 
         match &self.jenis {
-            JenisModel::RegresiLinear { bobot, intersep, .. } => {
+            JenisModel::RegresiLinear {
+                bobot, intersep, ..
+            } => {
                 let mut out = Vec::with_capacity(rows);
                 for r in 0..rows {
                     let start = r * cols;
@@ -583,7 +619,11 @@ impl MatraModel {
                             z += bobot_per_kelas[0][c] * x.data[start + c];
                         }
                         let p = 1.0 / (1.0 + (-z).exp());
-                        let pred = if p >= 0.5 { kelas[0] } else { kelas.get(1).cloned().unwrap_or(0.0) };
+                        let pred = if p >= 0.5 {
+                            kelas[0]
+                        } else {
+                            kelas.get(1).cloned().unwrap_or(0.0)
+                        };
                         out.push(pred);
                     } else {
                         // Multi-kelas: pilih kelas dengan z (log-odds) tertinggi
@@ -615,7 +655,10 @@ impl MatraModel {
                 ..
             } => {
                 if cols != *tr_cols {
-                    return Err(format!("Jumlah fitur ({}) tidak sama dengan data latih ({})", cols, tr_cols));
+                    return Err(format!(
+                        "Jumlah fitur ({}) tidak sama dengan data latih ({})",
+                        cols, tr_cols
+                    ));
                 }
 
                 let mut out = Vec::with_capacity(rows);
@@ -656,7 +699,8 @@ impl MatraModel {
                         out.push(best_label as f64);
                     } else {
                         // Rata-rata target
-                        let avg: f64 = top_k.iter().map(|&(_, y)| y).sum::<f64>() / top_k.len() as f64;
+                        let avg: f64 =
+                            top_k.iter().map(|&(_, y)| y).sum::<f64>() / top_k.len() as f64;
                         out.push(avg);
                     }
                 }
@@ -665,7 +709,9 @@ impl MatraModel {
             }
 
             JenisModel::PohonKeputusan { root, .. } => {
-                let r_node = root.as_ref().ok_or_else(|| "Pohon keputusan kosong".to_string())?;
+                let r_node = root
+                    .as_ref()
+                    .ok_or_else(|| "Pohon keputusan kosong".to_string())?;
                 let mut out = Vec::with_capacity(rows);
                 for r in 0..rows {
                     let start = r * cols;
@@ -800,9 +846,11 @@ impl MatraModel {
     pub fn skor(&self, x: &MatraArray, y: &[f64]) -> Result<f64, String> {
         let preds = self.prediksi(x)?;
         match &self.jenis {
-            JenisModel::RegresiLinear { .. } | JenisModel::KNN { is_klasifikasi: false, .. } => {
-                crate::matra::metrik::r2_skor(y, &preds.data)
-            }
+            JenisModel::RegresiLinear { .. }
+            | JenisModel::KNN {
+                is_klasifikasi: false,
+                ..
+            } => crate::matra::metrik::r2_skor(y, &preds.data),
             _ => crate::matra::metrik::akurasi(y, &preds.data),
         }
     }
@@ -831,7 +879,11 @@ impl MatraModel {
             for &idx in indices {
                 *counts.entry(y[idx].round() as i64).or_default() += 1;
             }
-            counts.into_iter().max_by_key(|&(_, c)| c).map(|(k, _)| k as f64).unwrap_or(0.0)
+            counts
+                .into_iter()
+                .max_by_key(|&(_, c)| c)
+                .map(|(k, _)| k as f64)
+                .unwrap_or(0.0)
         } else {
             indices.iter().map(|&idx| y[idx]).sum::<f64>() / n_samples as f64
         };
@@ -883,10 +935,20 @@ impl MatraModel {
                     continue;
                 }
 
-                let impurity_left = if is_klasifikasi { Self::gini(y, &left) } else { Self::varians(y, &left) };
-                let impurity_right = if is_klasifikasi { Self::gini(y, &right) } else { Self::varians(y, &right) };
+                let impurity_left = if is_klasifikasi {
+                    Self::gini(y, &left)
+                } else {
+                    Self::varians(y, &left)
+                };
+                let impurity_right = if is_klasifikasi {
+                    Self::gini(y, &right)
+                } else {
+                    Self::varians(y, &right)
+                };
 
-                let weighted = (left.len() as f64 * impurity_left + right.len() as f64 * impurity_right) / n_samples as f64;
+                let weighted = (left.len() as f64 * impurity_left
+                    + right.len() as f64 * impurity_right)
+                    / n_samples as f64;
                 let gain = base_impurity - weighted;
 
                 if gain > best_gain {

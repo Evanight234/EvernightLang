@@ -28,11 +28,7 @@ impl Smote {
     }
 
     /// Melakukan oversampling sintetis pada kelas minoritas
-    pub fn sesuaikan(
-        &self,
-        x_val: &Value,
-        y_val: &Value,
-    ) -> Result<(Value, Value), String> {
+    pub fn sesuaikan(&self, x_val: &Value, y_val: &Value) -> Result<(Value, Value), String> {
         let (x_data, rows, cols) = match x_val {
             Value::Larik(arr) => {
                 let a = arr.borrow();
@@ -51,7 +47,9 @@ impl Smote {
                 for item in list.borrow().iter() {
                     match item {
                         Value::Angka(n) => out.push(*n),
-                        _ => return Err("Label target y untuk SMOTE harus berupa angka".to_string()),
+                        _ => {
+                            return Err("Label target y untuk SMOTE harus berupa angka".to_string())
+                        }
                     }
                 }
                 out
@@ -60,7 +58,11 @@ impl Smote {
         };
 
         if rows != y_data.len() {
-            return Err(format!("Ukuran X ({}) tidak sesuai dengan target y ({})", rows, y_data.len()));
+            return Err(format!(
+                "Ukuran X ({}) tidak sesuai dengan target y ({})",
+                rows,
+                y_data.len()
+            ));
         }
 
         // Hitung frekuensi tiap kelas

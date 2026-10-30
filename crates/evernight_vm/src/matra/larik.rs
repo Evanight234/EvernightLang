@@ -214,7 +214,11 @@ impl MatraArray {
                                     match item {
                                         Value::Angka(n) => data.push(*n),
                                         Value::Bolean(b) => data.push(if *b { 1.0 } else { 0.0 }),
-                                        _ => return Err("Elemen larik harus bertipe angka".to_string()),
+                                        _ => {
+                                            return Err(
+                                                "Elemen larik harus bertipe angka".to_string()
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -343,7 +347,11 @@ impl MatraArray {
         let rows = self.bentuk[0];
         let cols = self.bentuk[1];
         if r >= rows {
-            return Err(format!("Indeks baris {} di luar batas [0..{}]", r, rows - 1));
+            return Err(format!(
+                "Indeks baris {} di luar batas [0..{}]",
+                r,
+                rows - 1
+            ));
         }
         let start = r * cols;
         let end = start + cols;
@@ -357,7 +365,12 @@ impl MatraArray {
 
     pub fn tambah(&self, other: &Self) -> Result<Self, String> {
         if self.bentuk == other.bentuk {
-            let data: Vec<f64> = self.data.iter().zip(&other.data).map(|(a, b)| a + b).collect();
+            let data: Vec<f64> = self
+                .data
+                .iter()
+                .zip(&other.data)
+                .map(|(a, b)| a + b)
+                .collect();
             Ok(Self {
                 bentuk: self.bentuk.clone(),
                 data,
@@ -384,7 +397,12 @@ impl MatraArray {
 
     pub fn kurang(&self, other: &Self) -> Result<Self, String> {
         if self.bentuk == other.bentuk {
-            let data: Vec<f64> = self.data.iter().zip(&other.data).map(|(a, b)| a - b).collect();
+            let data: Vec<f64> = self
+                .data
+                .iter()
+                .zip(&other.data)
+                .map(|(a, b)| a - b)
+                .collect();
             Ok(Self {
                 bentuk: self.bentuk.clone(),
                 data,
@@ -409,7 +427,12 @@ impl MatraArray {
 
     pub fn kali(&self, other: &Self) -> Result<Self, String> {
         if self.bentuk == other.bentuk {
-            let data: Vec<f64> = self.data.iter().zip(&other.data).map(|(a, b)| a * b).collect();
+            let data: Vec<f64> = self
+                .data
+                .iter()
+                .zip(&other.data)
+                .map(|(a, b)| a * b)
+                .collect();
             Ok(Self {
                 bentuk: self.bentuk.clone(),
                 data,
@@ -855,7 +878,8 @@ impl MatraArray {
         match sumbu {
             None => {
                 let mu = avg.data[0];
-                let v: f64 = self.data.iter().map(|x| (x - mu).powi(2)).sum::<f64>() / self.data.len() as f64;
+                let v: f64 = self.data.iter().map(|x| (x - mu).powi(2)).sum::<f64>()
+                    / self.data.len() as f64;
                 Ok(Self {
                     bentuk: vec![1],
                     data: vec![v],

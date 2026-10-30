@@ -100,6 +100,23 @@ const slides = [
     ].join('\n'),
     keluaran: '5 / Tertangkap: Pembagi tidak boleh nol!',
   },
+  {
+    judul: 'Sains Data & Web Notebook March',
+    judulEn: 'Data Science & March Web Notebook',
+    teks: 'Pustaka Matra terpadu untuk aljabar linier, DataFrame, grafik SVG, dan machine learning, ditambah Web Notebook interaktif bergaya Google Colab dengan akses berkas 100% lokal.',
+    teksEn: 'Unified Matra library for linear algebra, DataFrames, SVG charts, and machine learning, plus the interactive March Web Notebook with 100% local file access.',
+    kode: [
+      '<span class="tok-c"># Eksplorasi data dengan Matra</span>',
+      '<span class="tok-k">impor</span> <span class="tok-s">"matra"</span> <span class="tok-k">sebagai</span> mt',
+      '',
+      '<span class="tok-k">variabel</span> X = mt.<span class="tok-f">larik</span>([[<span class="tok-n">1</span>, <span class="tok-n">2</span>], [<span class="tok-n">3</span>, <span class="tok-n">4</span>]])',
+      '<span class="tok-k">variabel</span> Y = mt.<span class="tok-f">larik</span>([[<span class="tok-n">5</span>, <span class="tok-n">6</span>], [<span class="tok-n">7</span>, <span class="tok-n">8</span>]])',
+      '<span class="tok-f">cetak</span>(<span class="tok-s">"X . Y ="</span>, X.<span class="tok-f">titik</span>(Y))',
+      '',
+      '<span class="tok-c"># Buka web notebook: evernight march</span>',
+    ].join('\n'),
+    keluaran: 'X . Y = Larik([[19, 22], [43, 50]])',
+  },
 ];
 ---
 

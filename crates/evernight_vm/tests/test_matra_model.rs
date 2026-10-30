@@ -187,8 +187,8 @@ fn test_kmeans_clustering() {
     assert!(res.is_ok(), "Gagal KMeans: {:?}", res.err());
     if let Value::Daftar(list_rc) = res.unwrap() {
         let list = list_rc.borrow();
-        assert_eq!(list[0], Value::Bolean(true));  // Titik 0 dan 1 satu klaster
-        assert_eq!(list[1], Value::Bolean(true));  // Titik 0 dan 3 beda klaster
+        assert_eq!(list[0], Value::Bolean(true)); // Titik 0 dan 1 satu klaster
+        assert_eq!(list[1], Value::Bolean(true)); // Titik 0 dan 3 beda klaster
         if let Value::Daftar(b) = &list[2] {
             assert_eq!(b.borrow()[0], Value::Angka(2.0)); // 2 pusat klaster
             assert_eq!(b.borrow()[1], Value::Angka(2.0)); // 2 fitur

@@ -9,7 +9,10 @@ pub fn cek_kebocoran(x_latih: &Value, x_uji: &Value) -> Result<Value, String> {
     let (uji_data, u_rows, u_cols) = ekstrak_matriks(x_uji)?;
 
     if cols != u_cols {
-        return Err(format!("Jumlah kolom data latih ({}) berbeda dengan data uji ({})", cols, u_cols));
+        return Err(format!(
+            "Jumlah kolom data latih ({}) berbeda dengan data uji ({})",
+            cols, u_cols
+        ));
     }
 
     let mut indeks_bocor = Vec::new();
@@ -48,20 +51,34 @@ pub fn cek_kebocoran(x_latih: &Value, x_uji: &Value) -> Result<Value, String> {
     hasil.insert("jumlah_kebocoran".to_string(), Value::Angka(n_bocor as f64));
     hasil.insert(
         "persentase_bocor".to_string(),
-        Value::Angka(if u_rows > 0 { (n_bocor as f64 / u_rows as f64) * 100.0 } else { 0.0 }),
+        Value::Angka(if u_rows > 0 {
+            (n_bocor as f64 / u_rows as f64) * 100.0
+        } else {
+            0.0
+        }),
     );
-    hasil.insert("indeks_bocor".to_string(), Value::Daftar(Rc::new(RefCell::new(indeks_bocor))));
+    hasil.insert(
+        "indeks_bocor".to_string(),
+        Value::Daftar(Rc::new(RefCell::new(indeks_bocor))),
+    );
 
     Ok(Value::Kamus(Rc::new(RefCell::new(hasil))))
 }
 
 /// Mendeteksi apakah terjadi pergeseran distribusi data (Data Drift) antar kolom fitur
-pub fn cek_pergeseran(x_latih: &Value, x_uji: &Value, ambang: Option<f64>) -> Result<Value, String> {
+pub fn cek_pergeseran(
+    x_latih: &Value,
+    x_uji: &Value,
+    ambang: Option<f64>,
+) -> Result<Value, String> {
     let (latih_data, l_rows, cols) = ekstrak_matriks(x_latih)?;
     let (uji_data, u_rows, u_cols) = ekstrak_matriks(x_uji)?;
 
     if cols != u_cols {
-        return Err(format!("Jumlah kolom data latih ({}) berbeda dengan data uji ({})", cols, u_cols));
+        return Err(format!(
+            "Jumlah kolom data latih ({}) berbeda dengan data uji ({})",
+            cols, u_cols
+        ));
     }
     if l_rows == 0 || u_rows == 0 {
         return Err("Data latih atau uji tidak boleh kosong".to_string());
@@ -113,9 +130,18 @@ pub fn cek_pergeseran(x_latih: &Value, x_uji: &Value, ambang: Option<f64>) -> Re
     let ada_geser = !kolom_geser.is_empty();
     let mut hasil = HashMap::new();
     hasil.insert("ada_pergeseran".to_string(), Value::Bolean(ada_geser));
-    hasil.insert("kolom_geser".to_string(), Value::Daftar(Rc::new(RefCell::new(kolom_geser.clone()))));
-    hasil.insert("kolom_bergeser".to_string(), Value::Daftar(Rc::new(RefCell::new(kolom_geser))));
-    hasil.insert("skor_pergeseran".to_string(), Value::Kamus(Rc::new(RefCell::new(skor_map))));
+    hasil.insert(
+        "kolom_geser".to_string(),
+        Value::Daftar(Rc::new(RefCell::new(kolom_geser.clone()))),
+    );
+    hasil.insert(
+        "kolom_bergeser".to_string(),
+        Value::Daftar(Rc::new(RefCell::new(kolom_geser))),
+    );
+    hasil.insert(
+        "skor_pergeseran".to_string(),
+        Value::Kamus(Rc::new(RefCell::new(skor_map))),
+    );
 
     Ok(Value::Kamus(Rc::new(RefCell::new(hasil))))
 }

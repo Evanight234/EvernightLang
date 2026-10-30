@@ -107,7 +107,11 @@ impl MatraTransformer {
                         var_sum += diff * diff;
                     }
                     let variance = var_sum / rows as f64;
-                    stds[c] = if variance <= 1e-12 { 1.0 } else { variance.sqrt() };
+                    stds[c] = if variance <= 1e-12 {
+                        1.0
+                    } else {
+                        variance.sqrt()
+                    };
                 }
 
                 self.mean = means;
@@ -172,7 +176,9 @@ impl MatraTransformer {
     /// Mentransformasi data X menggunakan parameter yang telah dipelajari
     pub fn transformasi(&self, data: &MatraArray) -> Result<MatraArray, String> {
         if !self.fitted {
-            return Err("Transformer belum dilatih (panggil .sesuaikan(X) terlebih dahulu)".to_string());
+            return Err(
+                "Transformer belum dilatih (panggil .sesuaikan(X) terlebih dahulu)".to_string(),
+            );
         }
         if data.bentuk.len() != 2 {
             return Err("Data matriks harus 2D".to_string());
@@ -235,7 +241,10 @@ impl MatraTransformer {
             if let Some(&id) = self.label_ke_id.get(l) {
                 ids.push(id);
             } else {
-                return Err(format!("Label kategori baru '{}' tidak ditemukan saat fitting", l));
+                return Err(format!(
+                    "Label kategori baru '{}' tidak ditemukan saat fitting",
+                    l
+                ));
             }
         }
         let len = ids.len();
@@ -253,7 +262,10 @@ impl MatraTransformer {
             if let Some(lbl) = self.id_ke_label.get(&key) {
                 out.push(lbl.clone());
             } else {
-                return Err(format!("ID label '{}' tidak ditemukan pada kamus encoder", id));
+                return Err(format!(
+                    "ID label '{}' tidak ditemukan pada kamus encoder",
+                    id
+                ));
             }
         }
         Ok(out)

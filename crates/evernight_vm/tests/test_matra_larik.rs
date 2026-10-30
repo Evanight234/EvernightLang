@@ -33,7 +33,7 @@ fn matra_impor_dan_pembuatan_larik() {
     if let Value::Daftar(list_rc) = res {
         let list = list_rc.borrow();
         assert_eq!(list[0], Value::Angka(3.0)); // a.panjang
-        // nol.bentuk = [2, 3]
+                                                // nol.bentuk = [2, 3]
         if let Value::Daftar(b) = &list[1] {
             assert_eq!(b.borrow()[0], Value::Angka(2.0));
             assert_eq!(b.borrow()[1], Value::Angka(3.0));
@@ -230,8 +230,14 @@ fn matra_aljabar_linier() {
         // m1 x m2 = [[1*2 + 2*1, 1*0 + 2*2], [3*2 + 4*1, 3*0 + 4*2]]
         //         = [[4, 4], [10, 8]]
         if let Value::Daftar(tm) = &list[1] {
-            let row0 = match &tm.borrow()[0] { Value::Daftar(d) => d.borrow().clone(), _ => panic!() };
-            let row1 = match &tm.borrow()[1] { Value::Daftar(d) => d.borrow().clone(), _ => panic!() };
+            let row0 = match &tm.borrow()[0] {
+                Value::Daftar(d) => d.borrow().clone(),
+                _ => panic!(),
+            };
+            let row1 = match &tm.borrow()[1] {
+                Value::Daftar(d) => d.borrow().clone(),
+                _ => panic!(),
+            };
             assert_eq!(row0[0], Value::Angka(4.0));
             assert_eq!(row0[1], Value::Angka(4.0));
             assert_eq!(row1[0], Value::Angka(10.0));
@@ -240,8 +246,14 @@ fn matra_aljabar_linier() {
 
         // transpose of [[1, 2], [3, 4]] = [[1, 3], [2, 4]]
         if let Value::Daftar(tr) = &list[3] {
-            let row0 = match &tr.borrow()[0] { Value::Daftar(d) => d.borrow().clone(), _ => panic!() };
-            let row1 = match &tr.borrow()[1] { Value::Daftar(d) => d.borrow().clone(), _ => panic!() };
+            let row0 = match &tr.borrow()[0] {
+                Value::Daftar(d) => d.borrow().clone(),
+                _ => panic!(),
+            };
+            let row1 = match &tr.borrow()[1] {
+                Value::Daftar(d) => d.borrow().clone(),
+                _ => panic!(),
+            };
             assert_eq!(row0[0], Value::Angka(1.0));
             assert_eq!(row0[1], Value::Angka(3.0));
             assert_eq!(row1[0], Value::Angka(2.0));
@@ -290,12 +302,12 @@ fn matra_statistik_dan_reduksi_sumbu() {
     if let Value::Daftar(list_rc) = res {
         let list = list_rc.borrow();
         assert_eq!(list[0], Value::Angka(40.0)); // 2+4+4+4+5+5+7+9 = 40
-        assert_eq!(list[1], Value::Angka(5.0));  // 40 / 8 = 5
-        assert_eq!(list[2], Value::Angka(2.0));  // min = 2
-        assert_eq!(list[3], Value::Angka(9.0));  // max = 9
-        assert_eq!(list[4], Value::Angka(4.5));  // median (4 + 5)/2 = 4.5
-        assert_eq!(list[5], Value::Angka(4.0));  // varian = 32 / 8 = 4.0
-        assert_eq!(list[6], Value::Angka(2.0));  // std = sqrt(4) = 2.0
+        assert_eq!(list[1], Value::Angka(5.0)); // 40 / 8 = 5
+        assert_eq!(list[2], Value::Angka(2.0)); // min = 2
+        assert_eq!(list[3], Value::Angka(9.0)); // max = 9
+        assert_eq!(list[4], Value::Angka(4.5)); // median (4 + 5)/2 = 4.5
+        assert_eq!(list[5], Value::Angka(4.0)); // varian = 32 / 8 = 4.0
+        assert_eq!(list[6], Value::Angka(2.0)); // std = sqrt(4) = 2.0
 
         // jml_kolom = [5, 7, 9]
         if let Value::Daftar(k) = &list[7] {

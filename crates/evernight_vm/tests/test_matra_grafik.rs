@@ -44,16 +44,32 @@ fn test_grafik_garis_dan_method_chaining() {
     "##;
 
     let (res, out_lines) = eksekusi_output(kode);
-    assert!(res.is_ok(), "Gagal menjalankan grafik garis: {:?}", res.err());
+    assert!(
+        res.is_ok(),
+        "Gagal menjalankan grafik garis: {:?}",
+        res.err()
+    );
 
     let svg_str = res.unwrap().to_string();
     assert!(svg_str.contains("<svg"), "Harus menghasilkan string SVG");
-    assert!(svg_str.contains("Pertumbuhan Pengguna"), "SVG harus memuat judul");
+    assert!(
+        svg_str.contains("Pertumbuhan Pengguna"),
+        "SVG harus memuat judul"
+    );
 
     let combined_out = out_lines.join("\n");
-    assert!(combined_out.contains("Pertumbuhan Pengguna"), "Output terminal harus memuat judul");
-    assert!(combined_out.contains("*"), "Output terminal harus memuat titik plot (*)");
-    assert!(combined_out.contains("│"), "Output terminal harus memuat sumbu grafik");
+    assert!(
+        combined_out.contains("Pertumbuhan Pengguna"),
+        "Output terminal harus memuat judul"
+    );
+    assert!(
+        combined_out.contains("*"),
+        "Output terminal harus memuat titik plot (*)"
+    );
+    assert!(
+        combined_out.contains("│"),
+        "Output terminal harus memuat sumbu grafik"
+    );
 }
 
 #[test]
@@ -74,7 +90,10 @@ fn test_grafik_sebar_dengan_larik() {
     let res = eksekusi(kode);
     assert!(res.is_ok(), "Gagal grafik sebar: {:?}", res.err());
     let svg = res.unwrap().to_string();
-    assert!(svg.contains("<circle"), "SVG sebar harus memuat elemen circle");
+    assert!(
+        svg.contains("<circle"),
+        "SVG sebar harus memuat elemen circle"
+    );
 }
 
 #[test]
@@ -173,8 +192,14 @@ fn test_simpan_dan_baca_svg() {
     let path = std::path::Path::new("test_output_plot.svg");
     assert!(path.exists(), "Berkas SVG harus tercipta di disk");
     let content = std::fs::read_to_string(path).expect("Harus dapat membaca berkas SVG");
-    assert!(content.contains("<svg"), "Konten berkas harus berupa SVG valid");
-    assert!(content.contains("Tes Simpan"), "Konten berkas harus memuat judul");
+    assert!(
+        content.contains("<svg"),
+        "Konten berkas harus berupa SVG valid"
+    );
+    assert!(
+        content.contains("Tes Simpan"),
+        "Konten berkas harus memuat judul"
+    );
 
     let _ = std::fs::remove_file(path);
 }

@@ -1,5 +1,5 @@
-use evernight_core::{Lexer, Parser};
 use evernight_core::ast::Statement;
+use evernight_core::{Lexer, Parser};
 use serde_json::{json, Value};
 
 pub fn goto_definition(text: &str, line: usize, col: usize, file_uri: &str) -> Option<Value> {
@@ -8,8 +8,12 @@ pub fn goto_definition(text: &str, line: usize, col: usize, file_uri: &str) -> O
 
     let before = &current_line[..safe_col];
     let after = &current_line[safe_col..];
-    let word_start = before.rfind(|c: char| !c.is_alphanumeric() && c != '_').map_or(0, |i| i + 1);
-    let word_end = after.find(|c: char| !c.is_alphanumeric() && c != '_').unwrap_or(after.len());
+    let word_start = before
+        .rfind(|c: char| !c.is_alphanumeric() && c != '_')
+        .map_or(0, |i| i + 1);
+    let word_end = after
+        .find(|c: char| !c.is_alphanumeric() && c != '_')
+        .unwrap_or(after.len());
     let word = &current_line[word_start..safe_col + word_end];
 
     if word.is_empty() {
@@ -21,7 +25,11 @@ pub fn goto_definition(text: &str, line: usize, col: usize, file_uri: &str) -> O
 
     for stmt in &ast {
         match stmt {
-            Statement::FuncDecl { name, line: def_line, .. } if name == word => {
+            Statement::FuncDecl {
+                name,
+                line: def_line,
+                ..
+            } if name == word => {
                 let pos_line = (*def_line).max(1) as u32 - 1;
                 return Some(json!({
                     "uri": file_uri,
@@ -31,7 +39,11 @@ pub fn goto_definition(text: &str, line: usize, col: usize, file_uri: &str) -> O
                     }
                 }));
             }
-            Statement::VarDecl { name, line: def_line, .. } if name == word => {
+            Statement::VarDecl {
+                name,
+                line: def_line,
+                ..
+            } if name == word => {
                 let pos_line = (*def_line).max(1) as u32 - 1;
                 return Some(json!({
                     "uri": file_uri,
@@ -61,7 +73,9 @@ pub fn document_symbols(text: &str) -> Vec<Value> {
     let mut symbols = Vec::new();
     for stmt in &ast {
         match stmt {
-            Statement::FuncDecl { name, line, params, .. } => {
+            Statement::FuncDecl {
+                name, line, params, ..
+            } => {
                 let start = (*line).max(1) as u32 - 1;
                 let param_names: Vec<&str> = params.iter().map(|p| p.name.as_str()).collect();
                 let detail = format!("fungsi({})", param_names.join(", "));
@@ -79,7 +93,12 @@ pub fn document_symbols(text: &str) -> Vec<Value> {
                     }
                 }));
             }
-            Statement::VarDecl { name, line, is_const, .. } => {
+            Statement::VarDecl {
+                name,
+                line,
+                is_const,
+                ..
+            } => {
                 let start = (*line).max(1) as u32 - 1;
                 let (detail, kind) = if *is_const {
                     ("konstanta", 14)

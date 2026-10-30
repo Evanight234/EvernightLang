@@ -44,14 +44,8 @@ impl MarchOutput {
     }
 
     pub fn dari_json(json: &Json) -> Result<Self, String> {
-        let tipe = json
-            .ambil_teks("tipe")
-            .unwrap_or("teks")
-            .to_string();
-        let konten = json
-            .ambil_teks("konten")
-            .unwrap_or("")
-            .to_string();
+        let tipe = json.ambil_teks("tipe").unwrap_or("teks").to_string();
+        let konten = json.ambil_teks("konten").unwrap_or("").to_string();
 
         let mut kolom_tabel = None;
         let mut baris_tabel = None;
@@ -130,17 +124,13 @@ impl MarchCell {
             .ambil_teks("id")
             .ok_or_else(|| "Sel tidak memiliki 'id'".to_string())?
             .to_string();
-        let tipe = json
-            .ambil_teks("tipe")
-            .unwrap_or("kode")
-            .to_string();
+        let tipe = json.ambil_teks("tipe").unwrap_or("kode").to_string();
         let urutan_eksekusi = json.ambil_angka("urutan_eksekusi").map(|n| n as usize);
-        let sumber = json
-            .ambil_teks("sumber")
-            .unwrap_or("")
-            .to_string();
+        let sumber = json.ambil_teks("sumber").unwrap_or("").to_string();
         let keluaran = match json.ambil("keluaran") {
-            Some(Json::Objek(_)) => json.ambil("keluaran").and_then(|k| MarchOutput::dari_json(k).ok()),
+            Some(Json::Objek(_)) => json
+                .ambil("keluaran")
+                .and_then(|k| MarchOutput::dari_json(k).ok()),
             _ => None,
         };
 
@@ -170,13 +160,19 @@ impl MarchMetadata {
         ]);
         Json::Objek(vec![
             ("penulis".to_string(), Json::Teks(self.penulis.clone())),
-            ("folder_kerja".to_string(), Json::Teks(self.folder_kerja.clone())),
+            (
+                "folder_kerja".to_string(),
+                Json::Teks(self.folder_kerja.clone()),
+            ),
             ("kernel".to_string(), kernel),
         ])
     }
 
     pub fn dari_json(json: &Json) -> Self {
-        let penulis = json.ambil_teks("penulis").unwrap_or("Pengguna Evernight").to_string();
+        let penulis = json
+            .ambil_teks("penulis")
+            .unwrap_or("Pengguna Evernight")
+            .to_string();
         let folder_kerja = json.ambil_teks("folder_kerja").unwrap_or(".").to_string();
         let mut kernel_nama = "evernight".to_string();
         let mut kernel_versi = env!("CARGO_PKG_VERSION").to_string();
@@ -257,21 +253,30 @@ impl MarchNotebook {
     pub fn ke_json(&self) -> Json {
         let sel_larik = self.sel.iter().map(|c| c.ke_json()).collect();
         Json::Objek(vec![
-            ("march_versi".to_string(), Json::Teks(self.march_versi.clone())),
+            (
+                "march_versi".to_string(),
+                Json::Teks(self.march_versi.clone()),
+            ),
             ("bahasa".to_string(), Json::Teks(self.bahasa.clone())),
-            ("nama_notebook".to_string(), Json::Teks(self.nama_notebook.clone())),
-            ("waktu_dibuat".to_string(), Json::Teks(self.waktu_dibuat.clone())),
-            ("waktu_diubah".to_string(), Json::Teks(self.waktu_diubah.clone())),
+            (
+                "nama_notebook".to_string(),
+                Json::Teks(self.nama_notebook.clone()),
+            ),
+            (
+                "waktu_dibuat".to_string(),
+                Json::Teks(self.waktu_dibuat.clone()),
+            ),
+            (
+                "waktu_diubah".to_string(),
+                Json::Teks(self.waktu_diubah.clone()),
+            ),
             ("metadata".to_string(), self.metadata.ke_json()),
             ("sel".to_string(), Json::Larik(sel_larik)),
         ])
     }
 
     pub fn dari_json(json: &Json) -> Result<Self, String> {
-        let march_versi = json
-            .ambil_teks("march_versi")
-            .unwrap_or("1.0")
-            .to_string();
+        let march_versi = json.ambil_teks("march_versi").unwrap_or("1.0").to_string();
         let bahasa = json
             .ambil_teks("bahasa")
             .unwrap_or("EvernightLanguage")
@@ -280,14 +285,8 @@ impl MarchNotebook {
             .ambil_teks("nama_notebook")
             .unwrap_or("Notebook March")
             .to_string();
-        let waktu_dibuat = json
-            .ambil_teks("waktu_dibuat")
-            .unwrap_or("")
-            .to_string();
-        let waktu_diubah = json
-            .ambil_teks("waktu_diubah")
-            .unwrap_or("")
-            .to_string();
+        let waktu_dibuat = json.ambil_teks("waktu_dibuat").unwrap_or("").to_string();
+        let waktu_diubah = json.ambil_teks("waktu_diubah").unwrap_or("").to_string();
 
         let metadata = match json.ambil("metadata") {
             Some(m) => MarchMetadata::dari_json(m),
@@ -322,8 +321,8 @@ impl MarchNotebook {
     pub fn muat_dari_berkas(path: &Path) -> Result<Self, String> {
         let raw = fs::read_to_string(path)
             .map_err(|e| format!("Gagal membaca berkas notebook '{:?}': {}", path, e))?;
-        let json_val = json::parse(&raw)
-            .map_err(|e| format!("Gagal mengurai format JSON '.emlbn': {}", e))?;
+        let json_val =
+            json::parse(&raw).map_err(|e| format!("Gagal mengurai format JSON '.emlbn': {}", e))?;
         Self::dari_json(&json_val)
     }
 
@@ -340,7 +339,9 @@ impl MarchNotebook {
         out.push_str("# ======================================================================\n");
         out.push_str(&format!("# March Notebook: {}\n", self.nama_notebook));
         out.push_str("# Dihasilkan secara otomatis oleh Evernight March Subsystem\n");
-        out.push_str("# ======================================================================\n\n");
+        out.push_str(
+            "# ======================================================================\n\n",
+        );
 
         for (i, cell) in self.sel.iter().enumerate() {
             if cell.tipe == "kode" {
@@ -373,7 +374,8 @@ mod tests {
         let json_val = nb.ke_json();
         let teks_json = json_val.tulis_rapi();
         let parsed = json::parse(&teks_json).expect("Gagal mengurai JSON");
-        let nb_reconstructed = MarchNotebook::dari_json(&parsed).expect("Gagal merekonstruksi notebook");
+        let nb_reconstructed =
+            MarchNotebook::dari_json(&parsed).expect("Gagal merekonstruksi notebook");
 
         assert_eq!(nb_reconstructed.nama_notebook, "Uji Coba ML");
         assert_eq!(nb_reconstructed.sel.len(), 2);
@@ -403,7 +405,10 @@ mod tests {
         let out_tabel = MarchOutput {
             tipe: "tabel_html".to_string(),
             konten: "DataFrame 2x2".to_string(),
-            baris_tabel: Some(vec![vec!["1.0".to_string(), "A".to_string()], vec!["2.0".to_string(), "B".to_string()]]),
+            baris_tabel: Some(vec![
+                vec!["1.0".to_string(), "A".to_string()],
+                vec!["2.0".to_string(), "B".to_string()],
+            ]),
             kolom_tabel: Some(vec!["skor".to_string(), "kelas".to_string()]),
             svg: None,
         };

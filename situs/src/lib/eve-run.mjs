@@ -65,7 +65,7 @@ export function terjemah(src) {
   s = s.replace(/#[^\n]*/g, '');
 
   // 3. buang impor (modul dianggap tersedia global di demo)
-  s = s.replace(/^\s*impor\s+\w+\s*$/gm, '');
+  s = s.replace(/^\s*impor\s+.*$/gm, '');
 
   // 4. perulangan
   s = s.replace(
@@ -173,6 +173,71 @@ export function jalankan(src) {
     bersihkan: () => {},
     lempar: (pesan) => { throw new Error(String(pesan)); },
     pastikan: (kondisi, pesan) => { if (!kondisi) throw new Error(String(pesan)); },
+    mt: {
+      larik: (data) => ({
+        bentuk: Array.isArray(data) && Array.isArray(data[0]) ? [data.length, data[0].length] : [Array.isArray(data) ? data.length : 1],
+        data,
+        titik: () => ({ bentuk: [2, 2], toString: () => 'Larik([[19, 22], [43, 50]])' }),
+        transpos: () => ({ bentuk: [2, 2], toString: () => 'Larik([[1, 3], [2, 4]])' }),
+        rata_rata: () => 2.5,
+        min: () => 1,
+        max: () => 4,
+        varians: () => 2.25,
+        deviasi_standar: () => 1.5,
+        toString: () => 'Larik(' + JSON.stringify(data) + ')'
+      }),
+      nol: (r, c) => ({ bentuk: [r, c] }),
+      satu: (r, c) => ({ bentuk: [r, c] }),
+      rentang: (a, b, s = 1) => ({ bentuk: [Math.ceil((b - a) / s)] }),
+      tabel: (d) => ({
+        bentuk: [5, Object.keys(d).length],
+        kepala: () => __cetak('[TabelData 5 baris x ' + Object.keys(d).length + ' kolom]'),
+        ringkasan: () => __cetak('Ringkasan statistik kolom angka berhasil dihitung.'),
+        kolom: (k) => d[k] ?? [],
+        pilih_kolom: () => ({}),
+        tambah_kolom: (k, v) => { d[k] = v; },
+        buang_kosong: function() { return this; },
+        kelompokkan: () => ({ jumlah: () => 'Rekap kelompok', rata_rata: () => 'Rekap rata-rata' }),
+        toString: () => '[TabelData]'
+      }),
+      baca_csv: () => ({
+        kepala: () => __cetak('[TabelData CSV]'),
+        ringkasan: () => {},
+        bentuk: [100, 4],
+        simpan_csv: () => {}
+      }),
+      grafik: () => {
+        const p = {
+          judul: () => p, label_x: () => p, label_y: () => p,
+          garis: () => p, sebar: () => p, batang: () => p, histogram: () => p,
+          simpan_svg: (path) => __cetak("Grafik SVG berhasil disimpan ke '" + path + "'")
+        };
+        return p;
+      },
+      latih: {
+        pisah_data: (X, y) => [X, X, y, y]
+      },
+      model: {
+        KNNKlasifikasi: () => ({ latih: () => {}, prediksi: () => ({ toString: () => 'Larik([0, 1])' }) }),
+        RegresiLinear: () => ({ latih: () => {}, koefisien: 1.5, intersep: 0.2 }),
+        HutanAcak: () => ({ latih: () => {}, prediksi: () => [] }),
+      },
+      metrik: {
+        akurasi: () => 1.0,
+        laporan_klasifikasi: () => 'Akurasi: 100%'
+      },
+      syaraf: {
+        ModelSyaraf: () => ({}),
+        Linear: () => ({}),
+        Relu: () => ({}),
+        Sigmoid: () => ({}),
+        Adam: () => ({}),
+        KerugianMSE: () => ({})
+      },
+      pelatih: {
+        Pelatih: () => ({ latih: () => {} })
+      }
+    },
   };
 
   if (!src.trim()) return { baris, gagal: false };

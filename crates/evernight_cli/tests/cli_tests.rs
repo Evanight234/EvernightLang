@@ -595,7 +595,13 @@ fn test_cli_march_ekspor_dan_eksekusi() {
     fs::write(&nb_path, raw_emlbn).unwrap();
 
     let output_ekspor = Command::new(get_bin())
-        .args(["march", "ekspor", nb_path.to_str().unwrap(), "-o", out_eve.to_str().unwrap()])
+        .args([
+            "march",
+            "ekspor",
+            nb_path.to_str().unwrap(),
+            "-o",
+            out_eve.to_str().unwrap(),
+        ])
         .output()
         .expect("Gagal menjalankan perintah ekspor");
 

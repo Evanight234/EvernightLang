@@ -1,4 +1,4 @@
-use std::collections::{HashMap, BTreeSet};
+use std::collections::{BTreeSet, HashMap};
 
 /// Menghitung akurasi prediksi: jumlah prediksi benar dibagi total sampel
 pub fn akurasi(y_asli: &[f64], y_pred: &[f64]) -> Result<f64, String> {
@@ -130,11 +130,8 @@ pub fn matriks_konfusi(
 
     let classes: Vec<i64> = classes_set.into_iter().collect();
     let n = classes.len();
-    let class_to_idx: HashMap<i64, usize> = classes
-        .iter()
-        .enumerate()
-        .map(|(i, &c)| (c, i))
-        .collect();
+    let class_to_idx: HashMap<i64, usize> =
+        classes.iter().enumerate().map(|(i, &c)| (c, i)).collect();
 
     let mut matrix = vec![vec![0.0; n]; n];
 
@@ -201,9 +198,21 @@ pub fn laporan_klasifikasi(y_asli: &[f64], y_pred: &[f64]) -> Result<String, Str
         acc, total_samples
     ));
 
-    let macro_p = if count > 0 { total_p / count as f64 } else { 0.0 };
-    let macro_r = if count > 0 { total_r / count as f64 } else { 0.0 };
-    let macro_f1 = if count > 0 { total_f1 / count as f64 } else { 0.0 };
+    let macro_p = if count > 0 {
+        total_p / count as f64
+    } else {
+        0.0
+    };
+    let macro_r = if count > 0 {
+        total_r / count as f64
+    } else {
+        0.0
+    };
+    let macro_f1 = if count > 0 {
+        total_f1 / count as f64
+    } else {
+        0.0
+    };
 
     s.push_str(&format!(
         "   rata makro      {:.2}       {:.2}       {:.2}        {:>4}\n",

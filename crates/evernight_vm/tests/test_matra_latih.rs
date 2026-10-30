@@ -1,5 +1,3 @@
-mod common;
-use common::*;
 use evernight_core::{Lexer, Parser};
 use evernight_vm::{Compiler, Value, Vm};
 
@@ -254,11 +252,15 @@ fn test_deteksi_kebocoran_dan_drift() {
     "##;
 
     let (res, _) = eksekusi_output(kode);
-    assert!(res.is_ok(), "Gagal cek kebocoran dan drift: {:?}", res.err());
+    assert!(
+        res.is_ok(),
+        "Gagal cek kebocoran dan drift: {:?}",
+        res.err()
+    );
     if let Value::Daftar(list_rc) = res.unwrap() {
         let list = list_rc.borrow();
         assert_eq!(list[0], Value::Bolean(true)); // ada kebocoran
-        assert_eq!(list[1], Value::Angka(1.0));   // 1 sampel bocor
+        assert_eq!(list[1], Value::Angka(1.0)); // 1 sampel bocor
         assert_eq!(list[2], Value::Bolean(true)); // ada pergeseran distribusi
     }
 }

@@ -61,11 +61,9 @@ fn read_message(reader: &mut impl BufRead) -> Result<Value, io::Error> {
     let mut buf = vec![0u8; len];
     reader.read_exact(&mut buf)?;
 
-    let text = String::from_utf8(buf)
-        .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
+    let text = String::from_utf8(buf).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
 
-    serde_json::from_str(&text)
-        .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
+    serde_json::from_str(&text).map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))
 }
 
 fn write_response(resp: &Value) -> Result<(), io::Error> {
@@ -160,7 +158,11 @@ fn handle_did_open(state: &LspState, params: &Value) {
         .and_then(|t| t.as_str())
         .unwrap_or("")
         .to_string();
-    state.documents.lock().unwrap().insert(uri.clone(), text.clone());
+    state
+        .documents
+        .lock()
+        .unwrap()
+        .insert(uri.clone(), text.clone());
     publish_diagnostics(&uri, &text);
 }
 
@@ -174,7 +176,11 @@ fn handle_did_change(state: &LspState, params: &Value) {
         .and_then(|t| t.as_str())
         .unwrap_or("")
         .to_string();
-    state.documents.lock().unwrap().insert(uri.clone(), text.clone());
+    state
+        .documents
+        .lock()
+        .unwrap()
+        .insert(uri.clone(), text.clone());
     publish_diagnostics(&uri, &text);
 }
 

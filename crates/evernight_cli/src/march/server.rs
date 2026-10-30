@@ -23,7 +23,12 @@ pub struct MarchServerState {
     pub port: u16,
 }
 
-pub fn mulai_server(notebook_path: PathBuf, working_dir: PathBuf, port_awal: u16, buka_browser: bool) -> Result<(), String> {
+pub fn mulai_server(
+    notebook_path: PathBuf,
+    working_dir: PathBuf,
+    port_awal: u16,
+    buka_browser: bool,
+) -> Result<(), String> {
     // 1. Inisialisasi notebook (buka yang ada atau buat baru)
     let notebook = if notebook_path.exists() {
         MarchNotebook::muat_dari_berkas(&notebook_path)?
@@ -45,7 +50,10 @@ pub fn mulai_server(notebook_path: PathBuf, working_dir: PathBuf, port_awal: u16
             Err(_) => {
                 port += 1;
                 if port > port_awal + 20 {
-                    return Err(format!("Gagal mengikat port antara {} dan {}", port_awal, port));
+                    return Err(format!(
+                        "Gagal mengikat port antara {} dan {}",
+                        port_awal, port
+                    ));
                 }
             }
         }
@@ -66,7 +74,10 @@ pub fn mulai_server(notebook_path: PathBuf, working_dir: PathBuf, port_awal: u16
     println!("======================================================================");
     println!("  [OK] Server Web berjalan di  : {}", url);
     println!("  [OK] Direktori kerja laptop  : {}", working_dir.display());
-    println!("  [OK] Berkas notebook aktif   : {}", notebook_path.display());
+    println!(
+        "  [OK] Berkas notebook aktif   : {}",
+        notebook_path.display()
+    );
     println!("  [OK] Penyimpanan lokal 100%  : Aktif (tanpa ketergantungan cloud)");
     println!("  Tekan Ctrl + C pada terminal ini untuk menghentikan server.");
     println!("======================================================================\n");
@@ -135,27 +146,57 @@ fn tangani_koneksi(mut stream: TcpStream, state_arc: Arc<Mutex<MarchServerState>
 
     match (method, path) {
         ("GET", "/") | ("GET", "/index.html") => {
-            kirim_respon(&mut stream, 200, "OK", "text/html; charset=utf-8", INDEX_HTML);
+            kirim_respon(
+                &mut stream,
+                200,
+                "OK",
+                "text/html; charset=utf-8",
+                INDEX_HTML,
+            );
         }
         ("GET", "/api/status") => {
             let state = state_arc.lock().unwrap();
             let json = Json::Objek(vec![
                 ("status".to_string(), Json::Teks("ok".to_string())),
                 ("port".to_string(), Json::Angka(state.port as f64)),
-                ("notebook".to_string(), Json::Teks(state.notebook.nama_notebook.clone())),
-                ("folder".to_string(), Json::Teks(state.working_dir.to_string_lossy().to_string())),
+                (
+                    "notebook".to_string(),
+                    Json::Teks(state.notebook.nama_notebook.clone()),
+                ),
+                (
+                    "folder".to_string(),
+                    Json::Teks(state.working_dir.to_string_lossy().to_string()),
+                ),
             ]);
-            kirim_respon(&mut stream, 200, "OK", "application/json; charset=utf-8", &json.tulis_kompak());
+            kirim_respon(
+                &mut stream,
+                200,
+                "OK",
+                "application/json; charset=utf-8",
+                &json.tulis_kompak(),
+            );
         }
         ("GET", "/api/berkas") => {
             let state = state_arc.lock().unwrap();
             let files_json = pindai_berkas_lokal(&state.working_dir);
-            kirim_respon(&mut stream, 200, "OK", "application/json; charset=utf-8", &files_json.tulis_kompak());
+            kirim_respon(
+                &mut stream,
+                200,
+                "OK",
+                "application/json; charset=utf-8",
+                &files_json.tulis_kompak(),
+            );
         }
         ("GET", "/api/notebook") => {
             let state = state_arc.lock().unwrap();
             let nb_json = state.notebook.ke_json();
-            kirim_respon(&mut stream, 200, "OK", "application/json; charset=utf-8", &nb_json.tulis_kompak());
+            kirim_respon(
+                &mut stream,
+                200,
+                "OK",
+                "application/json; charset=utf-8",
+                &nb_json.tulis_kompak(),
+            );
         }
         ("POST", "/api/folder/ganti") => {
             let parsed_req = json::parse(body);
@@ -173,19 +214,40 @@ fn tangani_koneksi(mut stream: TcpStream, state_arc: Arc<Mutex<MarchServerState>
             };
 
             if folder_baru.trim().is_empty() {
-                kirim_respon(&mut stream, 400, "Bad Request", "application/json; charset=utf-8", "{\"sukses\":false,\"pesan\":\"Path folder tidak boleh kosong\"}");
+                kirim_respon(
+                    &mut stream,
+                    400,
+                    "Bad Request",
+                    "application/json; charset=utf-8",
+                    "{\"sukses\":false,\"pesan\":\"Path folder tidak boleh kosong\"}",
+                );
                 return;
             }
 
             let path = std::path::PathBuf::from(folder_baru.trim());
             if !path.exists() {
                 if let Err(e) = fs::create_dir_all(&path) {
-                    let err_json = format!("{{\"sukses\":false,\"pesan\":\"Folder tidak ada dan gagal dibuat: {}\"}}", e);
-                    kirim_respon(&mut stream, 400, "Bad Request", "application/json; charset=utf-8", &err_json);
+                    let err_json = format!(
+                        "{{\"sukses\":false,\"pesan\":\"Folder tidak ada dan gagal dibuat: {}\"}}",
+                        e
+                    );
+                    kirim_respon(
+                        &mut stream,
+                        400,
+                        "Bad Request",
+                        "application/json; charset=utf-8",
+                        &err_json,
+                    );
                     return;
                 }
             } else if !path.is_dir() {
-                kirim_respon(&mut stream, 400, "Bad Request", "application/json; charset=utf-8", "{\"sukses\":false,\"pesan\":\"Path yang diberikan bukan direktori/folder\"}");
+                kirim_respon(
+                    &mut stream,
+                    400,
+                    "Bad Request",
+                    "application/json; charset=utf-8",
+                    "{\"sukses\":false,\"pesan\":\"Path yang diberikan bukan direktori/folder\"}",
+                );
                 return;
             }
 
@@ -194,10 +256,19 @@ fn tangani_koneksi(mut stream: TcpStream, state_arc: Arc<Mutex<MarchServerState>
             let files_json = pindai_berkas_lokal(&state.working_dir);
             let res = Json::Objek(vec![
                 ("sukses".to_string(), Json::Bolean(true)),
-                ("folder".to_string(), Json::Teks(state.working_dir.to_string_lossy().to_string())),
+                (
+                    "folder".to_string(),
+                    Json::Teks(state.working_dir.to_string_lossy().to_string()),
+                ),
                 ("berkas_data".to_string(), files_json),
             ]);
-            kirim_respon(&mut stream, 200, "OK", "application/json; charset=utf-8", &res.tulis_kompak());
+            kirim_respon(
+                &mut stream,
+                200,
+                "OK",
+                "application/json; charset=utf-8",
+                &res.tulis_kompak(),
+            );
         }
         ("POST", "/api/folder/telusuri") => {
             #[cfg(windows)]
@@ -231,12 +302,27 @@ fn tangani_koneksi(mut stream: TcpStream, state_arc: Arc<Mutex<MarchServerState>
                 let files_json = pindai_berkas_lokal(&state.working_dir);
                 let res = Json::Objek(vec![
                     ("sukses".to_string(), Json::Bolean(true)),
-                    ("folder".to_string(), Json::Teks(state.working_dir.to_string_lossy().to_string())),
+                    (
+                        "folder".to_string(),
+                        Json::Teks(state.working_dir.to_string_lossy().to_string()),
+                    ),
                     ("berkas_data".to_string(), files_json),
                 ]);
-                kirim_respon(&mut stream, 200, "OK", "application/json; charset=utf-8", &res.tulis_kompak());
+                kirim_respon(
+                    &mut stream,
+                    200,
+                    "OK",
+                    "application/json; charset=utf-8",
+                    &res.tulis_kompak(),
+                );
             } else {
-                kirim_respon(&mut stream, 200, "OK", "application/json; charset=utf-8", "{\"sukses\":false,\"dibatalkan\":true}");
+                kirim_respon(
+                    &mut stream,
+                    200,
+                    "OK",
+                    "application/json; charset=utf-8",
+                    "{\"sukses\":false,\"dibatalkan\":true}",
+                );
             }
         }
         ("POST", "/api/notebook/buka") => {
@@ -255,7 +341,13 @@ fn tangani_koneksi(mut stream: TcpStream, state_arc: Arc<Mutex<MarchServerState>
             };
 
             if target_nama.is_empty() {
-                kirim_respon(&mut stream, 400, "Bad Request", "application/json; charset=utf-8", "{\"sukses\":false,\"pesan\":\"Nama berkas tidak boleh kosong\"}");
+                kirim_respon(
+                    &mut stream,
+                    400,
+                    "Bad Request",
+                    "application/json; charset=utf-8",
+                    "{\"sukses\":false,\"pesan\":\"Nama berkas tidak boleh kosong\"}",
+                );
                 return;
             }
 
@@ -267,11 +359,23 @@ fn tangani_koneksi(mut stream: TcpStream, state_arc: Arc<Mutex<MarchServerState>
                     state.notebook = nb;
                     state.notebook_path = file_path;
                     let nb_json = state.notebook.ke_json();
-                    kirim_respon(&mut stream, 200, "OK", "application/json; charset=utf-8", &nb_json.tulis_kompak());
+                    kirim_respon(
+                        &mut stream,
+                        200,
+                        "OK",
+                        "application/json; charset=utf-8",
+                        &nb_json.tulis_kompak(),
+                    );
                 }
                 Err(e) => {
                     let err_json = format!("{{\"sukses\":false,\"pesan\":\"{}\"}}", e);
-                    kirim_respon(&mut stream, 500, "Internal Server Error", "application/json; charset=utf-8", &err_json);
+                    kirim_respon(
+                        &mut stream,
+                        500,
+                        "Internal Server Error",
+                        "application/json; charset=utf-8",
+                        &err_json,
+                    );
                 }
             }
         }
@@ -291,7 +395,13 @@ fn tangani_koneksi(mut stream: TcpStream, state_arc: Arc<Mutex<MarchServerState>
             };
 
             let final_name = if nama.trim().is_empty() {
-                format!("Notebook_{}.emlbn", std::time::SystemTime::now().duration_since(std::time::UNIX_EPOCH).map(|d| d.as_secs()).unwrap_or(0))
+                format!(
+                    "Notebook_{}.emlbn",
+                    std::time::SystemTime::now()
+                        .duration_since(std::time::UNIX_EPOCH)
+                        .map(|d| d.as_secs())
+                        .unwrap_or(0)
+                )
             } else if !nama.ends_with(".emlbn") {
                 format!("{}.emlbn", nama.trim())
             } else {
@@ -308,7 +418,13 @@ fn tangani_koneksi(mut stream: TcpStream, state_arc: Arc<Mutex<MarchServerState>
             state.notebook = nb;
             state.notebook_path = file_path;
             let nb_json = state.notebook.ke_json();
-            kirim_respon(&mut stream, 200, "OK", "application/json; charset=utf-8", &nb_json.tulis_kompak());
+            kirim_respon(
+                &mut stream,
+                200,
+                "OK",
+                "application/json; charset=utf-8",
+                &nb_json.tulis_kompak(),
+            );
         }
         ("POST", "/api/sel/jalankan") => {
             let parsed_req = json::parse(body);
@@ -326,7 +442,13 @@ fn tangani_koneksi(mut stream: TcpStream, state_arc: Arc<Mutex<MarchServerState>
                     (id_val, kode_val)
                 }
                 _ => {
-                    kirim_respon(&mut stream, 400, "Bad Request", "application/json; charset=utf-8", "{\"sukses\":false,\"pesan\":\"Payload JSON tidak valid\"}");
+                    kirim_respon(
+                        &mut stream,
+                        400,
+                        "Bad Request",
+                        "application/json; charset=utf-8",
+                        "{\"sukses\":false,\"pesan\":\"Payload JSON tidak valid\"}",
+                    );
                     return;
                 }
             };
@@ -350,7 +472,13 @@ fn tangani_koneksi(mut stream: TcpStream, state_arc: Arc<Mutex<MarchServerState>
                 ("urutan".to_string(), Json::Angka(urutan as f64)),
                 ("keluaran".to_string(), keluaran.ke_json()),
             ]);
-            kirim_respon(&mut stream, 200, "OK", "application/json; charset=utf-8", &res_json.tulis_kompak());
+            kirim_respon(
+                &mut stream,
+                200,
+                "OK",
+                "application/json; charset=utf-8",
+                &res_json.tulis_kompak(),
+            );
         }
         ("POST", "/api/simpan") => {
             let parsed_req = json::parse(body);
@@ -360,36 +488,78 @@ fn tangani_koneksi(mut stream: TcpStream, state_arc: Arc<Mutex<MarchServerState>
                         let mut state = state_arc.lock().unwrap();
                         state.notebook = nb;
                         let _ = state.notebook.simpan_ke_berkas(&state.notebook_path);
-                        kirim_respon(&mut stream, 200, "OK", "application/json; charset=utf-8", "{\"sukses\":true}");
+                        kirim_respon(
+                            &mut stream,
+                            200,
+                            "OK",
+                            "application/json; charset=utf-8",
+                            "{\"sukses\":true}",
+                        );
                     }
                     Err(e) => {
                         let err_json = format!("{{\"sukses\":false,\"pesan\":\"{}\"}}", e);
-                        kirim_respon(&mut stream, 400, "Bad Request", "application/json; charset=utf-8", &err_json);
+                        kirim_respon(
+                            &mut stream,
+                            400,
+                            "Bad Request",
+                            "application/json; charset=utf-8",
+                            &err_json,
+                        );
                     }
                 },
                 Err(e) => {
                     let err_json = format!("{{\"sukses\":false,\"pesan\":\"{}\"}}", e);
-                    kirim_respon(&mut stream, 400, "Bad Request", "application/json; charset=utf-8", &err_json);
+                    kirim_respon(
+                        &mut stream,
+                        400,
+                        "Bad Request",
+                        "application/json; charset=utf-8",
+                        &err_json,
+                    );
                 }
             }
         }
         ("POST", "/api/kernel/reset") => {
             let mut state = state_arc.lock().unwrap();
             state.kernel.reset();
-            kirim_respon(&mut stream, 200, "OK", "application/json; charset=utf-8", "{\"sukses\":true}");
+            kirim_respon(
+                &mut stream,
+                200,
+                "OK",
+                "application/json; charset=utf-8",
+                "{\"sukses\":true}",
+            );
         }
         ("GET", "/api/ekspor") => {
             let state = state_arc.lock().unwrap();
             let skrip_eve = state.notebook.ekspor_ke_eve();
-            kirim_respon(&mut stream, 200, "OK", "text/plain; charset=utf-8", &skrip_eve);
+            kirim_respon(
+                &mut stream,
+                200,
+                "OK",
+                "text/plain; charset=utf-8",
+                &skrip_eve,
+            );
         }
         _ => {
-            kirim_respon(&mut stream, 404, "Not Found", "text/plain", "Halaman tidak ditemukan (404)");
+            kirim_respon(
+                &mut stream,
+                404,
+                "Not Found",
+                "text/plain",
+                "Halaman tidak ditemukan (404)",
+            );
         }
     }
 }
 
-fn kirim_respon(stream: &mut TcpStream, status_code: u16, status_text: &str, content_type: &str, body: &str) {
+fn kirim_respon(
+    stream: &mut TcpStream,
+    status_code: u16,
+    status_text: &str,
+    content_type: &str,
+    body: &str,
+) {
     let header = format!(
         "HTTP/1.1 {} {}\r\n\
 Content-Type: {}\r\n\
@@ -439,7 +609,10 @@ fn pindai_berkas_lokal(dir: &std::path::Path) -> Json {
     });
 
     Json::Objek(vec![
-        ("folder".to_string(), Json::Teks(dir.to_string_lossy().to_string())),
+        (
+            "folder".to_string(),
+            Json::Teks(dir.to_string_lossy().to_string()),
+        ),
         ("berkas".to_string(), Json::Larik(files)),
     ])
 }
@@ -453,8 +626,6 @@ fn buka_peramban_web(url: &str) {
     }
     #[cfg(not(windows))]
     {
-        let _ = std::process::Command::new("xdg-open")
-            .arg(url)
-            .spawn();
+        let _ = std::process::Command::new("xdg-open").arg(url).spawn();
     }
 }

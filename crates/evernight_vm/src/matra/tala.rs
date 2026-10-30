@@ -3,9 +3,7 @@ use crate::value::Value;
 use std::collections::HashMap;
 
 /// Generator kombinasi Cartesian Product dari ruang parameter
-pub fn bangun_kisi_parameter(
-    ruang: &HashMap<String, Vec<Value>>,
-) -> Vec<HashMap<String, Value>> {
+pub fn bangun_kisi_parameter(ruang: &HashMap<String, Vec<Value>>) -> Vec<HashMap<String, Value>> {
     let keys: Vec<String> = ruang.keys().cloned().collect();
     if keys.is_empty() {
         return Vec::new();

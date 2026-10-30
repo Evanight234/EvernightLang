@@ -82,7 +82,10 @@ pub fn jalankan(args: &[String]) -> i32 {
                 }
             }
             opsi_asing => {
-                eprintln!("BAHAYA [ARG]: Opsi '{}' tidak dikenal untuk 'evernight march'.", opsi_asing);
+                eprintln!(
+                    "BAHAYA [ARG]: Opsi '{}' tidak dikenal untuk 'evernight march'.",
+                    opsi_asing
+                );
                 cetak_bantuan();
                 return 1;
             }
@@ -97,7 +100,9 @@ pub fn jalankan(args: &[String]) -> i32 {
         let path_str = match berkas_target {
             Some(p) => p,
             None => {
-                eprintln!("BAHAYA [ARG]: Harap tentukan berkas notebook '.emlbn' yang ingin diekspor.");
+                eprintln!(
+                    "BAHAYA [ARG]: Harap tentukan berkas notebook '.emlbn' yang ingin diekspor."
+                );
                 println!("Contoh: evernight march ekspor analisis.emlbn");
                 return 1;
             }
@@ -114,17 +119,26 @@ pub fn jalankan(args: &[String]) -> i32 {
 
         let skrip = notebook.ekspor_ke_eve();
         let target_path = target_keluaran_eve.unwrap_or_else(|| {
-            let stem = path.file_stem().and_then(|s| s.to_str()).unwrap_or("ekspor");
+            let stem = path
+                .file_stem()
+                .and_then(|s| s.to_str())
+                .unwrap_or("ekspor");
             format!("{}.eve", stem)
         });
 
         match fs::write(&target_path, skrip) {
             Ok(_) => {
-                println!("[OK] Berkas notebook berhasil diekspor ke skrip Evernight: '{}'", target_path);
+                println!(
+                    "[OK] Berkas notebook berhasil diekspor ke skrip Evernight: '{}'",
+                    target_path
+                );
                 0
             }
             Err(e) => {
-                eprintln!("BAHAYA [FILE]: Gagal menulis skrip hasil ekspor ke '{}': {}", target_path, e);
+                eprintln!(
+                    "BAHAYA [FILE]: Gagal menulis skrip hasil ekspor ke '{}': {}",
+                    target_path, e
+                );
                 1
             }
         }
@@ -146,7 +160,10 @@ pub fn jalankan(args: &[String]) -> i32 {
                         if file_path.extension().is_none() {
                             file_path.set_extension("emlbn");
                         }
-                        let dir = file_path.parent().map(|p| p.to_path_buf()).unwrap_or_else(|| cwd.clone());
+                        let dir = file_path
+                            .parent()
+                            .map(|p| p.to_path_buf())
+                            .unwrap_or_else(|| cwd.clone());
                         (file_path, dir)
                     }
                 }

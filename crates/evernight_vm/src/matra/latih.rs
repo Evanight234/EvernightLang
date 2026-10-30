@@ -18,7 +18,10 @@ impl AcakLcg {
     }
 
     pub fn next_u64(&mut self) -> u64 {
-        self.state = self.state.wrapping_mul(6364136223846793005).wrapping_add(1442695040888963407);
+        self.state = self
+            .state
+            .wrapping_mul(6364136223846793005)
+            .wrapping_add(1442695040888963407);
         self.state
     }
 
@@ -46,13 +49,19 @@ pub fn pisah_data(
     stratifikasi: bool,
 ) -> Result<(Value, Value, Value, Value), String> {
     if rasio_uji <= 0.0 || rasio_uji >= 1.0 {
-        return Err("Rasio uji harus berada di antara 0.0 dan 1.0 (misal 0.2 untuk 20%)".to_string());
+        return Err(
+            "Rasio uji harus berada di antara 0.0 dan 1.0 (misal 0.2 untuk 20%)".to_string(),
+        );
     }
 
     let n_samples = match x_val {
         Value::Larik(arr) => {
             let a = arr.borrow();
-            if a.bentuk.is_empty() { 0 } else { a.bentuk[0] }
+            if a.bentuk.is_empty() {
+                0
+            } else {
+                a.bentuk[0]
+            }
         }
         Value::Tabel(tbl) => tbl.borrow().jumlah_baris(),
         Value::Daftar(list) => list.borrow().len(),
@@ -109,7 +118,9 @@ pub fn pisah_data(
         for (_kelas, mut indices) in grup_kelas {
             rng.acak_indeks(&mut indices);
             let n_kelas = indices.len();
-            let n_test_kelas = ((n_kelas as f64 * rasio_uji).round() as usize).max(1).min(n_kelas.saturating_sub(1));
+            let n_test_kelas = ((n_kelas as f64 * rasio_uji).round() as usize)
+                .max(1)
+                .min(n_kelas.saturating_sub(1));
 
             test_idx.extend_from_slice(&indices[..n_test_kelas]);
             train_idx.extend_from_slice(&indices[n_test_kelas..]);
@@ -122,7 +133,9 @@ pub fn pisah_data(
         let mut all_indices: Vec<usize> = (0..n_samples).collect();
         rng.acak_indeks(&mut all_indices);
 
-        let n_test = ((n_samples as f64 * rasio_uji).round() as usize).max(1).min(n_samples - 1);
+        let n_test = ((n_samples as f64 * rasio_uji).round() as usize)
+            .max(1)
+            .min(n_samples - 1);
         let test_idx = all_indices[..n_test].to_vec();
         let train_idx = all_indices[n_test..].to_vec();
         (train_idx, test_idx)
@@ -150,7 +163,9 @@ fn ambil_sub_x(x: &Value, indices: &[usize]) -> Result<Value, String> {
                 let start = r * cols;
                 out.extend_from_slice(&a.data[start..start + cols]);
             }
-            Ok(Value::Larik(Rc::new(RefCell::new(MatraArray::dari_vektor_2d(out, rows_out, cols)))))
+            Ok(Value::Larik(Rc::new(RefCell::new(
+                MatraArray::dari_vektor_2d(out, rows_out, cols),
+            ))))
         }
         Value::Tabel(tbl) => {
             let t = tbl.borrow();
@@ -189,7 +204,9 @@ fn ambil_sub_y(y: &Value, indices: &[usize]) -> Result<Value, String> {
                 out.push(a.data[r]);
             }
             let len = out.len();
-            Ok(Value::Larik(Rc::new(RefCell::new(MatraArray::dari_vektor(out, vec![len])))))
+            Ok(Value::Larik(Rc::new(RefCell::new(
+                MatraArray::dari_vektor(out, vec![len]),
+            ))))
         }
         Value::Daftar(list) => {
             let l = list.borrow();
@@ -216,7 +233,11 @@ impl KLipat {
         if k < 2 {
             return Err("Nilai K pada K-Fold minimal harus 2".to_string());
         }
-        Ok(Self { k, acak_baris, seed })
+        Ok(Self {
+            k,
+            acak_baris,
+            seed,
+        })
     }
 
     /// Menghasilkan pasangan indeks (train_indices, val_indices) untuk setiap fold

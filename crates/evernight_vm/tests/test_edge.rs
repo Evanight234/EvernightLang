@@ -1,6 +1,5 @@
 mod common;
 use common::*;
-use evernight_vm::Value;
 
 // === 7C: Edge-case & ketahanan ===
 
@@ -55,10 +54,12 @@ fn edge_daftar_besar() {
 #[test]
 fn edge_kamus_kosong() {
     // Mengakses kunci yang tidak ada → harus error
-    assert!(anggap_false_if_err(r#"
+    assert!(anggap_false_if_err(
+        r#"
         variabel k = {}
         kembali k["tidak_ada"]
-    "#));
+    "#
+    ));
 }
 
 #[test]
@@ -113,8 +114,12 @@ fn edge_fungsi_tanpa_return() {
 #[test]
 fn edge_sandbox_ditolak() {
     // Semua operasi file di luar sandbox harus ditolak
-    assert!(anggap_false_if_err("kembali baca_file(\"C:/Windows/System32/config/sam\")"));
-    assert!(anggap_false_if_err("tulis_file(\"C:/Windows/test.txt\", \"x\")"));
+    assert!(anggap_false_if_err(
+        "kembali baca_file(\"C:/Windows/System32/config/sam\")"
+    ));
+    assert!(anggap_false_if_err(
+        "tulis_file(\"C:/Windows/test.txt\", \"x\")"
+    ));
 }
 
 #[test]

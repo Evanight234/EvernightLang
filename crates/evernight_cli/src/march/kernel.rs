@@ -232,7 +232,9 @@ mod tests {
         let mut kernel = MarchKernel::new(PathBuf::from("."));
 
         // Sel 1: Impor matra dan buat tabel
-        let (_seq, out_tbl) = kernel.jalankan_sel("impor \"matra\" sebagai mt\nmt.tabel({\"umur\": [20, 25], \"skor\": [88.5, 92.0]})");
+        let (_seq, out_tbl) = kernel.jalankan_sel(
+            "impor \"matra\" sebagai mt\nmt.tabel({\"umur\": [20, 25], \"skor\": [88.5, 92.0]})",
+        );
         assert_eq!(out_tbl.tipe, "tabel_html");
         assert!(out_tbl.kolom_tabel.is_some());
         let cols = out_tbl.kolom_tabel.unwrap();
@@ -253,7 +255,11 @@ mod tests {
         let (_seq, out_err) = kernel.jalankan_sel("variabel x = 10 / 0");
         assert_eq!(out_err.tipe, "error");
         assert!(out_err.konten.contains("BAHAYA"));
-        assert!(out_err.konten.contains("DIVISION") || out_err.konten.contains("nol") || out_err.konten.contains("Pembagian"));
+        assert!(
+            out_err.konten.contains("DIVISION")
+                || out_err.konten.contains("nol")
+                || out_err.konten.contains("Pembagian")
+        );
     }
 
     #[test]

@@ -291,8 +291,7 @@ mod tests {
                 assert!(
                     !seen[byte as usize],
                     "opcode 0x{:02X} ('{}') terdaftar dua kali",
-                    byte,
-                    name
+                    byte, name
                 );
                 seen[byte as usize] = true;
             }
@@ -364,16 +363,25 @@ mod tests {
                 panic!("opcode 0x{:02X} ('{}') tidak dikenal", byte, expected_name)
             });
             assert_eq!(
-                op.name(), *expected_name,
+                op.name(),
+                *expected_name,
                 "opcode 0x{:02X}: expected '{}', got '{}'",
-                byte, expected_name, op.name()
+                byte,
+                expected_name,
+                op.name()
             );
         }
         // Pastikan jumlah opcode sesuai
         let total: usize = (0u8..=255)
             .filter(|b| OpCode::from_u8(*b).is_some())
             .count();
-        assert_eq!(total, known.len(), "jumlah opcode berubah dari v1 ({} vs {})", known.len(), total);
+        assert_eq!(
+            total,
+            known.len(),
+            "jumlah opcode berubah dari v1 ({} vs {})",
+            known.len(),
+            total
+        );
     }
 
     /// Bytecode version harus 1 (beku sampai breaking change).

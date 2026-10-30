@@ -45,6 +45,7 @@ export const sidebar: GrupSidebar[] = [
       { label: 'Pengenalan', labelEn: 'Introduction', href: '/docs/pengenalan' },
       { label: 'Instalasi', labelEn: 'Installation', href: '/docs/instalasi' },
       { label: 'Mulai dalam 5 Menit', labelEn: 'Get Started in 5 Minutes', href: '/docs/quickstart' },
+      { label: 'Web Notebook March', labelEn: 'March Web Notebook', href: '/docs/march' },
     ],
   },
   {
@@ -60,6 +61,10 @@ export const sidebar: GrupSidebar[] = [
       { label: 'Tahap 7: String & Matematika', labelEn: 'Stage 7: Strings & Math', href: '/docs/tutorial/07-string-matematika' },
       { label: 'Tahap 8: Konsol & Berkas', labelEn: 'Stage 8: Console & Files', href: '/docs/tutorial/08-konsol-file' },
       { label: 'Tahap 9: Penanganan Kesalahan', labelEn: 'Stage 9: Error Handling', href: '/docs/tutorial/09-kesalahan' },
+      { label: 'Tahap 10: Matra & Aljabar Linier', labelEn: 'Stage 10: Matra & Linear Algebra', href: '/docs/tutorial/10-matra-larik' },
+      { label: 'Tahap 11: Analisis Data Tabular', labelEn: 'Stage 11: Tabular Data Analysis', href: '/docs/tutorial/11-matra-tabel' },
+      { label: 'Tahap 12: Visualisasi Grafik SVG', labelEn: 'Stage 12: Vector SVG Visualization', href: '/docs/tutorial/12-matra-grafik' },
+      { label: 'Tahap 13: Machine Learning & ML', labelEn: 'Stage 13: Machine Learning & ML', href: '/docs/tutorial/13-matra-model' },
     ],
   },
   {
@@ -73,6 +78,7 @@ export const sidebar: GrupSidebar[] = [
       { label: 'Perulangan', labelEn: 'Loops', href: '/docs/panduan/05-perulangan' },
       { label: 'Penanganan Kesalahan', labelEn: 'Error Handling', href: '/docs/panduan/06-kesalahan' },
       { label: 'Impor & Modul', labelEn: 'Imports & Modules', href: '/docs/panduan/07-impor' },
+      { label: 'Sains Data & ML (Matra)', labelEn: 'Data Science & ML (Matra)', href: '/docs/panduan/08-sains-data-matra' },
     ],
   },
   {
@@ -81,6 +87,7 @@ export const sidebar: GrupSidebar[] = [
     item: [
       { label: 'Kata Kunci Lengkap', labelEn: 'All Keywords', href: '/docs/kata-kunci' },
       { label: 'Standard Library', labelEn: 'Standard Library', href: '/docs/stdlib' },
+      { label: 'Pustaka Sains Data (Matra)', labelEn: 'Data Science Library (Matra)', href: '/docs/matra' },
       { label: 'Referensi CLI & REPL', labelEn: 'CLI & REPL Reference', href: '/docs/cli' },
       { label: 'Galeri Contoh Program', labelEn: 'Example Programs', href: '/docs/contoh' },
       { label: 'Tata Bahasa (EBNF)', labelEn: 'Grammar (EBNF)', href: '/docs/tata-bahasa' },

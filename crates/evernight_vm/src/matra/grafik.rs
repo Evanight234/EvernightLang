@@ -88,7 +88,7 @@ impl MatraPlot {
             judul: String::new(),
             label_x: "X".to_string(),
             label_y: "Y".to_string(),
-            warna: "#10B981".to_string(),       // Emerald green
+            warna: "#10B981".to_string(), // Emerald green
             warna_latar: "#1E1E2E".to_string(),
             grid: true,
             lebar: 720,
@@ -120,7 +120,7 @@ impl MatraPlot {
             judul: String::new(),
             label_x: "Kategori".to_string(),
             label_y: "Nilai".to_string(),
-            warna: "#8B5CF6".to_string(),       // Ungu violet
+            warna: "#8B5CF6".to_string(), // Ungu violet
             warna_latar: "#1E1E2E".to_string(),
             grid: true,
             lebar: 720,
@@ -148,7 +148,7 @@ impl MatraPlot {
             judul: String::new(),
             label_x: "Rentang Nilai".to_string(),
             label_y: "Frekuensi".to_string(),
-            warna: "#F59E0B".to_string(),       // Amber gold
+            warna: "#F59E0B".to_string(), // Amber gold
             warna_latar: "#1E1E2E".to_string(),
             grid: true,
             lebar: 720,
@@ -173,7 +173,9 @@ impl MatraPlot {
         if !label.is_empty() && label.len() != n {
             return Err(format!(
                 "Jumlah label ({}) tidak sesuai dengan dimensi matriks ({}x{})",
-                label.len(), n, n
+                label.len(),
+                n,
+                n
             ));
         }
 
@@ -194,7 +196,7 @@ impl MatraPlot {
             judul: "Matriks Konfusi".to_string(),
             label_x: "Prediksi".to_string(),
             label_y: "Sebenarnya".to_string(),
-            warna: "#6366F1".to_string(),       // Indigo
+            warna: "#6366F1".to_string(), // Indigo
             warna_latar: "#1E1E2E".to_string(),
             grid: false,
             lebar: 520,
@@ -480,7 +482,13 @@ impl MatraPlot {
         let grid_h = h - margin_t - margin_b;
         let cell_size = (grid_w / n as f64).min(grid_h / n as f64);
 
-        let max_val = self.matriks.iter().flat_map(|r| r.iter()).cloned().fold(0.0_f64, f64::max).max(1.0);
+        let max_val = self
+            .matriks
+            .iter()
+            .flat_map(|r| r.iter())
+            .cloned()
+            .fold(0.0_f64, f64::max)
+            .max(1.0);
 
         // Judul
         if !self.judul.is_empty() {
@@ -565,14 +573,22 @@ impl MatraPlot {
             let r = rows.saturating_sub(1) - r_inv;
 
             if connect_line && i > 0 {
-                let prev_c = Self::petakan_usize(self.x_data[i - 1], min_x, max_x, cols.saturating_sub(1));
-                let prev_r_inv = Self::petakan_usize(self.y_data[i - 1], min_y, max_y, rows.saturating_sub(1));
+                let prev_c =
+                    Self::petakan_usize(self.x_data[i - 1], min_x, max_x, cols.saturating_sub(1));
+                let prev_r_inv =
+                    Self::petakan_usize(self.y_data[i - 1], min_y, max_y, rows.saturating_sub(1));
                 let prev_r = rows.saturating_sub(1) - prev_r_inv;
 
                 // Garis interpolasi sederhana antar titik
-                let steps = (c as isize - prev_c as isize).abs().max((r as isize - prev_r as isize).abs()) as usize;
+                let steps = (c as isize - prev_c as isize)
+                    .abs()
+                    .max((r as isize - prev_r as isize).abs()) as usize;
                 for s in 0..=steps {
-                    let t = if steps == 0 { 0.0 } else { s as f64 / steps as f64 };
+                    let t = if steps == 0 {
+                        0.0
+                    } else {
+                        s as f64 / steps as f64
+                    };
                     let ic = ((1.0 - t) * prev_c as f64 + t * c as f64).round() as usize;
                     let ir = ((1.0 - t) * prev_r as f64 + t * r as f64).round() as usize;
                     if ir < rows && ic < cols {
@@ -601,9 +617,18 @@ impl MatraPlot {
         out.push_str("         └");
         out.push_str(&"─".repeat(cols));
         out.push('\n');
-        out.push_str(&format!("{:8.2} {:width$}{:.2}\n", min_x, "", max_x, width = cols.saturating_sub(12)));
+        out.push_str(&format!(
+            "{:8.2} {:width$}{:.2}\n",
+            min_x,
+            "",
+            max_x,
+            width = cols.saturating_sub(12)
+        ));
         if !self.label_x.is_empty() || !self.label_y.is_empty() {
-            out.push_str(&format!("  Sumbu: X = {}, Y = {}\n", self.label_x, self.label_y));
+            out.push_str(&format!(
+                "  Sumbu: X = {}, Y = {}\n",
+                self.label_x, self.label_y
+            ));
         }
 
         out
@@ -611,7 +636,13 @@ impl MatraPlot {
 
     fn render_terminal_batang(&self) -> String {
         let max_val = self.y_data.iter().cloned().fold(0.0_f64, f64::max).max(1.0);
-        let max_len_label = self.kategori.iter().map(|k| k.len()).max().unwrap_or(8).max(6);
+        let max_len_label = self
+            .kategori
+            .iter()
+            .map(|k| k.len())
+            .max()
+            .unwrap_or(8)
+            .max(6);
         let max_bar_cols = 35;
 
         let mut out = String::new();
@@ -627,7 +658,10 @@ impl MatraPlot {
             let bar_str = "█".repeat(bar_len);
             out.push_str(&format!(
                 "  {:<width$} │ {} {:.2}\n",
-                cat, bar_str, val, width = max_len_label
+                cat,
+                bar_str,
+                val,
+                width = max_len_label
             ));
         }
 
@@ -667,23 +701,49 @@ impl MatraPlot {
             out.push_str(&format!("  [Diagnostik: {}]\n", self.judul));
         }
 
-        let max_label_len = self.label_kelas.iter().map(|l| l.len()).max().unwrap_or(8).max(8);
+        let max_label_len = self
+            .label_kelas
+            .iter()
+            .map(|l| l.len())
+            .max()
+            .unwrap_or(8)
+            .max(8);
         let cell_w = 10;
 
-        out.push_str(&format!("  {:<width$} │ Prediksi:\n", "", width = max_label_len + 2));
-        out.push_str(&format!("  {:<width$} │", "Sebenarnya", width = max_label_len));
+        out.push_str(&format!(
+            "  {:<width$} │ Prediksi:\n",
+            "",
+            width = max_label_len + 2
+        ));
+        out.push_str(&format!(
+            "  {:<width$} │",
+            "Sebenarnya",
+            width = max_label_len
+        ));
 
         for label in &self.label_kelas {
             out.push_str(&format!(" {:^width$}", label, width = cell_w));
         }
         out.push('\n');
 
-        out.push_str(&format!("  {}┼{}\n", "─".repeat(max_label_len + 2), "─".repeat((cell_w + 1) * n + 1)));
+        out.push_str(&format!(
+            "  {}┼{}\n",
+            "─".repeat(max_label_len + 2),
+            "─".repeat((cell_w + 1) * n + 1)
+        ));
 
         for r in 0..n {
-            out.push_str(&format!("  {:<width$} │", self.label_kelas[r], width = max_label_len));
+            out.push_str(&format!(
+                "  {:<width$} │",
+                self.label_kelas[r],
+                width = max_label_len
+            ));
             for c in 0..n {
-                out.push_str(&format!(" {:^width$.0}", self.matriks[r][c], width = cell_w));
+                out.push_str(&format!(
+                    " {:^width$.0}",
+                    self.matriks[r][c],
+                    width = cell_w
+                ));
             }
             out.push('\n');
         }
@@ -697,9 +757,17 @@ impl MatraPlot {
 
     fn hitung_rentang_xy(&self) -> (f64, f64, f64, f64) {
         let mut min_x = self.x_data.iter().cloned().fold(f64::INFINITY, f64::min);
-        let mut max_x = self.x_data.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
+        let mut max_x = self
+            .x_data
+            .iter()
+            .cloned()
+            .fold(f64::NEG_INFINITY, f64::max);
         let mut min_y = self.y_data.iter().cloned().fold(f64::INFINITY, f64::min);
-        let mut max_y = self.y_data.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
+        let mut max_y = self
+            .y_data
+            .iter()
+            .cloned()
+            .fold(f64::NEG_INFINITY, f64::max);
 
         if min_x == max_x {
             min_x -= 1.0;
@@ -814,7 +882,11 @@ impl MatraPlot {
     fn hitung_histogram(&self) -> (Vec<(f64, f64)>, Vec<f64>) {
         let n_bins = self.bin_count.max(1);
         let mut min_val = self.x_data.iter().cloned().fold(f64::INFINITY, f64::min);
-        let mut max_val = self.x_data.iter().cloned().fold(f64::NEG_INFINITY, f64::max);
+        let mut max_val = self
+            .x_data
+            .iter()
+            .cloned()
+            .fold(f64::NEG_INFINITY, f64::max);
 
         if min_val == max_val {
             min_val -= 1.0;

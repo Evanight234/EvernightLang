@@ -8,15 +8,16 @@
 
 ## 1. Konteks Aktif (UPDATE TIAP PROMPT)
 
-- **Topik sedang dibahas**: **Perencanaan Pembaruan Dokumentasi & Ekosistem Web `situs/` (Fase 9 & March)**.
-  - User meminta perencanaan penambahan:
-    1. **Tutorial**: Menambahkan minimal > 3 stage baru (Stage 10, 11, 12, 13) mencakup fitur Fase 9 (Matra Sains Data, Tabel/DataFrame, Grafik SVG, dan Model Machine Learning), lengkap dengan penjelasan konsep dan kuis (`quis.ts`).
-    2. **Language Core**: Memperbarui panduan dasar sintaks & pustaka dengan integrasi modul Matra.
-    3. **Function & Reference**: Memperbarui referensi fungsi/stdlib dengan dokumentasi API lengkap sub-modul Matra (`matra.larik`, `matra.tabel`, `matra.grafik`, `matra.model`, dll).
-    4. **Web Notebook March (`.emlbn`)**: Merancang penempatan panduan dan integrasi March di situs (navigasi, sidebar, homepage, dan panduan lengkap).
-- **Sebelumnya (2026-10-30)**: Rilis sukses `v0.2.0` (Fase 9G selesai 100%), push GitHub, dan verifikasi `update evernight system`.
-- **Keputusan terbaru (2026-10-30)**: Menambahkan 4 stage baru di Tutorial (Tahap 10: Matra & Aljabar Linier, Tahap 11: Analisis Data Tabular & CSV, Tahap 12: Visualisasi Data Grafik SVG, Tahap 13: Machine Learning & Jaringan Syaraf). Menambahkan halaman panduan Web Notebook March (`.emlbn`) di grup Mulai/Peralatan serta referensi Matra di Rujukan.
-- **Langkah berikutnya**: Menyajikan rencana detail kepada pengguna, meminta konfirmasi/feedback, lalu mengeksekusi penulisan dokumen bilingual (ID & EN), kuis interaktif, integrasi sidebar, serta verifikasi build Astro.
+- **Topik sedang dibahas**: **Pembaruan Website `situs/` Selesai & Perbaikan CI GitHub Actions Berhasil**.
+  - **Tutorial**: Menambahkan 4 stage baru bilingual (Stage 10 Matra & Aljabar Linier, Stage 11 Analisis Data Tabular & CSV, Stage 12 Visualisasi Grafik SVG, Stage 13 Machine Learning & Jaringan Syaraf) lengkap dengan 16 soal kuis bilingual di `situs/src/data/quis.ts`.
+  - **Language Core**: Menambahkan panduan `08-sains-data-matra.md` dan `.en.md` di Language Core (`docs/panduan/`).
+  - **Reference**: Menambahkan referensi resmi spesifikasi API Matra di `docs/matra.md` dan `.en.md`.
+  - **Web Notebook March (`.emlbn`)**: Menambahkan panduan lengkap di `docs/march.md` dan `.en.md`, tautan navigasi di sidebar, slide hero di beranda `index.astro`, dan daftar perintah di `unduh.astro`.
+  - **Perbaikan CI**: Menjalankan `cargo fmt --all` dan memperbaiki peringatan Clippy di `crates/` sehingga seluruh check CI (`cargo fmt --check`, `clippy`, dan `cargo test`) 100% hijau.
+  - **Build Astro**: Seluruh 38 halaman statis berhasil ter-build sempurna di `situs/` tanpa error/warning.
+- **Sebelumnya (2026-10-30)**: Rilis sukses `v0.2.0` (Fase 9G selesai 100%).
+- **Keputusan terbaru (2026-10-30)**: Memperbarui website dokumentasi dengan ekosistem Matra & March, sekaligus menuntaskan format dan clippy untuk CI GitHub Actions.
+- **Langkah berikutnya**: Menunggu feedback user dan arahan untuk fase berikutnya (Fase 7 Stabilisasi / Fase 8 Deploy Domain).
 - **Perintah CLI tersedia**: `evernight <berkas>`, `evernight run <berkas>`, `evernight march [berkas.emlbn] [--port 8888]`, `evernight march ekspor <berkas.emlbn>`, `evernight format <berkas> [--cek|--keluar]`, `evernight lint <berkas>`, `evernight pkg init|jalankan|daftar`, `evernight system <info>`, `update evernight system [--cek]`, `evernight <berkas> --debug|--waktu|--bytecode|--ast|--tokens|--cek`.
 - **Jangan lupa**: Zero dependencies untuk `evernight_core`/`_vm`/`_cli` (installer adalah pengecualian sadar). Semua error message wajib berformat Bahasa Indonesia (`BAHAYA [KODE]` / `PERINGATAN [KODE]`).
 - **Catatan toolchain**: default = `stable-x86_64-pc-windows-gnu` (MSVC **tidak punya linker** di mesin ini). Konfigurasi build statik kini **target-spesifik** di `.cargo/config.toml` (`[target.x86_64-pc-windows-gnu]`, bukan `[build]`) agar aman di CI.
