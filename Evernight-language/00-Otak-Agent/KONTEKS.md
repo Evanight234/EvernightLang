@@ -8,15 +8,12 @@
 
 ## 1. Konteks Aktif (UPDATE TIAP PROMPT)
 
-- **Topik sedang dibahas**: **Eksekusi Subfase 9G: Rilis Ekosistem Matra & Integrasi Updater GitHub (`update evernight system`)**.
-  - Melakukan bump versi semantik ke `0.2.0` di seluruh Cargo.toml dan package.json.
-  - Menyusun catatan rilis `version/catatan-0.2.0.txt` untuk fitur Matra & March.
-  - Membangun biner rilis teroptimasi `target/release/evernight.exe`, paket ekstensi VSIX `0.2.0`, dan paket rilis `paket/evernight-0.2.0-windows-x64.zip`.
-  - Menyiapkan payload folder `version/` (`version`, `catatan-0.2.0.txt`, `evernight.exe`, `vsix`) dan push ke GitHub `Evanight234/EvernightLang`.
-  - Menguji pembaruan sistem langsung dari terminal Windows di `C:\` dengan perintah `update evernight system` dan verifikasi `evernight system info`.
-- **Sebelumnya (2026-10-30)**: Perencanaan Subfase 9G disetujui pengguna.
-- **Keputusan terbaru (2026-10-30)**: Memulai eksekusi 5 tahap Subfase 9G.
-- **Langkah berikutnya**: Melakukan bump versi ke `0.2.0` dan menyusun `catatan-0.2.0.txt`.
+- **Topik sedang dibahas**: **Fase 9 SELESAI TOTAL (9A - 9H Berhasil Dirilis)**.
+  - Subfase 9G sukses 100%: Bump versi `0.2.0`, biner release 3.07 MB teroptimasi, paket rilis ZIP `evernight-0.2.0-windows-x64.zip`, catatan rilis `version/catatan-0.2.0.txt`, VSIX `0.2.0`, push ke GitHub `Evanight234/EvernightLang` (`main -> main`).
+  - Uji terminal Windows (`C:\`): perintah `update evernight system` sukses mengunduh dan menimpa instalasi sistem global, mencatat `DisplayVersion: 0.2.0`, mengeluarkan pesan sukses verbatim, dan verifikasi `evernight system info` serta `evernight march --bantuan` dan eksekusi `matra.larik` berjalan sempurna.
+- **Sebelumnya (2026-10-30)**: Eksekusi 5 tahap Subfase 9G.
+- **Keputusan terbaru (2026-10-30)**: Fase 9 (Ekosistem Sains Data, ML Matra, & Web Notebook March) dinyatakan tuntas 100%.
+- **Langkah berikutnya**: Menunggu arahan pengguna untuk fase selanjutnya: **Fase 8 (Deploy Website Vercel evernight.my.id & Playground WASM)** atau **Fase 7 (Stabilisasi Sistem & Kriteria Rilis 1.0)**.
 - **Perintah CLI tersedia**: `evernight <berkas>`, `evernight run <berkas>`, `evernight march [berkas.emlbn] [--port 8888]`, `evernight march ekspor <berkas.emlbn>`, `evernight format <berkas> [--cek|--keluar]`, `evernight lint <berkas>`, `evernight pkg init|jalankan|daftar`, `evernight system <info>`, `update evernight system [--cek]`, `evernight <berkas> --debug|--waktu|--bytecode|--ast|--tokens|--cek`.
 - **Jangan lupa**: Zero dependencies untuk `evernight_core`/`_vm`/`_cli` (installer adalah pengecualian sadar). Semua error message wajib berformat Bahasa Indonesia (`BAHAYA [KODE]` / `PERINGATAN [KODE]`).
 - **Catatan toolchain**: default = `stable-x86_64-pc-windows-gnu` (MSVC **tidak punya linker** di mesin ini). Konfigurasi build statik kini **target-spesifik** di `.cargo/config.toml` (`[target.x86_64-pc-windows-gnu]`, bukan `[build]`) agar aman di CI.
@@ -49,6 +46,8 @@
 - Keyword final: `variabel` (bukan `nyatakan`), `fungsi` (bukan `fn`), `impor` (bukan `pakai`), `kembali` tetap `kembali`.
 
 ## 4. Log Konteks (append ke atas, terbaru dulu)
+
+- **2026-10-30 (Subfase 9G sukses & Fase 9 SELESAI TOTAL)**: Berhasil merilis ekosistem Sains Data & ML Matra serta Web Notebook March sebagai rilis resmi `v0.2.0`. Bump versi di seluruh crate dan package.json, catatan rilis `version/catatan-0.2.0.txt`, biner rilis 3.07 MB, paket rilis ZIP `evernight-0.2.0-windows-x64.zip`, ekstensi VS Code VSIX `0.2.0` (1.26 MB), serta commit dan push sukses ke repositori GitHub `Evanight234/EvernightLang`. Teruji nyata di terminal Windows (`C:\`): perintah `update evernight system` mengunduh dari GitHub dan menimpa instalasi sistem global, mencatat `DisplayVersion` 0.2.0, mengeluarkan pesan verbatim `terupdate ke versi 0.2.0, jangan panggil istriku lagi dasar karbit`, dan kedua kalinya mengeluarkan `Istriku lagi sibuk jangan dingagu`. Perintah `evernight system info`, `evernight march --bantuan`, dan eksekusi skrip `matra.larik` berjalan 100% sempurna dari direktori mana pun.
 
 - **2026-10-30 (perencanaan fase selanjutnya)**: Seluruh subfase pembuatan pustaka sains data & ML Matra (9A - 9F) dan Web Notebook March (9H) telah rampung 100%. Menyusun perencanaan fase berikutnya: Subfase 9G (Rilis Ekosistem Matra & Integrasi Updater GitHub `update evernight system`), Fase 8 (Deploy Website Vercel & Dokumentasi), atau Fase 7 (Stabilisasi Sistem 1.0).
 

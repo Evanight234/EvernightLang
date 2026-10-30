@@ -526,12 +526,12 @@ Catatan pelaksanaan (Fase 6):
   - Kernel VM incremental stateful (variabel/impor/model bertahan antar-sel).
   - Rendering output interaktif: DataFrame tabel HTML persis tabel Colab, grafik SVG vektor responsif, dan teks konsol.
   - Subcommand CLI: `evernight march [berkas.emlbn]` dan ekspor ke `.eve`.
-- [ ] **9G — Rilis Ekosistem Matra & Integrasi Updater GitHub (`update evernight system`)**:
-  - Bump versi semantik di workspace & biner rilis teroptimasi (`cargo build --release -p evernight_cli`).
-  - Catatan rilis di `version/catatan-<versi>.txt` yang mendokumentasikan fitur sains data & ML `Matra`.
-  - Sinkronisasi biner rilis `evernight.exe`, paket distribusi ZIP di `paket/`, dan pembaruan manifes di `version/version`.
-  - Push ke repositori GitHub `Evanight234/EvernightLang`.
-  - **Uji coba di terminal Windows / CMD lokal (misal di `C:\`)**: menjalankan perintah `update evernight system` yang langsung menarik versi baru dari GitHub, menimpa instalasi sistem di `%LOCALAPPDATA%\Programs\Evernight\bin\evernight.exe`, dan langsung mengaktifkan fitur `matra` secara global tanpa instalasi ulang manual.
+- [x] **9G — Rilis Ekosistem Matra & Integrasi Updater GitHub (`update evernight system`)**:
+  - Bump versi semantik di workspace & biner rilis teroptimasi (`0.2.0`).
+  - Catatan rilis di `version/catatan-0.2.0.txt` yang mendokumentasikan fitur sains data & ML `Matra` serta Web Notebook `March`.
+  - Sinkronisasi biner rilis `evernight.exe` (3.07 MB), paket distribusi ZIP di `paket/`, dan pembaruan manifes di `version/version` (`0.2.0`).
+  - Push ke repositori GitHub `Evanight234/EvernightLang` (commit `36e7ddb`).
+  - **Uji coba di terminal Windows / CMD lokal (di `C:\`)**: menjalankan perintah `update evernight system` yang langsung menarik versi `0.2.0` dari GitHub, menimpa instalasi sistem di `%LOCALAPPDATA%\Programs\Evernight\bin\evernight.exe`, dan langsung mengaktifkan fitur `matra` & `march` secara global tanpa instalasi ulang manual. Verifikasi `evernight system info` menampilkan versi 0.2.0 dan pesan khas `"terupdate ke versi 0.2.0, jangan panggil istriku lagi dasar karbit"`.
 
 ---
 
