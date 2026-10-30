@@ -22,9 +22,8 @@ installer/aset/pratinjau-installer.png
 installer/aset/tinjau/
 
 # === Artefak distribusi (hasil build, bukan sumber) ===
-# Catatan: paket/**/extensions/*.vsix SENGAJA dilacak — ia bagian dari paket
-# distribusi sumber (bukan hasil build), dan dipakai installer 6F.
-paket/*.zip
+# Catatan: paket/**/extensions/*.vsix dan paket/*.zip dilacak agar tautan unduhan situs berfungsi langsung.
+!paket/*.zip
 paket/**/bin/evernight.exe
 dist/
 

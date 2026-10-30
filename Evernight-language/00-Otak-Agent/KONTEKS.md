@@ -8,16 +8,14 @@
 
 ## 1. Konteks Aktif (UPDATE TIAP PROMPT)
 
-- **Topik sedang dibahas**: **Pembaruan Website `situs/` Selesai & Perbaikan CI GitHub Actions Berhasil**.
-  - **Tutorial**: Menambahkan 4 stage baru bilingual (Stage 10 Matra & Aljabar Linier, Stage 11 Analisis Data Tabular & CSV, Stage 12 Visualisasi Grafik SVG, Stage 13 Machine Learning & Jaringan Syaraf) lengkap dengan 16 soal kuis bilingual di `situs/src/data/quis.ts`.
-  - **Language Core**: Menambahkan panduan `08-sains-data-matra.md` dan `.en.md` di Language Core (`docs/panduan/`).
-  - **Reference**: Menambahkan referensi resmi spesifikasi API Matra di `docs/matra.md` dan `.en.md`.
-  - **Web Notebook March (`.emlbn`)**: Menambahkan panduan lengkap di `docs/march.md` dan `.en.md`, tautan navigasi di sidebar, slide hero di beranda `index.astro`, dan daftar perintah di `unduh.astro`.
-  - **Perbaikan CI**: Menjalankan `cargo fmt --all` dan memperbaiki peringatan Clippy di `crates/` sehingga seluruh check CI (`cargo fmt --check`, `clippy`, dan `cargo test`) 100% hijau.
-  - **Build Astro**: Seluruh 38 halaman statis berhasil ter-build sempurna di `situs/` tanpa error/warning.
-- **Sebelumnya (2026-10-30)**: Rilis sukses `v0.2.0` (Fase 9G selesai 100%).
-- **Keputusan terbaru (2026-10-30)**: Memperbarui website dokumentasi dengan ekosistem Matra & March, sekaligus menuntaskan format dan clippy untuk CI GitHub Actions.
-- **Langkah berikutnya**: Menunggu feedback user dan arahan untuk fase berikutnya (Fase 7 Stabilisasi / Fase 8 Deploy Domain).
+- **Topik sedang dibahas**: **Pembaruan Artefak Rilis Download v0.2.0 (Setup.exe & ZIP) & Pembersihan Versi Lama**.
+  - **Setup GUI Installer v0.2.0**: Membangun `EvernightLanguage-0.2.0-Setup.exe` (10.77 MB) dengan embedded binary compiler v0.2.0, ekstensi VS Code v0.2.0, panduan, dan skrip update/kill. Disimpan di `paket/evernight-0.2.0-windows-x64/setup/Setup.exe`.
+  - **Paket ZIP v0.2.0**: Membangun `paket/evernight-0.2.0-windows-x64.zip` (7.85 MB) lengkap dengan runtime Matra & March, updater, dan Setup wizard.
+  - **Hapus Setup & ZIP Lama**: Menghapus `Setup.exe` dan `.zip` versi 0.1.0 yang sudah usang dari tracking git.
+  - **Sinkronisasi Web Unduh**: Memperbarui link dan label ukuran di `situs/src/pages/unduh.astro` (ZIP 7.8 MB dan Setup.exe 10.8 MB), serta memperbarui `paket/SHA256SUMS.txt`.
+- **Sebelumnya (2026-10-30)**: Pembaruan tutorial Stage 10-13, Matra, dan March di situs selesai dipush.
+- **Keputusan terbaru (2026-10-30)**: Menggantikan seluruh artefak unduhan 0.1.0 dengan biner rilis resmi 0.2.0.
+- **Langkah berikutnya**: Push ke GitHub agar tautan unduhan `raw.githubusercontent.com` / GitHub raw pada halaman unduh langsung berfungsi tanpa 404.
 - **Perintah CLI tersedia**: `evernight <berkas>`, `evernight run <berkas>`, `evernight march [berkas.emlbn] [--port 8888]`, `evernight march ekspor <berkas.emlbn>`, `evernight format <berkas> [--cek|--keluar]`, `evernight lint <berkas>`, `evernight pkg init|jalankan|daftar`, `evernight system <info>`, `update evernight system [--cek]`, `evernight <berkas> --debug|--waktu|--bytecode|--ast|--tokens|--cek`.
 - **Jangan lupa**: Zero dependencies untuk `evernight_core`/`_vm`/`_cli` (installer adalah pengecualian sadar). Semua error message wajib berformat Bahasa Indonesia (`BAHAYA [KODE]` / `PERINGATAN [KODE]`).
 - **Catatan toolchain**: default = `stable-x86_64-pc-windows-gnu` (MSVC **tidak punya linker** di mesin ini). Konfigurasi build statik kini **target-spesifik** di `.cargo/config.toml` (`[target.x86_64-pc-windows-gnu]`, bukan `[build]`) agar aman di CI.

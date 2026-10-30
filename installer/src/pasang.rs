@@ -12,7 +12,7 @@ use std::path::{Path, PathBuf};
 use std::process::Command;
 
 pub const NAMA_PRODUK: &str = "EvernightLanguage";
-pub const VERSI: &str = "0.1.0";
+pub const VERSI: &str = env!("CARGO_PKG_VERSION");
 pub const PROGID: &str = "EvernightFile";
 pub const LABEL_TIPE: &str = "Evernight files";
 pub const KUNCI_UNINSTALL: &str =
@@ -185,10 +185,11 @@ pub fn jalankan(
     fs::write(rencana.tujuan.join("LICENSE"), payload.lisensi)
         .map_err(|e| format!("Gagal menulis LICENSE: {}", e))?;
 
+    let vsix_nama = format!("evernight-language-{}.vsix", VERSI);
     let vsix_path = rencana
         .tujuan
         .join("extensions")
-        .join("evernight-language-0.1.0.vsix");
+        .join(vsix_nama);
     fs::write(&vsix_path, payload.vsix).map_err(|e| format!("Gagal menulis .vsix: {}", e))?;
 
     // Salin kill.cmd & kill.ps1 ke bin/ agar perintah `kill evernight system`

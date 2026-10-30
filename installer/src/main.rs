@@ -31,7 +31,7 @@ use app::{Apl, Mode};
 pub fn muat_payload() -> pasang::Payload {
     pasang::Payload {
         evernight_exe: include_bytes!("../aset/payload/evernight.exe"),
-        vsix: include_bytes!("../aset/payload/evernight-language-0.1.0.vsix"),
+        vsix: include_bytes!("../aset/payload/evernight-language.vsix"),
         panduan: include_bytes!("../aset/payload/PANDUAN.txt"),
         icon_ico: include_bytes!("../aset/logo/icon.ico"),
         logo_png: include_bytes!("../aset/logo/logo.png"),

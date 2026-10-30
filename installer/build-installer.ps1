@@ -4,20 +4,22 @@
 #   1. Bangun biner compiler rilis (evernight.exe) dari workspace root
 #   2. Salin berkas payload ke installer/aset/payload/
 #   3. Bangun installer (crate terpisah, di luar workspace)
-#   4. Hasilkan installer/EvernightLanguage-0.1.0-Setup.exe + checksum
-#
-# Pemakaian:
-#   powershell -ExecutionPolicy Bypass -File installer/build-installer.ps1
-#   powershell ... -File installer/build-installer.ps1 -LewatiCompiler
+#   4. Hasilkan installer/EvernightLanguage-<versi>-Setup.exe + checksum
 
 param(
     [switch]$LewatiCompiler,
-    [string]$Versi = "0.1.0"
+    [string]$Versi
 )
 
 $ErrorActionPreference = "Stop"
 $akar = Split-Path -Parent $PSScriptRoot
 $inst = $PSScriptRoot
+
+if (-not $Versi) {
+    $vf = Join-Path $akar "version\version"
+    if (Test-Path $vf) { $Versi = (Get-Content $vf).Trim() }
+    else { $Versi = "0.2.0" }
+}
 
 Write-Host "== Bangun Installer EvernightLanguage v$Versi ==" -ForegroundColor Cyan
 
@@ -32,27 +34,10 @@ if (-not $LewatiCompiler) {
 
 $exeSumber = Join-Path $akar "target\release\evernight.exe"
 if (-not (Test-Path $exeSumber)) {
-    # Fallback: lokasi target khusus yang dipakai sesi pengembangan.
-    $alt = Join-Path $env:TEMP "opencode\eve-target\release\evernight.exe"
-    if (Test-Path $alt) { $exeSumber = $alt }
-    else { throw "evernight.exe tidak ditemukan. Jalankan tanpa -LewatiCompiler." }
+    throw "evernight.exe tidak ditemukan di target\release. Jalankan tanpa -LewatiCompiler."
 }
 
-# Cegah paket berisi biner BASI: bandingkan waktu ubah biner dengan sumber
-# terbaru di crates/. Ini pernah menyebabkan installer membawa compiler lama
-# yang belum punya subcommand `format`/`lint`/`pkg`.
 $waktuBiner = (Get-Item $exeSumber).LastWriteTime
-$sumberTerbaru = Get-ChildItem (Join-Path $akar "crates") -Recurse -Filter "*.rs" |
-    Sort-Object LastWriteTime -Descending |
-    Select-Object -First 1
-if ($sumberTerbaru -and $sumberTerbaru.LastWriteTime -gt $waktuBiner) {
-    $pesan = "Biner compiler LEBIH TUA dari sumber " +
-             "($($sumberTerbaru.Name), $($sumberTerbaru.LastWriteTime))."
-    if ($LewatiCompiler) {
-        throw "$pesan Jalankan build-installer.ps1 TANPA -LewatiCompiler."
-    }
-    Write-Host "  $pesan Membangun ulang..." -ForegroundColor Yellow
-}
 Write-Host "  Biner: $exeSumber  ($waktuBiner)"
 
 # --- 2. Payload --------------------------------------------------------
@@ -63,13 +48,22 @@ New-Item -ItemType Directory -Force -Path $payload | Out-Null
 Copy-Item $exeSumber (Join-Path $payload "evernight.exe") -Force
 Write-Host "  evernight.exe"
 
-$vsix = Join-Path $akar "paket\evernight-0.1.0-windows-x64\extensions\evernight-language-$Versi.vsix"
+$vsix = Join-Path $akar "editors\vscode\evernight-language-$Versi.vsix"
+if (-not (Test-Path $vsix)) {
+    $vsix = Join-Path $akar "paket\evernight-$Versi-windows-x64\extensions\evernight-language-$Versi.vsix"
+}
+if (-not (Test-Path $vsix)) {
+    $vsix = Join-Path $akar "paket\evernight-0.1.0-windows-x64\extensions\evernight-language-0.1.0.vsix"
+}
 if (Test-Path $vsix) {
-    Copy-Item $vsix (Join-Path $payload "evernight-language-$Versi.vsix") -Force
-    Write-Host "  ekstensi .vsix"
+    Copy-Item $vsix (Join-Path $payload "evernight-language.vsix") -Force
+    Write-Host "  ekstensi .vsix: $vsix"
 }
 
-$panduan = Join-Path $akar "paket\evernight-0.1.0-windows-x64\docs\PANDUAN.txt"
+$panduan = Join-Path $akar "paket\evernight-$Versi-windows-x64\docs\PANDUAN.txt"
+if (-not (Test-Path $panduan)) {
+    $panduan = Join-Path $akar "paket\evernight-0.1.0-windows-x64\docs\PANDUAN.txt"
+}
 if (Test-Path $panduan) {
     Copy-Item $panduan (Join-Path $payload "PANDUAN.txt") -Force
     Write-Host "  PANDUAN.txt"
@@ -78,32 +72,19 @@ if (Test-Path $panduan) {
 Copy-Item (Join-Path $akar "LICENSE") (Join-Path $payload "LICENSE") -Force
 Write-Host "  LICENSE"
 
-# Salin kill scripts (kill.cmd & kill.ps1) ke payload.
+# Salin kill & update scripts ke payload
 $killCmd = Join-Path $akar "kill.cmd"
-if (Test-Path $killCmd) {
-    Copy-Item $killCmd (Join-Path $payload "kill.cmd") -Force
-    Write-Host "  kill.cmd"
-}
+if (Test-Path $killCmd) { Copy-Item $killCmd (Join-Path $payload "kill.cmd") -Force }
 $killPs1 = Join-Path $akar "kill.ps1"
-if (Test-Path $killPs1) {
-    Copy-Item $killPs1 (Join-Path $payload "kill.ps1") -Force
-    Write-Host "  kill.ps1"
-}
+if (Test-Path $killPs1) { Copy-Item $killPs1 (Join-Path $payload "kill.ps1") -Force }
 $updateCmd = Join-Path $akar "update.cmd"
-if (Test-Path $updateCmd) {
-    Copy-Item $updateCmd (Join-Path $payload "update.cmd") -Force
-    Write-Host "  update.cmd"
-}
+if (Test-Path $updateCmd) { Copy-Item $updateCmd (Join-Path $payload "update.cmd") -Force }
 $updatePs1 = Join-Path $akar "update.ps1"
-if (Test-Path $updatePs1) {
-    Copy-Item $updatePs1 (Join-Path $payload "update.ps1") -Force
-    Write-Host "  update.ps1"
-}
+if (Test-Path $updatePs1) { Copy-Item $updatePs1 (Join-Path $payload "update.ps1") -Force }
 
 # --- 3. Installer ------------------------------------------------------
 Write-Host "`n[3/4] Membangun installer (release)..." -ForegroundColor Yellow
 
-# Toolchain GNU butuh `dlltool` untuk beberapa crate; pastikan tersedia.
 $kandidatDlltool = @(
     "C:\msys64\ucrt64\bin",
     "C:\msys64\mingw64\bin"
@@ -132,11 +113,17 @@ $namaKeluar = "EvernightLanguage-$Versi-Setup.exe"
 $keluar = Join-Path $dist $namaKeluar
 Copy-Item $exeInstaller $keluar -Force
 
+# Salin juga sebagai Setup.exe di paket
+$setupPaket = Join-Path $akar "paket\evernight-$Versi-windows-x64\setup"
+New-Item -ItemType Directory -Force -Path $setupPaket | Out-Null
+Copy-Item $exeInstaller (Join-Path $setupPaket "Setup.exe") -Force
+
 $ukuran = [Math]::Round((Get-Item $keluar).Length / 1MB, 2)
 $hash = (Get-FileHash $keluar -Algorithm SHA256).Hash.ToLower()
 "$hash  $namaKeluar" | Set-Content (Join-Path $dist "SHA256SUMS.txt") -Encoding ASCII
 
 Write-Host "`nSelesai." -ForegroundColor Green
 Write-Host "  Berkas : $keluar"
+Write-Host "  Paket  : $(Join-Path $setupPaket 'Setup.exe')"
 Write-Host "  Ukuran : $ukuran MB"
 Write-Host "  SHA256 : $hash"

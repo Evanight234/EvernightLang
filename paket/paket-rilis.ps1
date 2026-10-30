@@ -58,12 +58,15 @@ Copy-Item (Join-Path $Root "assets/icon_256.png") (Join-Path $OutDir "assets/ico
 Copy-Item (Join-Path $Root "assets/logo.png") (Join-Path $OutDir "assets/logo.png") -ErrorAction SilentlyContinue
 # LICENSE
 Copy-Item (Join-Path $Payload "LICENSE") (Join-Path $OutDir "LICENSE")
-# Setup installer (v2 only, renamed to Setup.exe)
-$SetupSrc = Join-Path $Root "installer/dist/EvernightLanguage-$Versi-Setup-v2.exe"
+# Setup installer
+$SetupSrc = Join-Path $Root "installer/dist/EvernightLanguage-$Versi-Setup.exe"
+if (-not (Test-Path $SetupSrc)) {
+    $SetupSrc = Join-Path $Root "installer/dist/EvernightLanguage-$Versi-Setup-v2.exe"
+}
 if (Test-Path $SetupSrc) {
     Copy-Item $SetupSrc (Join-Path $OutDir "setup/Setup.exe")
 } else {
-    Write-Host "  [PERINGATAN] Setup v2 tidak ditemukan: $SetupSrc" -ForegroundColor Yellow
+    Write-Host "  [PERINGATAN] Setup tidak ditemukan: $SetupSrc" -ForegroundColor Yellow
 }
 
 # 4. Generate file versi & BACA-AKU
