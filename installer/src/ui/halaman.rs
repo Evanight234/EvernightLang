@@ -175,7 +175,7 @@ pub fn gambar(
                 );
                 ui.add_space(10.0);
                 baris_info(ui, "Versi", crate::pasang::VERSI);
-                baris_info(ui, "Lisensi", "MIT (pemegang hak: Satriyo)");
+                baris_info(ui, "Lisensi", "GNU AGPL-3.0 (pemegang hak: Satriyo)");
                 baris_info(ui, "Berkas program", ".eve");
             });
             ui.add_space(10.0);
@@ -189,7 +189,7 @@ pub fn gambar(
         }
 
         Halaman::Lisensi => {
-            judul(ui, "Lisensi MIT");
+            judul(ui, "Lisensi GNU AGPL-3.0");
             sub(ui, "Mohon baca dan setujui sebelum melanjutkan.");
             ui.add_space(12.0);
             komponen::kartu(ui, |ui| {
@@ -206,7 +206,7 @@ pub fn gambar(
             ui.add_space(12.0);
             let mut setuju = *konteks.setuju_lisensi;
             if ui
-                .checkbox(&mut setuju, "Saya menyetujui ketentuan lisensi MIT")
+                .checkbox(&mut setuju, "Saya menyetujui ketentuan lisensi GNU AGPL-3.0")
                 .changed()
             {
                 *konteks.setuju_lisensi = setuju;
@@ -828,24 +828,49 @@ mod tests {
     }
 }
 
-const TEKS_LISENSI: &str = "MIT License
+const TEKS_LISENSI: &str = "GNU AFFERO GENERAL PUBLIC LICENSE
+Version 3, 19 November 2007
+Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+Copyright (C) 2026 Satriyo <https://github.com/Satriyo/EvernightLanguage>
 
-Copyright (c) 2026 Satriyo
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the \"Software\"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.";
+========================================================================
+EVERNIGHT RUNTIME LIBRARY EXCEPTION TO GNU AGPLv3
+========================================================================
+
+Copyright (C) 2026 Satriyo
+
+As a special exception to the GNU Affero General Public License version 3
+(\"AGPLv3\"), the copyright holders of EvernightLanguage grant you permission
+to compile, link, execute, and run programs written in the EvernightLanguage
+programming language (including, but not limited to, source files with .eve
+and .emlbn extensions, interpreted scripts, and Matra dataset models) using
+the Evernight compiler, virtual machine (VM), and runtime libraries.
+
+Programs, scripts, models, and data created by users in EvernightLanguage
+are considered independent works created by their authors, and are NOT
+considered derivative works of the compiler or runtime. Consequently, you
+are free to license, distribute, publish, and convey your own Evernight
+programs and datasets under any terms of your choice (including proprietary,
+commercial, or alternative open-source licenses), without being subject to
+the copyleft provisions of the AGPLv3.
+
+This exception applies solely to programs written by users in EvernightLanguage.
+It does NOT grant permission to modify, sublicense, or distribute the
+EvernightLanguage compiler, virtual machine, standard libraries, Matra
+engine, or March Web Notebook themselves under terms other than the GNU
+Affero General Public License. Any modifications or derivative works of the
+EvernightLanguage tools, engine, and server implementations remain strictly
+subject to the full terms and copyleft requirements of the GNU AGPLv3.";

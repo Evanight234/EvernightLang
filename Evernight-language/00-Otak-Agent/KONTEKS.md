@@ -8,14 +8,13 @@
 
 ## 1. Konteks Aktif (UPDATE TIAP PROMPT)
 
-- **Topik sedang dibahas**: **Pembaruan Artefak Rilis Download v0.2.0 (Setup.exe & ZIP) & Pembersihan Versi Lama**.
-  - **Setup GUI Installer v0.2.0**: Membangun `EvernightLanguage-0.2.0-Setup.exe` (10.77 MB) dengan embedded binary compiler v0.2.0, ekstensi VS Code v0.2.0, panduan, dan skrip update/kill. Disimpan di `paket/evernight-0.2.0-windows-x64/setup/Setup.exe`.
-  - **Paket ZIP v0.2.0**: Membangun `paket/evernight-0.2.0-windows-x64.zip` (7.85 MB) lengkap dengan runtime Matra & March, updater, dan Setup wizard.
-  - **Hapus Setup & ZIP Lama**: Menghapus `Setup.exe` dan `.zip` versi 0.1.0 yang sudah usang dari tracking git.
-  - **Sinkronisasi Web Unduh**: Memperbarui link dan label ukuran di `situs/src/pages/unduh.astro` (ZIP 7.8 MB dan Setup.exe 10.8 MB), serta memperbarui `paket/SHA256SUMS.txt`.
-- **Sebelumnya (2026-10-30)**: Pembaruan tutorial Stage 10-13, Matra, dan March di situs selesai dipush.
-- **Keputusan terbaru (2026-10-30)**: Menggantikan seluruh artefak unduhan 0.1.0 dengan biner rilis resmi 0.2.0.
-- **Langkah berikutnya**: Push ke GitHub agar tautan unduhan `raw.githubusercontent.com` / GitHub raw pada halaman unduh langsung berfungsi tanpa 404.
+- **Topik sedang dibahas**: **Penerapan Lisensi GNU Affero General Public License v3.0 (AGPL-3.0) Selesai Dilakukan**.
+  - Lisensi proyek resmi dimigrasikan dari MIT ke GNU AGPL-3.0 (pemegang hak cipta: Satriyo) dengan klausul **Evernight Runtime Library Exception**.
+  - Pengecualian runtime menjamin kode program `.eve`, skrip, notebook `.emlbn`, dan dataset pengguna bebas dari ketentuan copyleft AGPL (bebas komersial/tertutup).
+  - Seluruh 7 crate Cargo.toml (`evernight_core`, `evernight_vm`, `evernight_cli`, `evernight_fmt`, `evernight_lint`, `evernight_lsp`, `evernight_installer`), ekstensi VS Code (`package.json`), GUI installer (`halaman.rs`), paket rilis (`BACA-AKU.txt`, `PANDUAN.txt`), situs web Astro (`Base.astro`), dan berkas `LICENSE` telah sinkron 100%.
+- **Sebelumnya (2026-11-09)**: Perencanaan migrasi lisensi AGPL-3.0 disetujui user ("oke kerjakaan").
+- **Keputusan terbaru (2026-11-09)**: Migrasi lisensi GNU AGPL-3.0 dengan Evernight Runtime Library Exception tuntas.
+- **Langkah berikutnya**: Verifikasi build/test workspace Rust dan Astro, audit CI GitHub Actions jika ada issue, lalu commit dan push ke remote GitHub.
 - **Perintah CLI tersedia**: `evernight <berkas>`, `evernight run <berkas>`, `evernight march [berkas.emlbn] [--port 8888]`, `evernight march ekspor <berkas.emlbn>`, `evernight format <berkas> [--cek|--keluar]`, `evernight lint <berkas>`, `evernight pkg init|jalankan|daftar`, `evernight system <info>`, `update evernight system [--cek]`, `evernight <berkas> --debug|--waktu|--bytecode|--ast|--tokens|--cek`.
 - **Jangan lupa**: Zero dependencies untuk `evernight_core`/`_vm`/`_cli` (installer adalah pengecualian sadar). Semua error message wajib berformat Bahasa Indonesia (`BAHAYA [KODE]` / `PERINGATAN [KODE]`).
 - **Catatan toolchain**: default = `stable-x86_64-pc-windows-gnu` (MSVC **tidak punya linker** di mesin ini). Konfigurasi build statik kini **target-spesifik** di `.cargo/config.toml` (`[target.x86_64-pc-windows-gnu]`, bukan `[build]`) agar aman di CI.
@@ -48,6 +47,12 @@
 - Keyword final: `variabel` (bukan `nyatakan`), `fungsi` (bukan `fn`), `impor` (bukan `pakai`), `kembali` tetap `kembali`.
 
 ## 4. Log Konteks (append ke atas, terbaru dulu)
+
+- **2026-11-09 (Migrasi Lisensi GNU AGPL 3.0 & Runtime Library Exception Selesai)**: Berhasil menerapkan lisensi resmi GNU Affero General Public License v3.0 (AGPL-3.0) dengan Evernight Runtime Library Exception (pemegang hak cipta: Satriyo). Semua crate `Cargo.toml`, ekstensi editor `package.json`, installer egui, paket rilis portabel, footer situs web Astro, dan dokumentasi proyek telah disinkronkan penuh. Skrip pengguna (.eve/.emlbn) aman bebas copyleft.
+
+- **2026-11-09 (perencanaan lisensi GNU AGPL 3.0 & penyesuaian ekosistem)**: User meminta perencanaan penerapan lisensi AGPL-3.0 pada proyek EvernightLanguage dan penyesuaian dengan isi proyek serta ekosistem Rust itu sendiri. Merumuskan aspek legal dan teknis: proteksi server/jaringan untuk March Notebook & Matra, Runtime Library Exception (agar skrip `.eve` buatan pengguna tidak terinfeksi lisensi copyleft), sinkronisasi seluruh crate Rust `Cargo.toml`, installer GUI, VSIX package.json, website Astro, dan berkas `LICENSE`.
+
+- **2026-10-30 (Pembaruan Artefak Rilis Download v0.2.0 Setup & ZIP)**: Berhasil merakit `EvernightLanguage-0.2.0-Setup.exe` (10,8 MB) dan `evernight-0.2.0-windows-x64.zip` (7,8 MB), menghapus berkas biner usang 0.1.0 dari git, memperbarui `SHA256SUMS.txt` dan halaman unduh web, serta memverifikasi bahwa URL unduhan langsung raw GitHub menghasilkan HTTP 200 OK bebas 404.
 
 - **2026-10-30 (perencanaan pembaruan situs web dokumentasi untuk Fase 9 & March)**: Merumuskan rencana penambahan konten web pada `situs/`: 4 stage tutorial baru (Stage 10 Tensor/Linalg, Stage 11 Tabel/CSV, Stage 12 Grafik SVG, Stage 13 Machine Learning & Deep Learning) lengkap dengan kuis bilingual di `quis.ts`, pembaruan Language Core & Function/Standard Library Reference dengan spesifikasi API Matra, serta integrasi panduan Web Notebook March (`.emlbn`) pada navbar, sidebar, dan dokumentasi.
 

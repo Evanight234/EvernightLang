@@ -6,7 +6,7 @@
 # [Catatan sel_01]:
 #   # ðª March Notebook â Eksplorasi Sains Data & ML
 #   Selamat datang di **March Notebook**, alat bantu interaktif untuk eksplorasi data, komputasi tensor, dan pelatihan model Machine Learning menggunakan sintaksis **EvernightLanguage** dan pustaka terpadu **Matra**.
-#   
+#
 #   - **100% Akses Berkas Lokal**: Membaca dan menulis berkas CSV serta bobot model langsung dari harddisk laptop Anda.
 #   - **Pintasan Keyboard**:
 #     - `Shift + Enter` : Jalankan sel aktif dan pindah ke sel berikutnya.
@@ -38,10 +38,10 @@ data_siswa
 
 # --- [Sel 6 | sel_06] ---
 mt.grafik.sebar(data_siswa["jam_belajar"], data_siswa["nilai_ujian"])
-    .judul("Korelasi Jam Belajar vs Nilai Ujian")
-    .label_x("Jam Belajar per Hari")
-    .label_y("Nilai Ujian")
-    .warna("#4A7CF5")
+.judul("Korelasi Jam Belajar vs Nilai Ujian")
+.label_x("Jam Belajar per Hari")
+.label_y("Nilai Ujian")
+.warna("#4A7CF5")
 
 # [Catatan sel_07]:
 #   ## 3. Melatih Model Regresi Linear Machine Learning
@@ -49,10 +49,10 @@ mt.grafik.sebar(data_siswa["jam_belajar"], data_siswa["nilai_ujian"])
 
 # --- [Sel 8 | sel_08] ---
 variabel X = mt.larik([
-    [3.5], [6.0], [4.2], [5.8], [2.0]
+[3.5], [6.0], [4.2], [5.8], [2.0]
 ])
 variabel y = mt.larik([
-    [78.5], [95.0], [82.0], [91.5], [65.0]
+[78.5], [95.0], [82.0], [91.5], [65.0]
 ])
 
 variabel model = mt.model.RegresiLinear()
@@ -61,4 +61,3 @@ model.latih(X, y)
 cetak("Koefisien regresi : ", model.koefisien)
 cetak("Intersep regresi  : ", model.intersep)
 cetak("Skor R2 Model     : ", model.skor(X, y))
-

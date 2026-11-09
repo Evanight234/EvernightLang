@@ -36,6 +36,7 @@ Bahasa pemrograman baru dengan karakteristik:
 | Biner / CLI | `evernight` (berkas `.eve`); package manager `ever pkg` (Fase 6) |
 | Asosiasi file | `.eve` → **"Evernight files"** di Windows Explorer (ProgID `EvernightFile`, installer Fase 6) |
 | Manajemen memori | ARC (Automatic Reference Counting) — dipilih karena sederhana & modern |
+| Lisensi | GNU AGPL-3.0 (dengan Evernight Runtime Library Exception) |
 
 ---
 
@@ -82,7 +83,7 @@ Bahasa pemrograman baru dengan karakteristik:
 
 ### Fase 6: Tooling Lanjutan & Distribusi Sistem
 - [x] Static CompletionProvider (VS Code) — autocomplete statis ~60 item
-- [x] Paket ekstensi `.vsix` (6A) — publisher **Satriyo**, lisensi **MIT**, terpasang & terverifikasi di **Antigravity IDE**
+- [x] Paket ekstensi `.vsix` (6A) — publisher **Satriyo**, lisensi **GNU AGPL-3.0**, terpasang & terverifikasi di **Antigravity IDE**
 - [x] Distribusi compiler mandiri (6B) — biner statis 1.74 MB, paket `paket/evernight-0.1.0-windows-x64/` + ZIP, `install.ps1`/`uninstall.ps1`, PATH otomatis, asosiasi `.eve` terverifikasi
 - [x] Integrasi otomatis ekstensi (6C) — deteksi 6 editor keluarga VS Code, konfirmasi interaktif, `-TanpaEkstensi`/`-TanpaKonfirmasi`, uninstall menawarkan pencopotan
 - [x] **Installer GUI (6F)** — `EvernightLanguage-0.1.0-Setup.exe` (egui/Rust, **bukan** Inno Setup), window **1000x640**, **satu box per halaman** (isi box hanya judul+keterangan), **pemilih folder native (rfd) + tombol Telusuri**, **tanpa CMD** (`windows_subsystem` + `CREATE_NO_WINDOW`), pilihan per-user/per-machine (UAC), wizard 6 halaman, panel maskot 28%, animasi mikro, `uninstall.exe` bersih

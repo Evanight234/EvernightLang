@@ -33,7 +33,7 @@ evernight halo.eve
 | Ekstensi berkas | `.eve` |
 | Bahasa implementasi | Rust (compiler + VM + CLI), TypeScript (ekstensi editor) |
 | Kesalahan | `BAHAYA` dan `PERINGATAN` berbahasa Indonesia, lengkap dengan kode (`[TYPE]`, `[FUNGSI]`, ...) dan nomor baris |
-| Lisensi | MIT |
+| Lisensi | GNU AGPL-3.0 (dengan Evernight Runtime Library Exception) |
 
 ## Alur sebuah program
 

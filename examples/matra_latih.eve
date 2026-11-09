@@ -30,10 +30,10 @@ cetak("")
 cetak("=== 2. SKALISASI FITUR (STANDARISASI & MIN-MAX) ===")
 # Data matriks 4 sampel x 2 fitur: [Usia, Pendapatan Juta]
 variabel data_fitur = mt.matriks([
-    [22.0, 5.0],
-    [35.0, 15.0],
-    [48.0, 25.0],
-    [60.0, 40.0]
+[22.0, 5.0],
+[35.0, 15.0],
+[48.0, 25.0],
+[60.0, 40.0]
 ])
 cetak("Matriks Fitur Asli (4x2):")
 cetak(data_fitur)
@@ -58,9 +58,9 @@ cetak("")
 cetak("=== 3. PENYEIMBANGAN DATASET MINORITAS (SMOTE) ===")
 # Misal data deteksi fraud: 6 transaksi normal (kelas 0) dan 2 fraud (kelas 1)
 variabel X_tak_seimbang = mt.matriks([
-    [10.0, 100.0], [12.0, 110.0], [11.0, 105.0],
-    [10.5, 102.0], [11.5, 108.0], [12.5, 112.0],
-    [95.0, 950.0], [98.0, 980.0]
+[10.0, 100.0], [12.0, 110.0], [11.0, 105.0],
+[10.5, 102.0], [11.5, 108.0], [12.5, 112.0],
+[95.0, 950.0], [98.0, 980.0]
 ])
 variabel y_tak_seimbang = [0, 0, 0, 0, 0, 0, 1, 1]
 
@@ -95,7 +95,7 @@ cetak("")
 # ------------------------------------------------------------------------------
 cetak("=== 5. PIPELINE ALUR KERJA (PIPAKERJA) ===")
 variabel pipa = mt.alur.PipaKerja([
-    ["scaler", mt.pra.Standarisasi()]
+["scaler", mt.pra.Standarisasi()]
 ])
 
 # Melatih pipeline HANYA pada data latih (tanpa kebocoran data uji!)
@@ -120,9 +120,9 @@ cetak("Jumlah sampel terduplikasi: ", cek_bocor.jumlah_kebocoran)
 # B. Uji Pergeseran Distribusi (Data Drift)
 # Simulasikan data produksi masa depan yang mengalami lonjakan ekstrem
 variabel X_produksi_geser = mt.matriks([
-    [500.0, 5000.0],
-    [600.0, 6000.0],
-    [700.0, 7000.0]
+[500.0, 5000.0],
+[600.0, 6000.0],
+[700.0, 7000.0]
 ])
 variabel cek_drift = mt.uji.cek_pergeseran(X_latih, X_produksi_geser, 0.25)
 cetak("Ada pergeseran data?    : ", cek_drift.ada_pergeseran)

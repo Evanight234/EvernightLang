@@ -21,8 +21,8 @@ Cadangan (opsional, boleh dirotasi sesuai konteks pemasaran):
 ## 3. Lisensi
 
 - Logo & aset brand **bebas dipakai dengan atribusi** — sebutkan "logo EvernightLanguage" saat digunakan publik.
-- **Kode program EvernightLanguage: MIT License** (keputusan user 2026-09-14, pemegang hak cipta: Satriyo). Berkas `LICENSE` ada di root proyek.
-- **Ekstensi editor: MIT License**, publisher **`Satriyo`**.
+- **Kode program EvernightLanguage: GNU Affero General Public License v3.0 (AGPL-3.0) dengan Evernight Runtime Library Exception** (keputusan user 2026-11-09, pemegang hak cipta: Satriyo). Berkas `LICENSE` ada di root proyek. Kode skrip `.eve`, `.emlbn`, dan dataset pengguna bebas dari ketentuan copyleft.
+- **Ekstensi editor: AGPL-3.0-or-later**, publisher **`Satriyo`**.
 
 ## 4. Palet Warna Resmi
 

@@ -2,6 +2,8 @@
 name = "evernight_installer"
 version = "0.2.0"
 edition = "2021"
+authors = ["Satriyo"]
+license = "AGPL-3.0-or-later"
 description = "Installer GUI EvernightLanguage (egui)"
 
 # PENTING: crate ini SENGAJA berada di luar workspace root.

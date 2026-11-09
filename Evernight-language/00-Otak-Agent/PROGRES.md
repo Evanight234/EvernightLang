@@ -149,6 +149,14 @@
 
 ## Log Aktivitas
 
+- **2026-11-09 (Migrasi Lisensi ke GNU Affero General Public License v3.0 (AGPL-3.0) dengan Evernight Runtime Library Exception)**:
+  - Mengubah lisensi resmi proyek dari MIT ke GNU AGPL-3.0 (pemegang hak cipta: Satriyo) pada berkas `LICENSE` root.
+  - Menerapkan *Evernight Runtime Library Exception* agar skrip program (`.eve`), notebook (`.emlbn`), dan model dataset buatan pengguna bebas dari kewajiban copyleft (dapat dilisensikan bebas komersial/tertutup).
+  - Menambahkan metadata `license = "AGPL-3.0-or-later"` dan `authors = ["Satriyo"]` di seluruh 7 crate `Cargo.toml` (`evernight_core`, `evernight_vm`, `evernight_cli`, `evernight_fmt`, `evernight_lint`, `evernight_lsp`, `evernight_installer`).
+  - Memperbarui lisensi di `editors/vscode/package.json` (`AGPL-3.0-or-later`), menyalin `LICENSE` ke `editors/vscode/`, `installer/aset/payload/`, dan paket distribusi portabel `paket/evernight-0.2.0-windows-x64/`.
+  - Memperbarui teks lisensi pada installer GUI egui (`installer/src/ui/halaman.rs`), paket rilis (`BACA-AKU.txt`, `PANDUAN.txt`), dan footer situs dokumentasi Astro (`situs/src/layouts/Base.astro`).
+  - Memperbarui dokumentasi brand dan perancangan (`BRAND.md`, `README.md`, `AGENTS.md`, `RENCANA.md`, `PROGRES.md`, `KONTEKS.md`).
+
 - **2026-10-30 (Subfase 9G Selesai: Rilis Ekosistem Matra & Integrasi Updater GitHub `update evernight system`)**:
   - Bump versi semantik dari `0.1.0` ke `0.2.0` di seluruh manifes crate (`evernight_core`, `evernight_vm`, `evernight_cli`, `evernight_fmt`, `evernight_lint`, `evernight_lsp`, `evernight_installer`) dan ekstensi VS Code (`package.json`).
   - Menyusun berkas catatan rilis resmi `version/catatan-0.2.0.txt` format ASCII bersih yang mendokumentasikan seluruh kapabilitas pustaka `Matra` (larik, tabel, grafik, latih/alur/uji, model/metrik, syaraf/pelatih) dan Web Notebook `March`.

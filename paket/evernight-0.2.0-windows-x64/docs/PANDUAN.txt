@@ -165,5 +165,5 @@ Ketik  evernight --bantuan  untuk panduan perintah.
 Jalankan  evernight  tanpa argumen untuk masuk mode REPL interaktif.
 
 ========================================================================
-            MIT License - Copyright (c) 2026 Satriyo
+  GNU AGPLv3 (Evernight Runtime Exception) - Copyright (c) 2026 Satriyo
 ========================================================================

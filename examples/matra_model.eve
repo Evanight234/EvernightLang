@@ -17,12 +17,12 @@ cetak("=== 1. REGRESI LINEAR (PREDIKSI HARGA RUMAH) ===")
 
 # Fitur X: [Luas Tanah (m2/100), Jumlah Kamar]
 variabel X_rumah = mt.larik([
-    [0.6, 2.0],
-    [0.8, 3.0],
-    [1.0, 3.0],
-    [1.4, 4.0],
-    [1.8, 4.0],
-    [2.2, 5.0]
+[0.6, 2.0],
+[0.8, 3.0],
+[1.0, 3.0],
+[1.4, 4.0],
+[1.8, 4.0],
+[2.2, 5.0]
 ])
 
 # Target y: Harga Rumah (ratus juta Rp)
@@ -52,12 +52,12 @@ cetak("=== 2. REGRESI LOGISTIK (KLASIFIKASI KREDIT PINJAMAN) ===")
 
 # X: [Pendapatan/10jt, Rasio Hutang]
 variabel X_kredit = mt.larik([
-    [1.0, 0.8],
-    [1.2, 0.7],
-    [2.0, 0.5],
-    [2.5, 0.3],
-    [3.0, 0.2],
-    [3.5, 0.1]
+[1.0, 0.8],
+[1.2, 0.7],
+[2.0, 0.5],
+[2.5, 0.3],
+[3.0, 0.2],
+[3.5, 0.1]
 ])
 
 # y: [0: Ditolak, 1: Diterima]
@@ -81,8 +81,8 @@ cetak("")
 cetak("=== 3. K-NEAREST NEIGHBORS (KNN) & EVALUASI LENGKAP ===")
 
 variabel X_knn = mt.larik([
-    [1.0, 1.0], [1.1, 1.2], [0.9, 0.8],
-    [5.0, 5.0], [5.2, 4.8], [4.9, 5.1]
+[1.0, 1.0], [1.1, 1.2], [0.9, 0.8],
+[5.0, 5.0], [5.2, 4.8], [4.9, 5.1]
 ])
 variabel y_knn = mt.larik([0.0, 0.0, 0.0, 1.0, 1.0, 1.0])
 
@@ -121,8 +121,8 @@ cetak("")
 cetak("=== 5. K-MEANS CLUSTERING ===")
 
 variabel data_klaster = mt.larik([
-    [1.0, 1.0], [1.2, 0.9], [0.8, 1.1],
-    [8.0, 8.0], [8.2, 7.9], [7.9, 8.1]
+[1.0, 1.0], [1.2, 0.9], [0.8, 1.1],
+[8.0, 8.0], [8.2, 7.9], [7.9, 8.1]
 ])
 
 variabel km = mt.model.kmeans(2, 50)
@@ -139,8 +139,8 @@ cetak("")
 cetak("=== 6. PIPELINE KERJA TERPADU (STANDARISASI + REGRESI) ===")
 
 variabel pipa_ml = mt.alur.pipa([
-    mt.pra.standarisasi(),
-    mt.model.regresi_linear(0.05, 500)
+mt.pra.standarisasi(),
+mt.model.regresi_linear(0.05, 500)
 ])
 
 pipa_ml.pasang(X_rumah, y_rumah)

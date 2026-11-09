@@ -19,12 +19,12 @@ variabel epoch = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 variabel loss = [0.85, 0.62, 0.48, 0.35, 0.27, 0.21, 0.16, 0.12, 0.09, 0.07]
 
 variabel plot_garis = mt.grafik.garis(epoch, loss)
-    .judul("Kurva Penurunan Loss Pelatihan (Training)")
-    .label_x("Epoch (Iterasi)")
-    .label_y("Nilai Loss")
-    .warna("#3B82F6")
-    .simpan_svg("kurva_loss.svg")
-    .tampil()
+.judul("Kurva Penurunan Loss Pelatihan (Training)")
+.label_x("Epoch (Iterasi)")
+.label_y("Nilai Loss")
+.warna("#3B82F6")
+.simpan_svg("kurva_loss.svg")
+.tampil()
 
 cetak("[INFO] Berkas SVG kurva loss berhasil disimpan ke 'kurva_loss.svg'")
 cetak("")
@@ -35,15 +35,15 @@ cetak("")
 cetak(">>> 2. DIAGRAM BATANG: Pendapatan Penjualan Per Kategori <<<")
 
 variabel kategori = ["Laptop", "Ponsel", "Tablet", "Aksesoris", "Audio"]
-variabel omset = [125.5, 210.8, 85.2, 45.0, 72.3] # dalam juta rupiah
+variabel omset = [125.5, 210.8, 85.2, 45.0, 72.3]  # dalam juta rupiah
 
 variabel plot_batang = mt.grafik.batang(kategori, omset)
-    .judul("Pendapatan Per Kategori Produk (Juta Rp)")
-    .label_x("Kategori")
-    .label_y("Pendapatan (Juta)")
-    .warna("#8B5CF6")
-    .simpan_svg("diagram_omset.svg")
-    .tampil()
+.judul("Pendapatan Per Kategori Produk (Juta Rp)")
+.label_x("Kategori")
+.label_y("Pendapatan (Juta)")
+.warna("#8B5CF6")
+.simpan_svg("diagram_omset.svg")
+.tampil()
 
 cetak("[INFO] Berkas SVG diagram batang berhasil disimpan ke 'diagram_omset.svg'")
 cetak("")
@@ -57,12 +57,12 @@ variabel pengalaman = mt.larik([1.0, 2.0, 2.5, 3.5, 4.0, 5.0, 6.0, 7.5, 8.0, 9.5
 variabel gaji = mt.larik([4.5, 5.2, 5.8, 7.0, 8.2, 10.5, 12.0, 15.0, 16.5, 20.0])
 
 variabel plot_sebar = mt.grafik.sebar(pengalaman, gaji)
-    .judul("Sebaran Pengalaman Kerja vs Gaji")
-    .label_x("Pengalaman (Tahun)")
-    .label_y("Gaji (Juta Rp)")
-    .warna("#10B981")
-    .simpan_svg("sebaran_gaji.svg")
-    .tampil()
+.judul("Sebaran Pengalaman Kerja vs Gaji")
+.label_x("Pengalaman (Tahun)")
+.label_y("Gaji (Juta Rp)")
+.warna("#10B981")
+.simpan_svg("sebaran_gaji.svg")
+.tampil()
 
 cetak("[INFO] Berkas SVG grafik sebar berhasil disimpan ke 'sebaran_gaji.svg'")
 cetak("")
@@ -73,17 +73,17 @@ cetak("")
 cetak(">>> 4. HISTOGRAM: Distribusi Usia Nasabah Bank <<<")
 
 variabel usia_nasabah = [
-    21, 22, 24, 25, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35,
-    35, 36, 38, 40, 42, 45, 48, 50, 52, 55, 58, 60, 62, 65
+21, 22, 24, 25, 25, 26, 28, 29, 30, 31, 32, 33, 34, 35,
+35, 36, 38, 40, 42, 45, 48, 50, 52, 55, 58, 60, 62, 65
 ]
 
 variabel plot_hist = mt.grafik.histogram(usia_nasabah, 6)
-    .judul("Distribusi Frekuensi Usia Nasabah")
-    .label_x("Rentang Usia (Tahun)")
-    .label_y("Jumlah Nasabah")
-    .warna("#F59E0B")
-    .simpan_svg("distribusi_usia.svg")
-    .tampil()
+.judul("Distribusi Frekuensi Usia Nasabah")
+.label_x("Rentang Usia (Tahun)")
+.label_y("Jumlah Nasabah")
+.warna("#F59E0B")
+.simpan_svg("distribusi_usia.svg")
+.tampil()
 
 cetak("[INFO] Berkas SVG histogram berhasil disimpan ke 'distribusi_usia.svg'")
 cetak("")
@@ -95,19 +95,19 @@ cetak(">>> 5. MATRIKS KONFUSI: Evaluasi Prediksi Model Klasifikasi <<<")
 
 # Matriks 3x3 untuk kelas bunga: Setosa, Versicolor, Virginica
 variabel matriks_uji = [
-    [50,  0,  0],  # Sebenarnya Setosa: 50 benar
-    [ 0, 47,  3],  # Sebenarnya Versicolor: 47 benar, 3 salah tebak Virginica
-    [ 0,  2, 48]   # Sebenarnya Virginica: 48 benar, 2 salah tebak Versicolor
+[50, 0, 0],  # Sebenarnya Setosa: 50 benar
+[0, 47, 3],  # Sebenarnya Versicolor: 47 benar, 3 salah tebak Virginica
+[0, 2, 48]  # Sebenarnya Virginica: 48 benar, 2 salah tebak Versicolor
 ]
 variabel label_bunga = ["Setosa", "Versicolor", "Virginica"]
 
 variabel plot_cm = mt.grafik.matriks_konfusi(matriks_uji, label_bunga)
-    .judul("Matriks Konfusi Klasifikasi Bunga Iris")
-    .label_x("Kelas Prediksi")
-    .label_y("Kelas Sebenarnya")
-    .warna("#6366F1")
-    .simpan_svg("matriks_konfusi_iris.svg")
-    .tampil()
+.judul("Matriks Konfusi Klasifikasi Bunga Iris")
+.label_x("Kelas Prediksi")
+.label_y("Kelas Sebenarnya")
+.warna("#6366F1")
+.simpan_svg("matriks_konfusi_iris.svg")
+.tampil()
 
 cetak("[INFO] Berkas SVG matriks konfusi berhasil disimpan ke 'matriks_konfusi_iris.svg'")
 cetak("")

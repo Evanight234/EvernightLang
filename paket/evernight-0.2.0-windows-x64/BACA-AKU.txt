@@ -1,4 +1,4 @@
-﻿EvernightLanguage 0.2.0 - Paket Portabel
+EvernightLanguage 0.2.0 - Paket Portabel
 =========================================
 Isi:
   bin/evernight.exe        Compiler + VM
@@ -11,7 +11,7 @@ Isi:
   docs/PANDUAN.txt         Panduan penggunaan
   docs/catatan-0.2.0.txt  Catatan rilis
   assets/                  Ikon & logo
-  LICENSE                  Lisensi MIT
+  LICENSE                  Lisensi GNU AGPL-3.0 (Evernight Runtime Exception)
 
 Mulai (pilih salah satu):
   [Cepat]  Jalankan install.cmd (atau install.ps1 di PowerShell)

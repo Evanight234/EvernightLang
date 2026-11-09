@@ -16,17 +16,17 @@ cetak("")
 cetak("=== 1. PERSIAPAN DATA KLASIFIKASI NON-LINEAR (XOR) ===")
 
 variabel X_xor = mt.larik([
-    [0.0, 0.0],
-    [0.0, 1.0],
-    [1.0, 0.0],
-    [1.0, 1.0]
+[0.0, 0.0],
+[0.0, 1.0],
+[1.0, 0.0],
+[1.0, 1.0]
 ])
 
 variabel y_xor = mt.larik([
-    [0.0],
-    [1.0],
-    [1.0],
-    [0.0]
+[0.0],
+[1.0],
+[1.0],
+[0.0]
 ])
 
 cetak("Fitur Masukan X (4 sampel x 2 fitur):")
@@ -42,11 +42,11 @@ cetak("=== 2. MEMBANGUN ARSITEKTUR JARINGAN (MULTI-LAYER PERCEPTRON) ===")
 
 # Arsitektur: Input (2) -> Hidden 1 (8, Tanh) -> Dropout (0.1) -> Output (1, Sigmoid)
 variabel model_jst = mt.syaraf.Model([
-    mt.syaraf.Linear(2, 8),
-    mt.syaraf.Tanh(),
-    mt.syaraf.Dropout(0.1),
-    mt.syaraf.Linear(8, 1),
-    mt.syaraf.Sigmoid()
+mt.syaraf.Linear(2, 8),
+mt.syaraf.Tanh(),
+mt.syaraf.Dropout(0.1),
+mt.syaraf.Linear(8, 1),
+mt.syaraf.Sigmoid()
 ])
 
 cetak("Arsitektur Model JST Sekuensial berhasil dibangun:")
@@ -74,18 +74,18 @@ cetak("")
 cetak("=== 4. PELATIHAN OTOMATIS DENGAN CALLBACKS ===")
 
 variabel pelatih = mt.pelatih.Pelatih(
-    model_jst,
-    optim,
-    kerugian,
-    ["akurasi"]
+model_jst,
+optim,
+kerugian,
+["akurasi"]
 )
 
 # Pasang callback: Simpan model terbaik & pencatat riwayat
 variabel berkas_model = "model_xor_terbaik.matra"
 pelatih.pasang_callback([
-    mt.pelatih.SimpanTerbaik(berkas_model, "akurasi", "maks"),
-    mt.pelatih.BerhentiAwal("rugi", 20, 0.0001, "min"),
-    mt.pelatih.PencatatRiwayat("log_pelatihan_xor.json")
+mt.pelatih.SimpanTerbaik(berkas_model, "akurasi", "maks"),
+mt.pelatih.BerhentiAwal("rugi", 20, 0.0001, "min"),
+mt.pelatih.PencatatRiwayat("log_pelatihan_xor.json")
 ])
 
 cetak("Memulai proses pelatihan otomatis selama 80 putaran:")
@@ -113,10 +113,10 @@ cetak("")
 cetak("=== 6. SERIALISASI DAN PEMUATAN MODEL DARI BERKAS .MATRA ===")
 
 variabel model_baru = mt.syaraf.Model([
-    mt.syaraf.Linear(2, 8),
-    mt.syaraf.Tanh(),
-    mt.syaraf.Linear(8, 1),
-    mt.syaraf.Sigmoid()
+mt.syaraf.Linear(2, 8),
+mt.syaraf.Tanh(),
+mt.syaraf.Linear(8, 1),
+mt.syaraf.Sigmoid()
 ])
 
 model_baru.muat(berkas_model)

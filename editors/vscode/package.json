@@ -7,7 +7,7 @@
   "author": {
     "name": "Satriyo"
   },
-  "license": "MIT",
+  "license": "AGPL-3.0-or-later",
   "icon": "icons/evernight-icon.png",
   "repository": {
     "type": "git",
